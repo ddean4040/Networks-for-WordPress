@@ -3,7 +3,7 @@ Contributors: ddean
 Tags: multisite, sites, networks, multi-networks, domains
 Requires at least: WPMU 2.7
 Tested up to: 3.1
-Stable tag: 1.0
+Stable tag: 1.0.1
 
 Adds a Networks panel for network admins to create and manage multiple networks from one WordPress installation.
 
@@ -55,10 +55,16 @@ Your webserver must direct requests for each domain you want to use to your Word
 
 == Changelog ==
 
+= 1.0.1 =
+* Fixed an issue with the link to Network backends for versions before 3.1 - thanks, RavanH
+
 = 1.0 =
 * Initial release
 
 == Upgrade Notice ==
+
+= 1.0.1 =
+* Upgrade if using a version of WordPress earlier than 3.1
 
 = 1.0 =
 * Initial release - upgrade if you are still using my old WPMU Multi-Site Manager plugin somehow
