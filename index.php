@@ -4,9 +4,9 @@
  * Plugin Name: Networks for WordPress
  * Plugin URI: http://www.jerseyconnect.net/development/networks-for-wordpress/
  * Description: Adds a Networks panel for site admins to create and manipulate multiple networks.
- * Version: 1.0.1
- * Revision Date: 02/15/2011
- * Requires at least: WPMU 2.7
+ * Version: 1.0.2
+ * Revision Date: 03/04/2011
+ * Requires at least: WP 3.0
  * Tested up to: WP 3.1
  * License: GNU General Public License 2.0 (GPL) http://www.gnu.org/licenses/gpl.html
  * Site Wide Only: TRUE
@@ -467,11 +467,9 @@ if(!function_exists('move_blog')) {
 		$newDomain = $newSite->domain . $newSite->path;
 
 		foreach($url_dependent_options as $option_name) {
-			$option = $wpdb->get_row("SELECT * FROM $optionsTable WHERE option_name='" . $option_name . "'");
+			$option = $wpdb->get_row("SELECT * FROM $optionTable WHERE option_name='" . $option_name . "'");
 			$newValue = str_replace($oldDomain,$newDomain,$option->option_value);
 			update_blog_option($blog->blog_id,$option_name,$newValue);
-//			$query = "UPDATE $optionsTable SET option_value='$newValue' WHERE option_name='$option_name'";
-//			$wpdb->query($query);
 		}
 		
 		do_action( 'wpmu_move_blog' , $blog_id, $old_site_id, $new_site_id );
@@ -496,16 +494,15 @@ class njsl_Networks
 		}
 
 		if(function_exists('add_action')) {
-			add_action('network_admin_menu', array(&$this, 'networks_admin_menu'));
+			add_action( 'network_admin_menu', array(&$this, 'networks_admin_menu') );
 			add_filter( 'manage_sites_action_links' , array(&$this,'add_blogs_link'), 10, 3 );
-			add_action('contextual_help',array(&$this,'networks_help'), 10, 3);
+			add_action( 'contextual_help', array(&$this,'networks_help'), 10, 3 );
 
 			// for compatibility with older releases
-			add_action('admin_menu', array(&$this, 'networks_admin_menu'));
-			add_action('wpmublogsaction',array(&$this,'assign_blogs_link'));
+			add_action( 'admin_menu', array(&$this, 'networks_admin_menu') );
+			add_action( 'wpmublogsaction', array(&$this,'assign_blogs_link') );
 		}
 		wp_register_script( 'njsl_networks_admin_js', plugins_url('/js/admin.js', __FILE__) );
-		
 	}
 
 	function assign_blogs_link( $blog_id = null ) {
@@ -525,13 +522,18 @@ class njsl_Networks
 
 	function networks_admin_menu()
 	{
-		if(function_exists('is_network_admin') && is_network_admin()) {
-			$this->admin_page = add_submenu_page('sites.php', __('Networks','njsl-networks'), __('Networks','njsl-networks'), 'manage_network_options', $this->slug, array(&$this, 'sites_page'));
-//			$this->admin_settings_page = add_submenu_page( 'settings.php', __('Networks Settings','njsl-networks'), __('Networks Settings','njsl-networks'), 'manage_network_options', $this->slug . '-options', array(&$this, 'options_page') );
+		if(function_exists('is_network_admin')) {
+			$this->admin_page = add_submenu_page( 'sites.php', __('Networks','njsl-networks'), __('Networks','njsl-networks'), 'manage_network_options', $this->slug, array(&$this, 'sites_page') );
+
+			if(is_multisite()) {
+//				remove_submenu_page('settings.php','setup.php');
+//				$this->admin_settings_page = add_submenu_page( 'settings.php', __('Create Networks of WordPress Sites','njsl-networks'), __('Networks Setup','njsl-networks'), 'manage_network_options', $this->slug . '-options', array(&$this, 'options_page') );
+			}
 			$this->listPage = 'sites.php?page=' . $this->slug;
 			$this->sitesPage = 'sites.php';
+
 		} else {
-			$this->admin_page = add_submenu_page('ms-admin.php', __('Networks','njsl-networks'), __('Networks','njsl-networks'), 'manage_options', $this->slug, array(&$this, 'sites_page'));
+			$this->admin_page = add_submenu_page( 'ms-admin.php', __('Networks','njsl-networks'), __('Networks','njsl-networks'), 'manage_options', $this->slug, array(&$this, 'sites_page') );
 			$this->listPage = 'ms-admin.php?page=' . $this->slug;
 			$this->sitesPage = 'ms-sites.php';
 		}
@@ -594,8 +596,6 @@ class njsl_Networks
 		} else if(isset($_GET['deleted'])) {
 			?><div id="message" class="updated fade"><p><?php _e('Network(s) deleted.','njl-networks'); ?></p></div><?php
 		}
-
-//		print '<div class="wrap" style="position: relative">';
 
 		switch( $_GET[ 'action' ] ) {
 		case 'move':
@@ -1506,6 +1506,224 @@ break;
 		}
 		return $contextual_help;
 	}
+	
+	function options_page() {
+			
+		global $base, $wpdb;
+		$hostname = $wpdb->get_var( "SELECT domain FROM $wpdb->site ORDER BY id ASC LIMIT 1" );
+		$subdomain_install = is_subdomain_install();
+		$subdomain_install_string = (is_subdomain_install() ? 'true' : 'false' );
+		$config_file = file_get_contents(ABSPATH . DIRECTORY_SEPARATOR . 'wp-config.php');
+		
+		?>
+			<div class="wrap">
+			<div id="icon-tools" class="icon32"></div>
+			<h2>Create Networks of WordPress Sites</h2>
+			<ol>
+				<li><p>
+				<?php
+				printf( __( 'Create a <code>blogs.dir</code> directory at <code>%s/blogs.dir</code>. This directory is used to store uploaded media for your additional sites and must be writeable by the web server.' ), WP_CONTENT_DIR );
+				if(file_exists(WP_CONTENT_DIR . DIRECTORY_SEPARATOR . 'blogs.dir')) {
+					if(is_writable(WP_CONTENT_DIR . DIRECTORY_SEPARATOR . 'blogs.dir')) {
+						echo '<br />' . __('Status:') . ' DONE!';
+					} else {
+						echo '<br />' . __('Status:') . ' Created, but not writable.';
+					}
+				}
+				if ( WP_CONTENT_DIR != ABSPATH . 'wp-content' )
+					echo '<br /><strong>' . __('Warning:') . ' ' . __( 'Networks may not be fully compatible with custom wp-content directories.' ) . '</strong>';
+				?>
+			</p></li>
+			<li><p>
+				<?php printf( __( 'Add the following to your <code>wp-config.php</code> file in <code>%s</code> <strong>above</strong> the line reading <code>/* That&#8217;s all, stop editing! Happy blogging. */</code>:' ), ABSPATH ); ?></p>
+				<?php
+				$needed_config_lines = <<<END
+define( 'MULTISITE', true );
+define( 'SUBDOMAIN_INSTALL', $subdomain_install_string );
+\$base = '$base'
+END;
+				?>
+				<textarea class="code" readonly="readonly" cols="100" rows="3"><?php echo $needed_config_lines ?></textarea>
+				<?php if(strpos($config_file,$needed_config_lines) !== FALSE) { ?>
+					<p><?php echo __('Status:') . ' DONE!' ?></p>
+				<?php }	?>
+			</li>
+			<li><p>
+				<?php printf( __( '<strong>Remove</strong> the following from your <code>wp-config.php</code> file in <code>%s</code>:' ), ABSPATH ); ?></p></p>
+				<?php
+				$unneeded_config_lines = <<<END
+define( 'DOMAIN_CURRENT_SITE', '$hostname' );
+define( 'PATH_CURRENT_SITE', '$base' );
+define( 'SITE_ID_CURRENT_SITE', 1 );
+define( 'BLOG_ID_CURRENT_SITE', 1 );
+END;
+				?>
+				<textarea class="code" readonly="readonly" cols="100" rows="4"><?php echo $unneeded_config_lines ?></textarea>
+				<?php if(strpos($config_file,$unneeded_config_lines) === FALSE) { ?>
+					<p><?php echo __('Status:') . ' DONE!' ?></p>
+				<?php }	?>
+			</li>
+<?php
+	$keys_salts = array( 'AUTH_KEY' => '', 'SECURE_AUTH_KEY' => '', 'LOGGED_IN_KEY' => '', 'NONCE_KEY' => '', 'AUTH_SALT' => '', 'SECURE_AUTH_SALT' => '', 'LOGGED_IN_SALT' => '', 'NONCE_SALT' => '' );
+	foreach ( $keys_salts as $c => $v ) {
+		if ( defined( $c ) )
+			unset( $keys_salts[ $c ] );
+	}
+	if ( ! empty( $keys_salts ) ) {
+		$keys_salts_str = '';
+		$from_api = wp_remote_get( 'https://api.wordpress.org/secret-key/1.1/salt/' );
+		if ( is_wp_error( $from_api ) ) {
+			foreach ( $keys_salts as $c => $v ) {
+				$keys_salts_str .= "\ndefine( '$c', '" . wp_generate_password( 64, true, true ) . "' );";
+			}
+		} else {
+			$from_api = explode( "\n", wp_remote_retrieve_body( $from_api ) );
+			foreach ( $keys_salts as $c => $v ) {
+				$keys_salts_str .= "\ndefine( '$c', '" . substr( array_shift( $from_api ), 28, 64 ) . "' );";
+			}
+		}
+		$num_keys_salts = count( $keys_salts );
+?>
+	<p><?php
+		echo _n( 'This unique authentication key is also missing from your <code>wp-config.php</code> file.', 'These unique authentication keys are also missing from your <code>wp-config.php</code> file.', $num_keys_salts ); ?> <?php _e( 'To make your installation more secure, you should also add:' ) ?></p>
+	<textarea class="code" readonly="readonly" cols="100" rows="<?php echo $num_keys_salts; ?>"><?php echo esc_textarea( $keys_salts_str ); ?></textarea>
+<?php
+	}
+?>
+</li>
+<?php
+	if ( iis7_supports_permalinks() ) :
+
+			if ( $subdomain_install ) {
+				$web_config_file =
+'<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <system.webServer>
+        <rewrite>
+            <rules>
+                <rule name="WordPress Rule 1" stopProcessing="true">
+                    <match url="^index\.php$" ignoreCase="false" />
+                    <action type="None" />
+                </rule>
+                <rule name="WordPress Rule 2" stopProcessing="true">
+                    <match url="^files/(.+)" ignoreCase="false" />
+                    <action type="Rewrite" url="wp-includes/ms-files.php?file={R:1}" appendQueryString="false" />
+                </rule>
+                <rule name="WordPress Rule 3" stopProcessing="true">
+                    <match url="^" ignoreCase="false" />
+                    <conditions logicalGrouping="MatchAny">
+                        <add input="{REQUEST_FILENAME}" matchType="IsFile" ignoreCase="false" />
+                        <add input="{REQUEST_FILENAME}" matchType="IsDirectory" ignoreCase="false" />
+                    </conditions>
+                    <action type="None" />
+                </rule>
+                <rule name="WordPress Rule 4" stopProcessing="true">
+                    <match url="." ignoreCase="false" />
+                    <action type="Rewrite" url="index.php" />
+                </rule>
+            </rules>
+        </rewrite>
+    </system.webServer>
+</configuration>';
+			} else {
+				$web_config_file =
+'<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <system.webServer>
+        <rewrite>
+            <rules>
+                <rule name="WordPress Rule 1" stopProcessing="true">
+                    <match url="^index\.php$" ignoreCase="false" />
+                    <action type="None" />
+                </rule>
+                <rule name="WordPress Rule 2" stopProcessing="true">
+                    <match url="^([_0-9a-zA-Z-]+/)?files/(.+)" ignoreCase="false" />
+                    <action type="Rewrite" url="wp-includes/ms-files.php?file={R:2}" appendQueryString="false" />
+                </rule>
+                <rule name="WordPress Rule 3" stopProcessing="true">
+                    <match url="^([_0-9a-zA-Z-]+/)?wp-admin$" ignoreCase="false" />
+                    <action type="Redirect" url="{R:1}wp-admin/" redirectType="Permanent" />
+                </rule>
+                <rule name="WordPress Rule 4" stopProcessing="true">
+                    <match url="^" ignoreCase="false" />
+                    <conditions logicalGrouping="MatchAny">
+                        <add input="{REQUEST_FILENAME}" matchType="IsFile" ignoreCase="false" />
+                        <add input="{REQUEST_FILENAME}" matchType="IsDirectory" ignoreCase="false" />
+                    </conditions>
+                    <action type="None" />
+                </rule>
+                <rule name="WordPress Rule 5" stopProcessing="true">
+                    <match url="^[_0-9a-zA-Z-]+/(wp-(content|admin|includes).*)" ignoreCase="false" />
+                    <action type="Rewrite" url="{R:2}" />
+                </rule>
+                <rule name="WordPress Rule 6" stopProcessing="true">
+                    <match url="^([_0-9a-zA-Z-]+/)?(.*\.php)$" ignoreCase="false" />
+                    <action type="Rewrite" url="{R:2}" />
+                </rule>
+                <rule name="WordPress Rule 7" stopProcessing="true">
+                    <match url="." ignoreCase="false" />
+                    <action type="Rewrite" url="index.php" />
+                </rule>
+            </rules>
+        </rewrite>
+    </system.webServer>
+</configuration>';
+			}
+	?>
+		<li><p><?php printf( __( 'Add the following to your <code>web.config</code> file in <code>%s</code>, replacing other WordPress rules:' ), ABSPATH ); ?></p>
+		<textarea class="code" readonly="readonly" cols="100" rows="20">
+		<?php echo esc_textarea( $web_config_file ); ?>
+		</textarea></li>
+		</ol>
+
+	<?php else : // end iis7_supports_permalinks(). construct an htaccess file instead:
+
+		$htaccess_file = 'RewriteEngine On
+RewriteBase ' . $base . '
+RewriteRule ^index\.php$ - [L]
+
+# uploaded files
+RewriteRule ^' . ( $subdomain_install ? '' : '([_0-9a-zA-Z-]+/)?' ) . 'files/(.+) wp-includes/ms-files.php?file=$' . ( $subdomain_install ? 1 : 2 ) . ' [L]' . "\n";
+
+		if ( ! $subdomain_install )
+			$htaccess_file .= "\n# add a trailing slash to /wp-admin\n" . 'RewriteRule ^([_0-9a-zA-Z-]+/)?wp-admin$ $1wp-admin/ [R=301,L]' . "\n";
+
+		$htaccess_file .= "\n" . 'RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]';
+
+		// @todo custom content dir.
+		if ( ! $subdomain_install )
+			$htaccess_file .= "\nRewriteRule  ^[_0-9a-zA-Z-]+/(wp-(content|admin|includes).*) $1 [L]\nRewriteRule  ^[_0-9a-zA-Z-]+/(.*\.php)$ $1 [L]";
+
+		$htaccess_file .= "\nRewriteRule . index.php [L]";
+
+		?>
+		<li><p><?php printf( __( 'Add the following to your <code>.htaccess</code> file in <code>%s</code>, replacing other WordPress rules:' ), ABSPATH ); ?></p>
+		<textarea class="code" readonly="readonly" cols="100" rows="<?php echo $subdomain_install ? 11 : 16; ?>">
+<?php echo esc_textarea( $htaccess_file ); ?></textarea></li>
+		</ol>
+
+	<?php endif; // end IIS/Apache code branches.
+
+	if ( !is_multisite() ) { ?>
+		<p><?php printf( __( 'Once you complete these steps, your network is enabled and configured. You will have to log in again.') ); ?> <a href="<?php echo esc_url( site_url( 'wp-login.php' ) ); ?>"><?php _e( 'Log In' ); ?></a></p>
+<?php
+	}
+		
+	?>
+	</div>
+	<?php
+	}
+	
+	function build_rewrite_rules() {
+		if(iis7_supports_permalinks()) {
+			$this->build_iis7_rewrite_rules();
+		} else {
+			$this->build_apache_rewrite_rules();
+		}
+	} 
+	
 }
 
 function njsl_networks_init() {

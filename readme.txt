@@ -1,9 +1,9 @@
 === Networks for WordPress ===
 Contributors: ddean
 Tags: multisite, sites, networks, multi-networks, domains
-Requires at least: WPMU 2.7
+Requires at least: 3.0
 Tested up to: 3.1
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 
 Adds a Networks panel for network admins to create and manage multiple networks from one WordPress installation.
 
@@ -17,10 +17,9 @@ Sites can be moved freely among Networks.
 
 = Notes =
 
-Each Network will require changes to your webserver and manual file changes.
-You can choose: changing WordPress core files once or creating new files for each Network.
+Each Network will require changes to your web server and DNS.
 
-We are exploring ways to automate this process, but for now it can be tricky.  See **Frequently Asked Questions** for detailed instructions.
+See **Frequently Asked Questions** for detailed instructions.
 
 == Installation ==
 
@@ -32,22 +31,13 @@ We are exploring ways to automate this process, but for now it can be tricky.  S
 
 = How do I set up new domains to work with a single WordPress install? =
 
-Your webserver must direct requests for each domain you want to use to your WordPress files. There are two main ways to accomplish this:
+Your webserver must direct requests for each domain you want to use to your WordPress files.
 
-**1. Separate directories / separate index.php files**
+Here's a quick overview:
 
-1. DNS should resolve each desired domain to your webserver.
-1. Before you begin, move the `DOMAIN_CURRENT_SITE`, `PATH_CURRENT_SITE`, and `SITE_ID_CURRENT_SITE` directives from your `wp-config.php` file to your `index.php` file.
-1. Copy your WordPress `index.php` and `.htaccess` files into the directory for the new domain.
-1. Update the copy of `index.php` in the new directory to point to the original `wp-blog-header.php` file.
-1. Symlink or alias the `wp-includes`, `wp-content`, and `wp-admin` directories from your WordPress install into the new directory.
-
-**2. One directory / WordPress core modifications**
-
-1. DNS should resolve each desired domain to your webserver.
-1. Change `/wp-includes/ms-load.php` or `/wpmu-settings.php` file (depending on your WordPress version) to handle multiple rows from the `sites` table.
-1. Your webserver should serve the WordPress files when someone requests the desired domain ( via a new VirtualHost with appropriate DocumentRoot, or with a ServerAlias directive )
-1. If you create a new VirtualHost and use per-VirtualHost Directory statements, ensure that the new VirtualHost’s Directory statement has adequate permissions.
+1. DNS should resolve each desired domain to your web server.
+1. Configure your web server to direct requests for each desired domain to the same site (e.g. via `ServerAlias` directives or `Host Headers`)
+1. Remove the `DOMAIN_CURRENT_SITE`, `PATH_CURRENT_SITE`, and `SITE_ID_CURRENT_SITE` directives from your `wp-config.php` file.
 
 == Known Issues ==
 
@@ -55,13 +45,20 @@ Your webserver must direct requests for each domain you want to use to your Word
 
 == Changelog ==
 
+= 1.0.2 =
+* Fixed: a bug that showed the Networks panel in the Site Admin backend on 3.1
+* Fixed: a typo that left network-dependent blog options behind when moving blogs - thanks, edmeister
+
 = 1.0.1 =
-* Fixed an issue with the link to Network backends for versions before 3.1 - thanks, RavanH
+* Fixed an issue with the link to Network backends for versions before 3.1 - thanks, RavaH
 
 = 1.0 =
 * Initial release
 
 == Upgrade Notice ==
+
+= 1.0.2 =
+* Bugfix - All users should upgrade
 
 = 1.0.1 =
 * Upgrade if using a version of WordPress earlier than 3.1
