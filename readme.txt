@@ -3,7 +3,7 @@ Contributors: ddean
 Tags: multisite, sites, networks, multi-networks, domains
 Requires at least: 3.0
 Tested up to: 3.1
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 
 Adds a Networks panel for network admins to create and manage multiple networks from one WordPress installation.
 
@@ -45,6 +45,12 @@ Here's a quick overview:
 
 == Changelog ==
 
+= 1.0.3 =
+
+* Changed: processing to ensure that new Network paths are always valid
+* Changed: documentation on new Networks
+* Fixed: short_open_tag off compatibility
+
 = 1.0.2 =
 * Fixed: a bug that showed the Networks panel in the Site Admin backend on 3.1
 * Fixed: a typo that left network-dependent blog options behind when moving blogs - thanks, edmeister
@@ -56,6 +62,9 @@ Here's a quick overview:
 * Initial release
 
 == Upgrade Notice ==
+
+= 1.0.3 =
+* Documentation and processing changes
 
 = 1.0.2 =
 * Bugfix - All users should upgrade

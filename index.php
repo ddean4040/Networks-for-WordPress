@@ -4,8 +4,8 @@
  * Plugin Name: Networks for WordPress
  * Plugin URI: http://www.jerseyconnect.net/development/networks-for-wordpress/
  * Description: Adds a Networks panel for site admins to create and manipulate multiple networks.
- * Version: 1.0.2
- * Revision Date: 03/04/2011
+ * Version: 1.0.3
+ * Revision Date: 04/26/2011
  * Requires at least: WP 3.0
  * Tested up to: WP 3.1
  * License: GNU General Public License 2.0 (GPL) http://www.gnu.org/licenses/gpl.html
@@ -75,13 +75,15 @@ if(!function_exists('site_exists')) {
 	function site_exists($site_id) {
 		global $sites, $wpdb;
 		$site_id = (int)$site_id;
-		foreach($sites as $site) {
-			if($site_id == $site->id) {
-				return TRUE;
+		if(isset($sites)) {
+			foreach($sites as $site) {
+				if($site_id == $site->id) {
+					return TRUE;
+				}
 			}
 		}
 		
-		/* check db just to be sure */
+		/** check db just to be sure or if $sites, above, was not yet defined */
 		$site_list = $wpdb->get_results('SELECT id FROM ' . $wpdb->site);
 		if($site_list) {
 			foreach($site_list as $site) {
@@ -196,6 +198,12 @@ if (!function_exists('add_site')) {
 		if(is_null($options_to_clone)) {
 			$options_to_clone = array_keys($options_to_copy);
 		}
+
+		if($path != '/') {
+			$path = trim($path,'/');
+			$path = '/' . $path . '/';
+		}
+
 		$query = "SELECT * FROM {$wpdb->site} WHERE domain='" . $wpdb->escape($domain) . "' AND path='" . $wpdb->escape($path) . "' LIMIT 1";
 		$site = $wpdb->get_row($query);
 		if($site) {
@@ -801,7 +809,7 @@ foreach($networks_columns as $column_name=>$column_display_name) {
 			?>
 			<td valign='top'>
 				<label for='<?php echo $blog[ 'id' ] ?>'><?php echo $blog['site_name'] ?></label>
-				<?
+				<?php
 				
 				$actions = array(
 					'assign_sites'	=> '<span class="edit"><a href="'.  $queryStr . '&amp;action=assignblogs&amp;id=' .  $blog['id'] . '" title="' . __('Assign sites to this network','njsl-networks') . '">' . __('Assign Sites','njsl-networks') . '</a></span>',
@@ -810,7 +818,7 @@ foreach($networks_columns as $column_name=>$column_display_name) {
 				);
 				
 				?>
-				<? if ( count( $actions ) != 0 ) : ?>
+				<?php if ( count( $actions ) != 0 ) : ?>
 				<div class="row-actions">
 					<?php echo implode( ' | ', $actions ); ?>
 				</div>
@@ -1498,7 +1506,6 @@ break;
 			'<p>' . __('This table shows all the Networks running on this installation of WordPress.','njsl-networks') . '</p>' .
 			'<p>' . __('Networks are groups of sites with separate admins, plugins, and policies, but with a common set of files and user database.','njsl-networks') . '</p>' .
 			'<p>' . __('The most common use of Networks is running groups of site on multiple domains from a single install.','njsl-networks') . '</p>' .
-			'<p><strong>' . __('Note','njsl-networks') . ':</strong> ' . __('Domains beginning with www. require changes to WordPress core files.','njsl-networks') . '</p>' .
 			'<p><strong>' . __('For more information','njsl-networks') . ':</strong></p>' .
 
 			'<p><a href="http://codex.wordpress.org/Create_A_Network" target="_blank">' . __('Documentation on WordPress Networks','njsl-networks') . '</a></p>' .
