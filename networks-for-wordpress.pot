@@ -1,0 +1,447 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Networks for WordPress\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-01-21 15:17-0500\n"
+"PO-Revision-Date: 2011-01-21 15:17-0500\n"
+"Last-Translator: David Dean <ddean@njstatelib.org>\n"
+"Language-Team: David Dean <ddean@njstatelib.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-Basepath: p:\\workspace\\BuddyPress\\wp-content\\plugins\\networks-for-wordpress\\\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: index.php:54
+msgid "Network administrator email"
+msgstr ""
+
+#: index.php:55
+msgid "Deprecated - Admin user ID"
+msgstr ""
+
+#: index.php:56
+msgid "Deprecated - Old list of allowed themes"
+msgstr ""
+
+#: index.php:57
+msgid "List of allowed themes"
+msgstr ""
+
+#: index.php:58
+msgid "Banned email domains"
+msgstr ""
+
+#: index.php:59
+msgid "Permitted email domains"
+msgstr ""
+
+#: index.php:60
+msgid "Content of first post on a new site"
+msgstr ""
+
+#: index.php:61
+msgid "List of site administrator usernames"
+msgstr ""
+
+#: index.php:62
+msgid "Content of welcome email"
+msgstr ""
+
+#: index.php:192
+#: index.php:1238
+msgid "New Network Created"
+msgstr ""
+
+#: index.php:201
+msgid "Network already exists!"
+msgstr ""
+
+#: index.php:273
+#: index.php:279
+#: index.php:352
+#: index.php:416
+#: index.php:428
+msgid "Network does not exist."
+msgstr ""
+
+#: index.php:291
+msgid "Network could not be updated."
+msgstr ""
+
+#: index.php:359
+msgid "Cannot delete network with blogs."
+msgstr ""
+
+#: index.php:401
+msgid "Site does not exist."
+msgstr ""
+
+#: index.php:454
+msgid "Site could not be moved."
+msgstr ""
+
+#: index.php:517
+#: index.php:1016
+msgid "Move Site"
+msgstr ""
+
+#: index.php:521
+msgid "Move"
+msgstr ""
+
+#: index.php:528
+#: index.php:533
+#: index.php:709
+msgid "Networks"
+msgstr ""
+
+#: index.php:562
+msgid "You do not have permission to access this page."
+msgstr ""
+
+#: index.php:590
+msgid "Options saved."
+msgstr ""
+
+#: index.php:592
+msgid "Network created."
+msgstr ""
+
+#: index.php:594
+msgid "Network(s) deleted."
+msgstr ""
+
+#: index.php:630
+#: index.php:714
+msgid "Search Networks"
+msgstr ""
+
+#: index.php:721
+msgid "ID"
+msgstr ""
+
+#: index.php:722
+#: index.php:854
+msgid "Network Name"
+msgstr ""
+
+#: index.php:723
+#: index.php:855
+#: index.php:1303
+msgid "Domain"
+msgstr ""
+
+#: index.php:724
+#: index.php:856
+#: index.php:1304
+msgid "Path"
+msgstr ""
+
+#: index.php:725
+msgid "Sites"
+msgstr ""
+
+#: index.php:743
+#: index.php:808
+msgid "Delete"
+msgstr ""
+
+#: index.php:745
+msgid "Filter"
+msgstr ""
+
+#: index.php:745
+msgid "Remove this filter"
+msgstr ""
+
+#: index.php:806
+msgid "Assign sites to this network"
+msgstr ""
+
+#: index.php:806
+msgid "Assign Sites"
+msgstr ""
+
+#: index.php:807
+msgid "Edit this network"
+msgstr ""
+
+#: index.php:807
+msgid "Edit"
+msgstr ""
+
+#: index.php:808
+msgid "Delete this network"
+msgstr ""
+
+#: index.php:827
+msgid "Sites on this network"
+msgstr ""
+
+#: index.php:844
+msgid "No matching networks were found."
+msgstr ""
+
+#: index.php:851
+#: index.php:913
+msgid "Add Network"
+msgstr ""
+
+#: index.php:854
+msgid "A friendly name for your new Network"
+msgstr ""
+
+#: index.php:855
+msgid "The domain for your new Network"
+msgstr ""
+
+#: index.php:856
+msgid "If you are unsure, put in /"
+msgstr ""
+
+#: index.php:857
+msgid "Root Site Name"
+msgstr ""
+
+#: index.php:857
+msgid "The name for the new Network's root site"
+msgstr ""
+
+#: index.php:859
+msgid "A site will be created at the root of the new network"
+msgstr ""
+
+#: index.php:863
+msgid "Advanced Network Options"
+msgstr ""
+
+#: index.php:867
+msgid "Copy Network Options From"
+msgstr ""
+
+#: index.php:869
+msgid "Do Not Copy"
+msgstr ""
+
+#: index.php:872
+msgid "Options to Copy"
+msgstr ""
+
+#: index.php:876
+msgid "Options added by plugins may not exist on all networks."
+msgstr ""
+
+#: index.php:894
+msgid "Meta Value"
+msgstr ""
+
+#: index.php:895
+msgid "Description"
+msgstr ""
+
+#: index.php:953
+msgid "You must select a site to move."
+msgstr ""
+
+#: index.php:958
+msgid "Site not found in blogs table."
+msgstr ""
+
+#: index.php:969
+msgid "Blog options table not found."
+msgstr ""
+
+#: index.php:979
+msgid "Moving"
+msgstr ""
+
+#: index.php:984
+msgid "From"
+msgstr ""
+
+#: index.php:985
+msgid "To"
+msgstr ""
+
+#: index.php:992
+msgid "Select a Network"
+msgstr ""
+
+#: index.php:1008
+#: index.php:1139
+msgid "Options"
+msgstr ""
+
+#: index.php:1017
+#: index.php:1146
+#: index.php:1315
+#: index.php:1379
+#: index.php:1487
+msgid "Cancel"
+msgstr ""
+
+#: index.php:1033
+#: index.php:1039
+msgid "No sites selected."
+msgstr ""
+
+#: index.php:1068
+#: index.php:1269
+#: index.php:1284
+msgid "Invalid network ID selected"
+msgstr ""
+
+#: index.php:1072
+msgid "Blogs table is inaccessible."
+msgstr ""
+
+#: index.php:1082
+msgid "Invalid site selected"
+msgstr ""
+
+#: index.php:1089
+msgid "Assign Sites to"
+msgstr ""
+
+#: index.php:1091
+#, php-format
+msgid "Select the sites you want to assign to this network from the column at left, and click \"%s.\""
+msgstr ""
+
+#: index.php:1091
+#: index.php:1145
+msgid "Update Assignments"
+msgstr ""
+
+#: index.php:1097
+msgid "Available"
+msgstr ""
+
+#: index.php:1099
+msgid "Assigned"
+msgstr ""
+
+#: index.php:1300
+msgid "Edit Network"
+msgstr ""
+
+#: index.php:1314
+msgid "Update Network"
+msgstr ""
+
+#: index.php:1343
+msgid "Invalid site id."
+msgstr ""
+
+#: index.php:1362
+#: index.php:1378
+msgid "Delete Network"
+msgstr ""
+
+#: index.php:1367
+#: index.php:1372
+msgid "There are sites associated with this network. "
+msgstr ""
+
+#: index.php:1367
+msgid "Deleting it will move those sites to the holding network."
+msgstr ""
+
+#: index.php:1368
+#: index.php:1373
+msgid "If you still want to delete this network, check the following box"
+msgstr ""
+
+#: index.php:1372
+msgid "Deleting it will delete those sites as well."
+msgstr ""
+
+#: index.php:1377
+msgid "Are you sure you want to delete this network?"
+msgstr ""
+
+#: index.php:1404
+msgid "You have not selected any networks to delete."
+msgstr ""
+
+#: index.php:1411
+msgid "You have selected an invalid network."
+msgstr ""
+
+#: index.php:1426
+msgid "You have selected an invalid network or networks."
+msgstr ""
+
+#: index.php:1434
+msgid "Delete Multiple Networks"
+msgstr ""
+
+#: index.php:1442
+#: index.php:1457
+#: index.php:1474
+msgid "You have selected the following networks for deletion"
+msgstr ""
+
+#: index.php:1448
+msgid "There are sites assigned to one or more of these networks."
+msgstr ""
+
+#: index.php:1448
+msgid "Deleting them will move these sites to the holding network."
+msgstr ""
+
+#: index.php:1449
+#: index.php:1464
+msgid "If you still want to delete these networks, check the following box"
+msgstr ""
+
+#: index.php:1463
+msgid "There are sites associated with one or more of these networks."
+msgstr ""
+
+#: index.php:1463
+msgid "Deleting them will delete those sites as well."
+msgstr ""
+
+#: index.php:1486
+msgid "Are you sure you want to delete these networks?"
+msgstr ""
+
+#: index.php:1487
+msgid "Delete Networks"
+msgstr ""
+
+#: index.php:1497
+msgid "This table shows all the Networks running on this installation of WordPress."
+msgstr ""
+
+#: index.php:1498
+msgid "Networks are groups of sites with separate admins, plugins, and policies, but with a common set of files and user database."
+msgstr ""
+
+#: index.php:1499
+msgid "The most common use of Networks is running groups of site on multiple domains from a single install."
+msgstr ""
+
+#: index.php:1500
+msgid "Note"
+msgstr ""
+
+#: index.php:1500
+msgid "Domains beginning with www. require changes to WordPress core files."
+msgstr ""
+
+#: index.php:1501
+msgid "For more information"
+msgstr ""
+
+#: index.php:1503
+msgid "Documentation on WordPress Networks"
+msgstr ""
+
+#: index.php:1504
+msgid "Networks for WordPress Home Page and FAQ"
+msgstr ""
+
