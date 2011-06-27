@@ -978,7 +978,6 @@ jQuery('.postbox').children('h3').click(function() {
 							<select name="to" id="to">
 								<option value="0"><?php _e('Select a Network','njsl-networks'); ?></option>
 								<?php
-								print_r($sites);
 								foreach($sites as $site) {
 									if($site->id != $mySite->id) {
 										echo '<option value="' . $site->id . '">' . $site->site_name . ' (' . $site->domain . ')' . '</option>' . "\n";
