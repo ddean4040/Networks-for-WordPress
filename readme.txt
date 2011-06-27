@@ -1,9 +1,9 @@
 === Networks for WordPress ===
 Contributors: ddean
-Tags: multisite, sites, networks, multi-networks, domains
+Tags: multisite, multi-site, sites, networks, multi-network, multiple, multi-domain, domains
 Requires at least: 3.0
-Tested up to: 3.1
-Stable tag: 1.0.3
+Tested up to: 3.2
+Stable tag: 1.0.4
 
 Adds a Networks panel for network admins to create and manage multiple networks from one WordPress installation.
 
@@ -37,7 +37,6 @@ Here's a quick overview:
 
 1. DNS should resolve each desired domain to your web server.
 1. Configure your web server to direct requests for each desired domain to the same site (e.g. via `ServerAlias` directives or `Host Headers`)
-1. Remove the `DOMAIN_CURRENT_SITE`, `PATH_CURRENT_SITE`, and `SITE_ID_CURRENT_SITE` directives from your `wp-config.php` file.
 
 == Known Issues ==
 
@@ -45,8 +44,12 @@ Here's a quick overview:
 
 == Changelog ==
 
-= 1.0.3 =
+= 1.0.4 =
+* Changed: show each network only once in Move Site field, regardless of metadata issues
+* Fixed: a bug affecting network installs with old table name scheme (created before WP 3.0)
+* Fixed: admin display bug affecting WP 3.2 installs
 
+= 1.0.3 =
 * Changed: processing to ensure that new Network paths are always valid
 * Changed: documentation on new Networks
 * Fixed: short_open_tag off compatibility

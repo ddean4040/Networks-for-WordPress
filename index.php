@@ -4,10 +4,10 @@
  * Plugin Name: Networks for WordPress
  * Plugin URI: http://www.jerseyconnect.net/development/networks-for-wordpress/
  * Description: Adds a Networks panel for site admins to create and manipulate multiple networks.
- * Version: 1.0.3
- * Revision Date: 04/26/2011
+ * Version: 1.0.4
+ * Revision Date: 06/27/2011
  * Requires at least: WP 3.0
- * Tested up to: WP 3.1
+ * Tested up to: WP 3.2
  * License: GNU General Public License 2.0 (GPL) http://www.gnu.org/licenses/gpl.html
  * Site Wide Only: TRUE
  * Author: David Dean
@@ -275,7 +275,7 @@ if (!function_exists('update_site')) {
 	 */
 	function update_site($id, $domain, $path='') {
 
-		global $wpdb, $wpmuBaseTablePrefix;
+		global $wpdb;
 		global $url_dependent_options;
 
 		if(!site_exists((int)$id)) {
@@ -320,11 +320,7 @@ if (!function_exists('update_site')) {
 				);
 
 				/** fix options table values */
-				if($blog->blog_id == 1) {
-					$optionTable = $wpdb->options;
-				} else {
-					$optionTable = $wpdb->base_prefix . (int)$blog->blog_id . "_options";
-				}
+				$optionTable = $wpdb->get_blog_prefix( $blog->blog_id ) . 'options';
 
 				foreach($url_dependent_options as $option_name) {
 					$option_value = $wpdb->get_row("SELECT * FROM $optionTable WHERE option_name='$option_name'");
@@ -399,8 +395,7 @@ if(!function_exists('move_blog')) {
 	 */
 	function move_blog($blog_id, $new_site_id) {
 
-		global $wpdb, $wpmuBaseTablePrefix;
-
+		global $wpdb;
 		global $url_dependent_options;
 
 		/* sanity checks */
@@ -463,13 +458,8 @@ if(!function_exists('move_blog')) {
 			return new WP_Error('blog_not_moved',__('Site could not be moved.'));
 		}
 		
-
 		/** change relevant blog options */
-		if($blog->blog_id == 1) {
-			$optionTable = $wpdb->options;
-		} else {
-			$optionTable = $wpdb->base_prefix . (int)$blog->blog_id . "_options";
-		}
+		$optionTable = $wpdb->get_blog_prefix( $blog->blog_id ) . 'options';
 
 		$oldDomain = $oldSite->domain . $oldSite->path;
 		$newDomain = $newSite->domain . $newSite->path;
@@ -565,7 +555,6 @@ class njsl_Networks
 	function sites_page()
 	{
 		global $wpdb;
-		global $wpmuBaseTablePrefix;
 		global $options_to_copy;
 		global $current_screen;
 
@@ -606,119 +595,119 @@ class njsl_Networks
 		}
 
 		switch( $_GET[ 'action' ] ) {
-		case 'move':
-			$this->move_blog_page();
-			break;
-		case 'assignblogs':
-			$this->reassign_blog_page();
-			break;
-		case 'deletesite':
-			$this->delete_site_page();
-			break;
-		case 'editsite':
-			$this->update_site_page();
-			break;
-		case 'delete_multisites':
-			$this->delete_multiple_site_page();
-			break;
-	    default:
-			
-			/** strip off the action tag */
-            $queryStr = substr($_SERVER['REQUEST_URI'],0,(strpos($_SERVER['REQUEST_URI'],'?')+1));
-			$getParams = array();
-			$badParams = array('action','id','updated','deleted');
-			foreach($_GET as $getParam => $getValue) {
-				if(!in_array($getParam,$badParams)) {
-					$getParams[] = $getParam . '=' . $getValue;
-				}
-			}
-			$queryStr .= implode('&',$getParams);
-
-			$searchConditions = '';				
-			if(isset($_GET['s'])) {
-				if(isset($_GET['search']) && $_GET['search'] == __('Search Networks','njsl-networks')) {
-					$searchConditions = 'WHERE ' . $wpdb->site . '.domain LIKE ' . "'%" . $wpdb->escape($_GET['s']) . "%'";
-					$searchConditions .= 'OR ' . $wpdb->sitemeta . '.meta_value LIKE ' . "'%" . $wpdb->escape($_GET['s']) . "%'";
-				}
-			}
-
-			$count = $wpdb->get_col('SELECT COUNT(id) FROM ' . $wpdb->site . $searchConditions);
-			$total = $count[0];
-
-			if( isset( $_GET[ 'start' ] ) == false ) {
-				$start = 1;
-			} else {
-				$start = intval( $_GET[ 'start' ] );
-			}
-			if( isset( $_GET[ 'num' ] ) == false ) {
-				$num = SITES_PER_PAGE;
-			} else {
-				$num = intval( $_GET[ 'num' ] );
-			}
+			case 'move':
+				$this->move_blog_page();
+				break;
+			case 'assignblogs':
+				$this->reassign_blog_page();
+				break;
+			case 'deletesite':
+				$this->delete_site_page();
+				break;
+			case 'editsite':
+				$this->update_site_page();
+				break;
+			case 'delete_multisites':
+				$this->delete_multiple_site_page();
+				break;
+		    default:
 				
-//			$networks_query = "SELECT {$wpdb->site}.*, COUNT({$wpdb->blogs}.blog_id) as blogs, {$wpdb->blogs}.path as blog_path 
-//				FROM {$wpdb->site} LEFT JOIN {$wpdb->blogs} ON {$wpdb->blogs}.site_id = {$wpdb->site}.id $searchConditions GROUP BY {$wpdb->site}.id" ; 
-
-			$networks_query = "SELECT {$wpdb->site}.*,
-					{$wpdb->sitemeta}.meta_value as site_name,
-					COUNT({$wpdb->blogs}.blog_id) as blogs,
-					{$wpdb->blogs}.path as blog_path
-				FROM
-					{$wpdb->site}
-				LEFT JOIN
-					{$wpdb->blogs}
-				ON
-					{$wpdb->blogs}.site_id = {$wpdb->site}.id
-				LEFT JOIN
-					{$wpdb->sitemeta}
-				ON
-					{$wpdb->sitemeta}.meta_key = 'site_name' AND
-					{$wpdb->sitemeta}.site_id = {$wpdb->site}.id
-				$searchConditions
-				GROUP BY {$wpdb->site}.id";
-
-			if( isset( $_GET[ 'sortby' ] ) == false ) {
-				$_GET[ 'sortby' ] = 'ID';
+				/** strip off the action tag */
+	            $queryStr = substr($_SERVER['REQUEST_URI'],0,(strpos($_SERVER['REQUEST_URI'],'?')+1));
+				$getParams = array();
+				$badParams = array('action','id','updated','deleted');
+				foreach($_GET as $getParam => $getValue) {
+					if(!in_array($getParam,$badParams)) {
+						$getParams[] = $getParam . '=' . $getValue;
+					}
+				}
+				$queryStr .= implode('&',$getParams);
+	
+				$searchConditions = '';				
+				if(isset($_GET['s'])) {
+					if(isset($_GET['search']) && $_GET['search'] == __('Search Networks','njsl-networks')) {
+						$searchConditions = 'WHERE ' . $wpdb->site . '.domain LIKE ' . "'%" . $wpdb->escape($_GET['s']) . "%'";
+						$searchConditions .= 'OR ' . $wpdb->sitemeta . '.meta_value LIKE ' . "'%" . $wpdb->escape($_GET['s']) . "%'";
+					}
+				}
+	
+				$count = $wpdb->get_col('SELECT COUNT(id) FROM ' . $wpdb->site . $searchConditions);
+				$total = $count[0];
+	
+				if( isset( $_GET[ 'start' ] ) == false ) {
+					$start = 1;
+				} else {
+					$start = intval( $_GET[ 'start' ] );
+				}
+				if( isset( $_GET[ 'num' ] ) == false ) {
+					$num = SITES_PER_PAGE;
+				} else {
+					$num = intval( $_GET[ 'num' ] );
+				}
+					
+	//			$networks_query = "SELECT {$wpdb->site}.*, COUNT({$wpdb->blogs}.blog_id) as blogs, {$wpdb->blogs}.path as blog_path 
+	//				FROM {$wpdb->site} LEFT JOIN {$wpdb->blogs} ON {$wpdb->blogs}.site_id = {$wpdb->site}.id $searchConditions GROUP BY {$wpdb->site}.id" ; 
+	
+				$networks_query = "SELECT {$wpdb->site}.*,
+						{$wpdb->sitemeta}.meta_value as site_name,
+						COUNT({$wpdb->blogs}.blog_id) as blogs,
+						{$wpdb->blogs}.path as blog_path
+					FROM
+						{$wpdb->site}
+					LEFT JOIN
+						{$wpdb->blogs}
+					ON
+						{$wpdb->blogs}.site_id = {$wpdb->site}.id
+					LEFT JOIN
+						{$wpdb->sitemeta}
+					ON
+						{$wpdb->sitemeta}.meta_key = 'site_name' AND
+						{$wpdb->sitemeta}.site_id = {$wpdb->site}.id
+					$searchConditions
+					GROUP BY {$wpdb->site}.id";
+	
+				if( isset( $_GET[ 'sortby' ] ) == false ) {
+					$_GET[ 'sortby' ] = 'ID';
+				}
+	
+			switch($_GET['sortby']) {
+				case 'Domain':
+					$networks_query .= ' ORDER BY ' . $wpdb->site . '.domain ';
+					break;
+				case 'ID':
+					$networks_query .= ' ORDER BY ' . $wpdb->site . '.id ';
+					break;
+				case 'Path':
+					$networks_query .= ' ORDER BY ' . $wpdb->site . '.path ';
+					break;
+				case 'Blogs':
+					$networks_query .= ' ORDER BY blogs ';
+					break;
 			}
-
-		switch($_GET['sortby']) {
-			case 'Domain':
-				$networks_query .= ' ORDER BY ' . $wpdb->site . '.domain ';
-				break;
-			case 'ID':
-				$networks_query .= ' ORDER BY ' . $wpdb->site . '.id ';
-				break;
-			case 'Path':
-				$networks_query .= ' ORDER BY ' . $wpdb->site . '.path ';
-				break;
-			case 'Blogs':
-				$networks_query .= ' ORDER BY blogs ';
-				break;
-		}
-
-		if( $_GET[ 'order' ] == 'DESC' ) {
-			$networks_query .= 'DESC';
-		} else {
-			$networks_query .= 'ASC';
-		}
-
-		$networks_query .= ' LIMIT ' . (((int)$start - 1 ) * $num ) . ', ' . intval( $num );
-
-		$network_list = $wpdb->get_results( $networks_query, ARRAY_A );
-		if( count( $network_list ) < $num ) {
-			$next = false;
-		} else {
-			$next = true;
-		}
+	
+			if( $_GET[ 'order' ] == 'DESC' ) {
+				$networks_query .= 'DESC';
+			} else {
+				$networks_query .= 'ASC';
+			}
+	
+			$networks_query .= ' LIMIT ' . (((int)$start - 1 ) * $num ) . ', ' . intval( $num );
+	
+			$network_list = $wpdb->get_results( $networks_query, ARRAY_A );
+			if( count( $network_list ) < $num ) {
+				$next = false;
+			} else {
+				$next = true;
+			}
 
 ?>
-
 <div class="wrap">
-	<div class="icon32" id="icon-ms-admin"><br></div>
-	<h2><?php _e ('Networks') ?> <a href="#form-add-network" class="button add-new-h2">Add New</a></h2>
-	<form name="searchform" action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="get">
+	<div class="icon32" id="icon-ms-admin"><br /></div>
+	<h2><?php _e ('Networks') ?> <a href="<?php echo $_SERVER['PHP_SELF'] . '?page=networks'; ?>#form-add-network" class="button add-new-h2">Add New</a></h2>
+	<form name="searchform" action="<?php echo $_SERVER['PHP_SELF'] . '?page=networks'; ?>" method="get">
 		<p class="search-box"> 
-			<input type="text" name="s" />
+			<label class="screen-reader-text" for="network-search-input"><?php _e('Search Networks','njsl-networks'); ?>:</label>
+			<input type="text" name="s" id="network-search-input" />
 			<input type="hidden" name="page" value="networks" />
 			<input type="submit" name="search" id="search" class="button" value="<?php _e('Search Networks','njsl-networks'); ?>" />
 		</p>
@@ -745,182 +734,182 @@ class njsl_Networks
 	
 	
 	?>
-<form name='formlist' action='<?php echo $_SERVER['REQUEST_URI'] . "&amp;action=delete_multisites"; ?>' method='POST'>
-<div class="tablenav">
-	<?php if ( $network_nav ) echo "<div class='tablenav-pages'>$network_nav</div>"; ?>	
-	<div class="alignleft">
-		<input type="submit" class="button-secondary delete" name="allsite_delete" value="<?php _e('Delete'); ?>" />
-		<?php if(isset($_GET['s'])) { ?>
-			<p><?php _e('Filter','njsl-networks'); ?>: <a href="<?php echo $this->listPage ?>" title="<?php _e('Remove this filter','njsl-networks') ?>"><?php echo $wpdb->escape($_GET['s']) ?></a></p>
-		<?php } ?>
-	</div>
-</div>
-<br class="clear" />
-<table width="100%" cellpadding="3" cellspacing="3" class="widefat"> 
-	<thead>
-        <tr>
-			<th class="manage-column column-cb check-column" id="cb" scope="col">
-				<input type="checkbox" />
-			</th>
-<?php foreach($networks_columns as $col_name => $column_display_name) { ?>
-        <th scope="col">
-        	<a href="<?php echo $this->listPage ?>&sortby=<?php echo urlencode( $column_display_name ) ?>&<?php if( $_GET[ 'sortby' ] == $column_display_name ) { if( $_GET[ 'order' ] == 'DESC' ) { echo "order=ASC&" ; } else { echo "order=DESC&"; } } ?>start=<?php echo $start ?>"><?php echo $column_display_name; ?></a>
-        </th>
-<?php } ?>
-
-        </tr>
-	</thead>
-<?php
-
-if ($network_list) {
-		$bgcolor = '';
-		foreach ($network_list as $blog) { 
-			$network = $blog;
-			$class = ('alternate' == $class) ? '' : 'alternate';
-			echo '<tr class="' . $class . '">';
-			if( constant( "VHOST" ) == 'yes' ) { 
-				$blogname = str_replace( '.' . $current_site->domain, '', $blog[ 'domain' ] ); 
-			} else { 
-				$blogname = $blog[ 'path' ]; 
-			}
-
-foreach($networks_columns as $column_name=>$column_display_name) {
-
-    switch($column_name) {
-
-	    case 'id':
-			?>
-            <th scope="row" class="check-column">
-            	<input type='checkbox' id='<?php echo $blog[ 'id' ] ?>' name='allsites[]' value='<?php echo $blog[ 'id' ] ?>'<?php if($blog['id'] == 1) echo 'disabled'; ?>>
-            </th>
-            <th scope="row" valign="top">
-            	<label for='<?php echo $blog[ 'id' ] ?>'><?php echo $blog[ 'id' ] ?></label>
-            </th>
-            <?php
-            break;
-		case 'domain':
-			?>
-			<td valign='top'>
-				<label for='<?php echo $blog[ 'id' ] ?>'><?php echo $blog['domain'] ?></label>
-			</td>
-			<?php
-			break;
-		case 'site':
-			?>
-			<td valign='top'>
-				<label for='<?php echo $blog[ 'id' ] ?>'><?php echo $blog['site_name'] ?></label>
-				<?php
-				
-				$actions = array(
-					'assign_sites'	=> '<span class="edit"><a href="'.  $queryStr . '&amp;action=assignblogs&amp;id=' .  $blog['id'] . '" title="' . __('Assign sites to this network','njsl-networks') . '">' . __('Assign Sites','njsl-networks') . '</a></span>',
-					'edit'			=> '<span class="edit"><a href="'.  $queryStr . '&amp;action=editsite&amp;id=' .  $blog['id'] . '" title="' . __('Edit this network','njsl-networks') . '">' . __('Edit','njsl-networks') . '</a></span>',
-					'delete'		=> '<span class="delete"><a href="'.  $queryStr . '&amp;action=deletesite&amp;id=' .  $blog['id'] . '" title="' . __('Delete this network','njsl-networks') . '">' . __('Delete','njsl-networks') . '</a></span>'
-				);
-				
-				?>
-				<?php if ( count( $actions ) != 0 ) : ?>
-				<div class="row-actions">
-					<?php echo implode( ' | ', $actions ); ?>
-				</div>
-				<?php endif; ?>
-			</td>
-			<?php
-			break;
-		case 'path':
-			?>
-			<td valign='top'><label for='<?php echo $blog[ 'id' ] ?>'><?php echo $blog['path'] ?></label></td>
-			<?php
-			break;
-		case 'sites':
-			?>
-			<td valign='top'><a href="http://<?php echo $blog['domain'] . $blog['blog_path'];?>wp-admin/<?php echo (strpos($this->listPage,'site') !== false) ? 'network/' . $this->sitesPage : $this->sitesPage ?>" title="<?php _e('Sites on this network','njsl-networks'); ?>"><?php echo $blog['blogs'] ?></a></td>
-			<?php
-			break;
-		default:
-			?>
-			<td valign='top'><?php do_action('manage_sites_custom_column', $column_name, $blog['id']); ?></td>
-			<?php
-			break;
-	}
-}
-?>
-        </tr>
-<?php
-}
-} else {
-?>
-  <tr style=''>
-    <td colspan="8"><?php _e('No matching networks were found.','njsl-networks') ?></td>
-  </tr> 
-<?php
-} // end if ($blogs)
-?>
-</table>
-</form>
-<h3><a name="form-add-network"></a><?php _e('Add Network','njsl-networks'); ?></h3>
-<form method="POST" action="<?php echo $_SERVER['REQUEST_URI'] . "&amp;action=addsite"; ?>">
-	<table class="form-table">
-		<tr><th scope="row"><label for="newName"><?php _e('Network Name','njsl-networks'); ?>:</label></th><td><input type="text" name="name" id="newName" title="<?php _e('A friendly name for your new Network','njsl-networks'); ?>" /></td></tr>
-		<tr><th scope="row"><label for="newDom"><?php _e('Domain','njsl-networks'); ?>:</label></th><td> http://<input type="text" name="domain" id="newDom" title="<?php _e('The domain for your new Network','njsl-networks'); ?>" /></td></tr>
-		<tr><th scope="row"><label for="newPath"><?php _e('Path','njsl-networks'); ?>:</label></th><td><input type="text" name="path" id="newPath" title="<?php _e('If you are unsure, put in /'); ?>" /></td></tr>
-		<tr><th scope="row"><label for="newBlog"><?php _e('Root Site Name','njsl-networks'); ?>:</label></th><td><input type="text" name="newBlog" id="newBlog" title="<?php _e('The name for the new Network\'s root site','njsl-networks'); ?>" /></td></tr>
-	</table>
-	<p><?php _e('A site will be created at the root of the new network','njsl-networks'); ?>.</p>
-	<div class="metabox-holder meta-box-sortables" id="advanced_site_options">
-	<div class="postbox if-js-closed">
-		<div title="Click to toggle" class="handlediv"><br/></div>
-		<h3><span><?php _e('Advanced Network Options','njsl-networks'); ?></span></h3>
-		<div class="inside">
-			<table class="form-table">
-			<tr>
-				<th scope="row"><label for="cloneSite"><?php _e('Copy Network Options From','njsl-networks'); ?>:</label></th>
-				<?php	$site_list = $wpdb->get_results( 'SELECT id, domain, ' . $wpdb->sitemeta . '.meta_value as site_name FROM ' . $wpdb->site . ' LEFT JOIN ' . $wpdb->sitemeta . ' ON ' . $wpdb->sitemeta . '.meta_key = "site_name" AND ' . $wpdb->sitemeta . '.site_id=' . $wpdb->site . '.id' , ARRAY_A );	?>
-				<td colspan="2"><select name="cloneSite" id="cloneSite"><option value="0"><?php _e('Do Not Copy','njsl-networks'); ?></option><?php foreach($site_list as $site) { echo '<option value="' . $site['id'] . '"' . ($site['id'] == 1 ? ' selected' : '' ) . '>' . $site['site_name'] . ' (' . $site['domain'] . ')' . '</option>'; } ?></select></td>
-			</tr>
-			<tr>
-				<th scope="row" valign="top"><label><?php _e('Options to Copy','njsl-networks'); ?>:</label></th>
-				<td>
-				</td>
-				<td valign="top">
-					<p><?php _e('Options added by plugins may not exist on all networks.','njsl-networks'); ?></p>
-				</td>
-			</tr>
-			<tr>
-				<td></td>
-					<?php
-						$all_site_options = $wpdb->get_results('SELECT DISTINCT meta_key FROM ' . $wpdb->sitemeta);
-						
-						$known_sitemeta_options = $options_to_copy;
-						$known_sitemeta_options = apply_filters( 'manage_sitemeta_descriptions' , $known_sitemeta_options );
-						
-						$options_to_copy = apply_filters( 'manage_site_clone_options' , $options_to_copy);
-					?>
-				<td colspan="2">
-					<table class="widefat">
-						<thead>
-							<tr>
-								<th scope="col" class="check-column"></th>
-								<th scope="col"><?php _e('Meta Value'); ?></th>
-								<th scope="col"><?php _e('Description'); ?></th>
-							</tr>
-						</thead>
-						<tbody>
-							<?php foreach ($all_site_options as $count => $option) { ?>
-							<tr class="<?php echo $class = ('alternate' == $class) ? '' : 'alternate'; ?>">
-								<th scope="row" class="check-column"><input type="checkbox" id="option_<?php echo $count; ?>" name="options_to_clone[<?php echo $option->meta_key; ?>]"<?php echo (array_key_exists($option->meta_key,$options_to_copy) ? ' checked' : '' ); ?> /></th>
-								<td><label for="option_<?php echo $count; ?>"><?php echo $option->meta_key; ?></label></td>
-								<td><label for="option_<?php echo $count; ?>"><?php echo (array_key_exists($option->meta_key,$known_sitemeta_options) ? __($known_sitemeta_options[$option->meta_key]) : '' ); ?></label></td>
-							</tr>
-							<?php } ?>
-						</tbody>
-					</table>
-				</td>
-			</table>
+	<form name='formlist' action='<?php echo $_SERVER['PHP_SELF'] . '?page=networks&amp;action=delete_multisites'; ?>' method='POST'>
+		<div class="tablenav">
+			<?php if ( $network_nav ) echo "<div class='tablenav-pages'>$network_nav</div>"; ?>	
+			<div class="alignleft">
+				<input type="submit" class="button-secondary delete" name="allsite_delete" value="<?php _e('Delete'); ?>" />
+				<?php if(isset($_GET['s'])) { ?>
+					<p><?php _e('Filter','njsl-networks'); ?>: <a href="<?php echo $this->listPage ?>" title="<?php _e('Remove this filter','njsl-networks') ?>"><?php echo $wpdb->escape($_GET['s']) ?></a></p>
+				<?php } ?>
+			</div>
 		</div>
-	</div>
-	</div>
-	<input type="submit" class="button" name="add" value="<?php _e('Add Network','njsl-networks'); ?>" />
-</form>
+		<br class="clear" />
+		<table width="100%" cellpadding="3" cellspacing="3" class="widefat"> 
+			<thead>
+		        <tr>
+					<th class="manage-column column-cb check-column" id="cb" scope="col">
+						<input type="checkbox" />
+					</th>
+		<?php foreach($networks_columns as $col_name => $column_display_name) { ?>
+		        <th scope="col">
+		        	<a href="<?php echo $this->listPage ?>&sortby=<?php echo urlencode( $column_display_name ) ?>&<?php if( $_GET[ 'sortby' ] == $column_display_name ) { if( $_GET[ 'order' ] == 'DESC' ) { echo "order=ASC&" ; } else { echo "order=DESC&"; } } ?>start=<?php echo $start ?>"><?php echo $column_display_name; ?></a>
+		        </th>
+		<?php } ?>
+		
+		        </tr>
+			</thead>
+		<?php
+		
+		if ($network_list) {
+				$bgcolor = '';
+				foreach ($network_list as $blog) { 
+					$network = $blog;
+					$class = ('alternate' == $class) ? '' : 'alternate';
+					echo '<tr class="' . $class . '">';
+					if( constant( "VHOST" ) == 'yes' ) { 
+						$blogname = str_replace( '.' . $current_site->domain, '', $blog[ 'domain' ] ); 
+					} else { 
+						$blogname = $blog[ 'path' ]; 
+					}
+		
+		foreach($networks_columns as $column_name=>$column_display_name) {
+		
+		    switch($column_name) {
+		
+			    case 'id':
+					?>
+		            <th scope="row" class="check-column">
+		            	<input type='checkbox' id='<?php echo $blog[ 'id' ] ?>' name='allsites[]' value='<?php echo $blog[ 'id' ] ?>'<?php if($blog['id'] == 1) echo 'disabled'; ?>>
+		            </th>
+		            <th scope="row" valign="top">
+		            	<label for='<?php echo $blog[ 'id' ] ?>'><?php echo $blog[ 'id' ] ?></label>
+		            </th>
+		            <?php
+		            break;
+				case 'domain':
+					?>
+					<td valign='top'>
+						<label for='<?php echo $blog[ 'id' ] ?>'><?php echo $blog['domain'] ?></label>
+					</td>
+					<?php
+					break;
+				case 'site':
+					?>
+					<td valign='top'>
+						<label for='<?php echo $blog[ 'id' ] ?>'><?php echo $blog['site_name'] ?></label>
+						<?php
+						
+						$actions = array(
+							'assign_sites'	=> '<span class="edit"><a href="'.  $queryStr . '&amp;action=assignblogs&amp;id=' .  $blog['id'] . '" title="' . __('Assign sites to this network','njsl-networks') . '">' . __('Assign Sites','njsl-networks') . '</a></span>',
+							'edit'			=> '<span class="edit"><a href="'.  $queryStr . '&amp;action=editsite&amp;id=' .  $blog['id'] . '" title="' . __('Edit this network','njsl-networks') . '">' . __('Edit','njsl-networks') . '</a></span>',
+							'delete'		=> '<span class="delete"><a href="'.  $queryStr . '&amp;action=deletesite&amp;id=' .  $blog['id'] . '" title="' . __('Delete this network','njsl-networks') . '">' . __('Delete','njsl-networks') . '</a></span>'
+						);
+						
+						?>
+						<?php if ( count( $actions ) != 0 ) : ?>
+						<div class="row-actions">
+							<?php echo implode( ' | ', $actions ); ?>
+						</div>
+						<?php endif; ?>
+					</td>
+					<?php
+					break;
+				case 'path':
+					?>
+					<td valign='top'><label for='<?php echo $blog[ 'id' ] ?>'><?php echo $blog['path'] ?></label></td>
+					<?php
+					break;
+				case 'sites':
+					?>
+					<td valign='top'><a href="http://<?php echo $blog['domain'] . $blog['blog_path'];?>wp-admin/<?php echo (strpos($this->listPage,'site') !== false) ? 'network/' . $this->sitesPage : $this->sitesPage ?>" title="<?php _e('Sites on this network','njsl-networks'); ?>"><?php echo $blog['blogs'] ?></a></td>
+					<?php
+					break;
+				default:
+					?>
+					<td valign='top'><?php do_action('manage_sites_custom_column', $column_name, $blog['id']); ?></td>
+					<?php
+					break;
+			}
+		}
+		?>
+		        </tr>
+		<?php
+		}
+		} else {
+		?>
+		  <tr style=''>
+		    <td colspan="8"><?php _e('No matching networks were found.','njsl-networks') ?></td>
+		  </tr> 
+		<?php
+		} // end if ($blogs)
+		?>
+		</table>
+	</form>
+	<h3><a name="form-add-network"></a><?php _e('Add Network','njsl-networks'); ?></h3>
+	<form method="POST" action="<?php echo $_SERVER['REQUEST_URI'] . "&amp;action=addsite"; ?>">
+		<table class="form-table">
+			<tr><th scope="row"><label for="newName"><?php _e('Network Name','njsl-networks'); ?>:</label></th><td><input type="text" name="name" id="newName" title="<?php _e('A friendly name for your new Network','njsl-networks'); ?>" /></td></tr>
+			<tr><th scope="row"><label for="newDom"><?php _e('Domain','njsl-networks'); ?>:</label></th><td> http://<input type="text" name="domain" id="newDom" title="<?php _e('The domain for your new Network','njsl-networks'); ?>" /></td></tr>
+			<tr><th scope="row"><label for="newPath"><?php _e('Path','njsl-networks'); ?>:</label></th><td><input type="text" name="path" id="newPath" title="<?php _e('If you are unsure, put in /'); ?>" /></td></tr>
+			<tr><th scope="row"><label for="newBlog"><?php _e('Root Site Name','njsl-networks'); ?>:</label></th><td><input type="text" name="newBlog" id="newBlog" title="<?php _e('The name for the new Network\'s root site','njsl-networks'); ?>" /></td></tr>
+		</table>
+		<p><?php _e('A site will be created at the root of the new network','njsl-networks'); ?>.</p>
+		<div class="metabox-holder meta-box-sortables" id="advanced_site_options">
+		<div class="postbox if-js-closed">
+			<div title="Click to toggle" class="handlediv"><br/></div>
+			<h3><span><?php _e('Advanced Network Options','njsl-networks'); ?></span></h3>
+			<div class="inside">
+				<table class="form-table">
+				<tr>
+					<th scope="row"><label for="cloneSite"><?php _e('Copy Network Options From','njsl-networks'); ?>:</label></th>
+					<?php	$site_list = $wpdb->get_results( 'SELECT id, domain, ' . $wpdb->sitemeta . '.meta_value as site_name FROM ' . $wpdb->site . ' LEFT JOIN ' . $wpdb->sitemeta . ' ON ' . $wpdb->sitemeta . '.meta_key = "site_name" AND ' . $wpdb->sitemeta . '.site_id=' . $wpdb->site . '.id' , ARRAY_A );	?>
+					<td colspan="2"><select name="cloneSite" id="cloneSite"><option value="0"><?php _e('Do Not Copy','njsl-networks'); ?></option><?php foreach($site_list as $site) { echo '<option value="' . $site['id'] . '"' . ($site['id'] == 1 ? ' selected' : '' ) . '>' . $site['site_name'] . ' (' . $site['domain'] . ')' . '</option>'; } ?></select></td>
+				</tr>
+				<tr>
+					<th scope="row" valign="top"><label><?php _e('Options to Copy','njsl-networks'); ?>:</label></th>
+					<td>
+					</td>
+					<td valign="top">
+						<p><?php _e('Options added by plugins may not exist on all networks.','njsl-networks'); ?></p>
+					</td>
+				</tr>
+				<tr>
+					<td></td>
+						<?php
+							$all_site_options = $wpdb->get_results('SELECT DISTINCT meta_key FROM ' . $wpdb->sitemeta);
+							
+							$known_sitemeta_options = $options_to_copy;
+							$known_sitemeta_options = apply_filters( 'manage_sitemeta_descriptions' , $known_sitemeta_options );
+							
+							$options_to_copy = apply_filters( 'manage_site_clone_options' , $options_to_copy);
+						?>
+					<td colspan="2">
+						<table class="widefat">
+							<thead>
+								<tr>
+									<th scope="col" class="check-column"></th>
+									<th scope="col"><?php _e('Meta Value'); ?></th>
+									<th scope="col"><?php _e('Description'); ?></th>
+								</tr>
+							</thead>
+							<tbody>
+								<?php foreach ($all_site_options as $count => $option) { ?>
+								<tr class="<?php echo $class = ('alternate' == $class) ? '' : 'alternate'; ?>">
+									<th scope="row" class="check-column"><input type="checkbox" id="option_<?php echo $count; ?>" name="options_to_clone[<?php echo $option->meta_key; ?>]"<?php echo (array_key_exists($option->meta_key,$options_to_copy) ? ' checked' : '' ); ?> /></th>
+									<td><label for="option_<?php echo $count; ?>"><?php echo $option->meta_key; ?></label></td>
+									<td><label for="option_<?php echo $count; ?>"><?php echo (array_key_exists($option->meta_key,$known_sitemeta_options) ? __($known_sitemeta_options[$option->meta_key]) : '' ); ?></label></td>
+								</tr>
+								<?php } ?>
+							</tbody>
+						</table>
+					</td>
+				</table>
+			</div>
+		</div>
+		</div>
+		<input type="submit" class="button" name="add" value="<?php _e('Add Network','njsl-networks'); ?>" />
+	</form>
 </div>
 <script type="text/javascript">
 jQuery('.if-js-closed').removeClass('if-js-closed').addClass('closed');
@@ -933,20 +922,13 @@ jQuery('.postbox').children('h3').click(function() {
 });
 </script>
 <?php
-
-break;
-} // end switch( $action )
-?> 
-</div>
-</div>
-<?php
-
+			break;
+		} // end switch( $action )
 	}
 	
 	function move_blog_page() {
 
 		global $wpdb;
-		$wpmuBaseTablePrefix = $wpdb->base_prefix;
 
 		if(isset($_POST['move']) && isset($_GET['blog_id'])) {
 
@@ -967,18 +949,14 @@ break;
 				die(__('Site not found in blogs table.','njsl-networks'));
 			}
 
-			if($blog->blog_id == 1) {
-				$optionTable = $wpdb->options;
-			} else {
-				$optionTable = $wpdb->base_prefix . (int)$blog->blog_id . "_options";
-			}
+			$optionTable = $wpdb->get_blog_prefix( $blog->blog_id ) . 'options';
 
 			$details = $wpdb->get_row("SELECT * FROM {$optionTable} WHERE option_name='blogname'");
 			if(!$details) {
 				die(__('Blog options table not found.','njsl-networks'));
 			}
 
-			$sites = $wpdb->get_results("SELECT *, {$wpdb->sitemeta}.meta_value as site_name FROM {$wpdb->site} LEFT JOIN {$wpdb->sitemeta} ON {$wpdb->sitemeta}.site_id = {$wpdb->site}.id AND {$wpdb->sitemeta}.meta_key = 'site_name'");
+			$sites = $wpdb->get_results("SELECT *, {$wpdb->sitemeta}.meta_value as site_name FROM {$wpdb->site} LEFT JOIN {$wpdb->sitemeta} ON {$wpdb->sitemeta}.site_id = {$wpdb->site}.id AND {$wpdb->sitemeta}.meta_key = 'site_name' GROUP BY {$wpdb->sitemeta}.site_id");
 			foreach($sites as $key => $site) {
 				if($site->id == $blog->site_id) {
 					$mySite = $sites[$key];
@@ -1000,6 +978,7 @@ break;
 							<select name="to" id="to">
 								<option value="0"><?php _e('Select a Network','njsl-networks'); ?></option>
 								<?php
+								print_r($sites);
 								foreach($sites as $site) {
 									if($site->id != $mySite->id) {
 										echo '<option value="' . $site->id . '">' . $site->site_name . ' (' . $site->domain . ')' . '</option>' . "\n";
@@ -1033,7 +1012,6 @@ break;
 	function reassign_blog_page() {
 		
 		global $wpdb;
-		$wpmuBaseTablePrefix = $wpdb->base_prefix;
 		
 		if(isset($_POST['reassign']) && isset($_GET['id'])) {
 			if(isset($_POST['jsEnabled'])) {
@@ -1081,11 +1059,8 @@ break;
 				die(__('Blogs table is inaccessible.','njsl-networks'));
 			}
 			foreach($blogs as $key => $blog) {
-				if($blog->blog_id == 1) {
-					$tableName = $wpdb->base_prefix . 'options';
-				} else {
-					$tableName = $wpdb->base_prefix . (int)$blog->blog_id . "_options";
-				}
+				$tableName = $wpdb->get_blog_prefix( $blog->blog_id ) . 'options';
+				
 				$blog_name = $wpdb->get_row("SELECT * FROM $tableName WHERE option_name='blogname'");
 				if(!$blog_name) {
 					die(__('Invalid site selected','njsl-networks'));
