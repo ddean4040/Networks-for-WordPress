@@ -4,7 +4,7 @@
  * Plugin Name: Networks for WordPress
  * Plugin URI: http://www.jerseyconnect.net/development/networks-for-wordpress/
  * Description: Adds a Networks panel for site admins to create and manipulate multiple networks.
- * Version: 1.0.5
+ * Version: 1.0.6
  * Revision Date: 07/08/2011
  * Requires at least: WP 3.0
  * Tested up to: WP 3.2
@@ -189,7 +189,7 @@ if (!function_exists('add_site')) {
 	 * Create a new network
 	 * @param string $domain domain name for new network - for VHOST=no, this should be a FQDN, otherwise domain only
 	 * @param string $path path to root of network hierarchy - should be '/' unless WordPress is sharing a domain with normal web pages
-	 * @param string $blog_name Name of the root blog to be created on the new network
+	 * @param string $blog_name Name of the root blog to be created on the new network or FALSE to skip creating a root blog
 	 * @param integer $cloneSite ID of network whose sitemeta values are to be copied - default NULL
 	 * @param array $options_to_clone override default sitemeta options to copy when cloning - default NULL
 	 * @return integer ID of newly created network
