@@ -141,6 +141,7 @@ if(!function_exists('switch_to_site')) {
 		$site_id = $new_site;
 
 		do_action( 'switch_site', $site_id, $tmpoldsitedetails[ 'site_id' ] );
+		do_action( 'switch_network', $site_id, $tmpoldsitedetails[ 'site_id' ] );
 
 		$switched_site = true;
 	}
@@ -175,6 +176,7 @@ if(!function_exists('restore_current_site')) {
 		unset( $tmpoldsitedetails );
 
 		do_action( 'switch_site', $site_id, $prev_site_id );
+		do_action( 'switch_network', $site_id, $prev_site_id );
 
 		$switched_site = false;
 		
@@ -194,9 +196,11 @@ if (!function_exists('add_site')) {
 	 */
 	function add_site($domain, $path, $blog_name = NULL, $cloneSite = NULL, $options_to_clone = NULL) {
 
+		global $wpdb, $sites, $options_to_copy;
+
+		$skip_blog_setup = ($blog_name === false);
 		if($blog_name == NULL) $blog_name = __('New Network Created','njsl-networks');
 
-		global $wpdb, $sites, $options_to_copy;
 		if(is_null($options_to_clone)) {
 			$options_to_clone = array_keys($options_to_copy);
 		}
@@ -227,10 +231,12 @@ if (!function_exists('add_site')) {
 			if(!defined('WP_INSTALLING')) {
 				define('WP_INSTALLING',TRUE);
 			}
-
-			$new_blog_id = wpmu_create_blog($domain,$path,$blog_name,get_current_user_id(),'',(int)$new_site_id);
-			if(is_a($new_blog_id,'WP_Error')) {
-				return $new_blog_id;
+			
+			if(!$skip_blog_setup) {
+				$new_blog_id = wpmu_create_blog($domain,$path,$blog_name,get_current_user_id(),'',(int)$new_site_id);
+				if(is_a($new_blog_id,'WP_Error')) {
+					return $new_blog_id;
+				}
 			}
 		}
 		
@@ -262,6 +268,7 @@ if (!function_exists('add_site')) {
 		}
 
 		do_action( 'wpmu_add_site' , $new_site_id );
+		do_action( 'wpms_add_network' , $new_site_id );
 
 		return $new_site_id;
 	}
@@ -336,6 +343,7 @@ if (!function_exists('update_site')) {
 		}
 		
 		do_action( 'wpmu_update_site' , $id, array('domain'=>$site->domain, 'path'=>$site->path) );
+		do_action( 'wpms_update_network' , $id, array('domain'=>$site->domain, 'path'=>$site->path) );
 		
 	}
 }
@@ -385,6 +393,7 @@ if (!function_exists('delete_site')) {
 		$wpdb->query($query);
 		
 		do_action( 'wpmu_delete_site' , $site );
+		do_action( 'wpms_delete_network' , $site );
 	}
 }
 
@@ -473,6 +482,7 @@ if(!function_exists('move_blog')) {
 		}
 		
 		do_action( 'wpmu_move_blog' , $blog_id, $old_site_id, $new_site_id );
+		do_action( 'wpms_move_site' , $blog_id, $old_site_id, $new_site_id );
 	}
 }
 
@@ -864,8 +874,8 @@ class njsl_Networks
 						<tr><th scope="row"><label for="newDom"><?php _e('Domain','njsl-networks'); ?>:</label></th><td> http://<input type="text" name="domain" id="newDom" title="<?php _e('The domain for your new Network','njsl-networks'); ?>" /></td></tr>
 						<tr><th scope="row"><label for="newPath"><?php _e('Path','njsl-networks'); ?>:</label></th><td><input type="text" name="path" id="newPath" title="<?php _e('If you are unsure, put in /'); ?>" /></td></tr>
 						<tr>
-							<th scope="row"><label for="">Create a Root Site:</label></th>
-							<td><input type="checkbox" name="" id="" checked />
+							<th scope="row"><label for="create_root_site"><?php _e('Create a Root Site','njsl-networks') ?>:</label></th>
+							<td><input type="checkbox" name="createRootSite" id="create_root_site" checked />
 							<p><?php _e('A site will be created at the root of the new network.<br /> If you don\'t know what this means, leave it checked.','njsl-networks'); ?></p>
 							</td>
 						</tr>
@@ -1243,13 +1253,23 @@ jQuery('.postbox').children('h3').click(function() {
 				$options_to_clone = $options_to_copy;
 			}
 
-			$result = add_site(
-				$_POST['domain'],
-				$_POST['path'], 
-				(isset($_POST['newBlog']) ? $_POST['newBlog'] : __('New Network Created','njsl-networks') ) ,
-				(isset($_POST['cloneSite']) ? $_POST['cloneSite'] : NULL ), 
-				$options_to_clone 
-			);
+			if(isset($_POST['createRootSite'])) {
+				$result = add_site(
+					$_POST['domain'],
+					$_POST['path'], 
+					(isset($_POST['newBlog']) ? $_POST['newBlog'] : __('New Network Created','njsl-networks') ) ,
+					(isset($_POST['cloneSite']) ? $_POST['cloneSite'] : NULL ), 
+					$options_to_clone 
+				);
+			} else {
+				$result = add_site(
+					$_POST['domain'],
+					$_POST['path'], 
+					false,
+					(isset($_POST['cloneSite']) ? $_POST['cloneSite'] : NULL ), 
+					$options_to_clone 
+				);
+			}
 			if($result) {
 				if(isset($_POST['name'])) {
 					switch_to_site($result);
@@ -1260,7 +1280,7 @@ jQuery('.postbox').children('h3').click(function() {
 				$_GET['updated'] = 'yes';
 				$_GET['action'] = 'saved';
 			}
-			
+
 		} else {
 			
 			// integrated with main page
