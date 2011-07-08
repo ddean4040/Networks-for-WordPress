@@ -4,8 +4,8 @@
  * Plugin Name: Networks for WordPress
  * Plugin URI: http://www.jerseyconnect.net/development/networks-for-wordpress/
  * Description: Adds a Networks panel for site admins to create and manipulate multiple networks.
- * Version: 1.0.4
- * Revision Date: 06/27/2011
+ * Version: 1.0.5
+ * Revision Date: 07/08/2011
  * Requires at least: WP 3.0
  * Tested up to: WP 3.2
  * License: GNU General Public License 2.0 (GPL) http://www.gnu.org/licenses/gpl.html
@@ -31,6 +31,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
+require_once (dirname(__FILE__) . '/ajax.php');
 
 if(!defined('ENABLE_HOLDING_SITE')) {
 
@@ -500,7 +502,8 @@ class njsl_Networks
 			add_action( 'admin_menu', array(&$this, 'networks_admin_menu') );
 			add_action( 'wpmublogsaction', array(&$this,'assign_blogs_link') );
 		}
-		wp_register_script( 'njsl_networks_admin_js', plugins_url('/js/admin.js', __FILE__) );
+		wp_register_script( 'njsl_networks_admin_js', plugins_url('/_inc/admin.js', __FILE__), array('jquery') );
+		wp_register_style( 'njsl_networks_admin_css', plugins_url('/_inc/admin.css', __FILE__) );
 	}
 
 	function assign_blogs_link( $blog_id = null ) {
@@ -536,10 +539,14 @@ class njsl_Networks
 			$this->sitesPage = 'ms-sites.php';
 		}
 		
-		 add_action( 'admin_print_scripts-' . $this->admin_page, array(&$this,'add_admin_scripts') );
-
+		add_action( 'admin_print_scripts-' . $this->admin_page, array(&$this,'add_admin_scripts') );
+		add_action( 'admin_print_styles-' . $this->admin_page, array(&$this,'add_admin_styles') );
 	}
-
+	
+	function add_admin_styles() {
+		wp_enqueue_style( 'njsl_networks_admin_css' );
+	}
+	
 	function add_admin_scripts() {
 		wp_enqueue_script( 'njsl_networks_admin_js' );
 		wp_localize_script( 'njsl_networks_admin_js', 'strings', $this->localize_admin_js() );
@@ -563,7 +570,7 @@ class njsl_Networks
 		}
 
 		if(isset($_POST['update']) && isset($_GET['id'])) {
-			$this->update_site_page();
+			$this->edit_site_page();
 		}
 
 		if(isset($_POST['delete']) && isset($_GET['id'])) {
@@ -605,7 +612,7 @@ class njsl_Networks
 				$this->delete_site_page();
 				break;
 			case 'editsite':
-				$this->update_site_page();
+				$this->edit_site_page();
 				break;
 			case 'delete_multisites':
 				$this->delete_multiple_site_page();
@@ -762,99 +769,120 @@ class njsl_Networks
 		<?php
 		
 		if ($network_list) {
-				$bgcolor = '';
-				foreach ($network_list as $blog) { 
-					$network = $blog;
-					$class = ('alternate' == $class) ? '' : 'alternate';
-					echo '<tr class="' . $class . '">';
-					if( constant( "VHOST" ) == 'yes' ) { 
-						$blogname = str_replace( '.' . $current_site->domain, '', $blog[ 'domain' ] ); 
-					} else { 
-						$blogname = $blog[ 'path' ]; 
+			$bgcolor = '';
+			foreach ($network_list as $blog) { 
+				$network = $blog;
+				$class = ('alternate' == $class) ? '' : 'alternate';
+				echo '<tr class="' . $class . '">';
+				if( constant( "VHOST" ) == 'yes' ) { 
+					$blogname = str_replace( '.' . $current_site->domain, '', $blog[ 'domain' ] ); 
+				} else { 
+					$blogname = $blog[ 'path' ]; 
+				}
+		
+				foreach($networks_columns as $column_name=>$column_display_name) {
+				
+				    switch($column_name) {
+				
+					    case 'id':
+							?>
+				            <th scope="row" class="check-column">
+				            	<input type='checkbox' id='<?php echo $blog[ 'id' ] ?>' name='allsites[]' value='<?php echo $blog[ 'id' ] ?>'<?php if($blog['id'] == 1) echo 'disabled'; ?>>
+				            </th>
+				            <th scope="row" valign="top">
+				            	<label for='<?php echo $blog[ 'id' ] ?>'><?php echo $blog[ 'id' ] ?></label>
+				            </th>
+				            <?php
+				            break;
+						case 'domain':
+							?>
+							<td valign='top'>
+								<label for='<?php echo $blog[ 'id' ] ?>'><?php echo $blog['domain'] ?></label>
+							</td>
+							<?php
+							break;
+						case 'site':
+							?>
+							<td valign='top'>
+								<label for='<?php echo $blog[ 'id' ] ?>'><?php echo $blog['site_name'] ?></label>
+								<?php
+								
+								$actions = array(
+									'assign_sites'	=> '<span class="edit"><a href="'.  $queryStr . '&amp;action=assignblogs&amp;id=' .  $blog['id'] . '" title="' . __('Assign sites to this network','njsl-networks') . '">' . __('Assign Sites','njsl-networks') . '</a></span>',
+									'edit'			=> '<span class="edit"><a class="edit_site_link" href="'.  $queryStr . '&amp;action=editsite&amp;id=' .  $blog['id'] . '" title="' . __('Edit this network','njsl-networks') . '">' . __('Edit','njsl-networks') . '</a></span>',
+									'delete'		=> '<span class="delete"><a href="'.  $queryStr . '&amp;action=deletesite&amp;id=' .  $blog['id'] . '" title="' . __('Delete this network','njsl-networks') . '">' . __('Delete','njsl-networks') . '</a></span>'
+								);
+								
+								?>
+								<?php if ( count( $actions ) != 0 ) : ?>
+								<div class="row-actions">
+									<?php echo implode( ' | ', $actions ); ?>
+								</div>
+								<?php endif; ?>
+							</td>
+							<?php
+							break;
+						case 'path':
+							?>
+							<td valign='top'><label for='<?php echo $blog[ 'id' ] ?>'><?php echo $blog['path'] ?></label></td>
+							<?php
+							break;
+						case 'sites':
+							?>
+							<td valign='top'><a href="http://<?php echo $blog['domain'] . $blog['blog_path'];?>wp-admin/<?php echo (strpos($this->listPage,'site') !== false) ? 'network/' . $this->sitesPage : $this->sitesPage ?>" title="<?php _e('Sites on this network','njsl-networks'); ?>"><?php echo $blog['blogs'] ?></a></td>
+							<?php
+							break;
+						default:
+							?>
+							<td valign='top'><?php do_action('manage_sites_custom_column', $column_name, $blog['id']); ?></td>
+							<?php
+							break;
 					}
-		
-		foreach($networks_columns as $column_name=>$column_display_name) {
-		
-		    switch($column_name) {
-		
-			    case 'id':
-					?>
-		            <th scope="row" class="check-column">
-		            	<input type='checkbox' id='<?php echo $blog[ 'id' ] ?>' name='allsites[]' value='<?php echo $blog[ 'id' ] ?>'<?php if($blog['id'] == 1) echo 'disabled'; ?>>
-		            </th>
-		            <th scope="row" valign="top">
-		            	<label for='<?php echo $blog[ 'id' ] ?>'><?php echo $blog[ 'id' ] ?></label>
-		            </th>
-		            <?php
-		            break;
-				case 'domain':
-					?>
-					<td valign='top'>
-						<label for='<?php echo $blog[ 'id' ] ?>'><?php echo $blog['domain'] ?></label>
-					</td>
-					<?php
-					break;
-				case 'site':
-					?>
-					<td valign='top'>
-						<label for='<?php echo $blog[ 'id' ] ?>'><?php echo $blog['site_name'] ?></label>
-						<?php
-						
-						$actions = array(
-							'assign_sites'	=> '<span class="edit"><a href="'.  $queryStr . '&amp;action=assignblogs&amp;id=' .  $blog['id'] . '" title="' . __('Assign sites to this network','njsl-networks') . '">' . __('Assign Sites','njsl-networks') . '</a></span>',
-							'edit'			=> '<span class="edit"><a href="'.  $queryStr . '&amp;action=editsite&amp;id=' .  $blog['id'] . '" title="' . __('Edit this network','njsl-networks') . '">' . __('Edit','njsl-networks') . '</a></span>',
-							'delete'		=> '<span class="delete"><a href="'.  $queryStr . '&amp;action=deletesite&amp;id=' .  $blog['id'] . '" title="' . __('Delete this network','njsl-networks') . '">' . __('Delete','njsl-networks') . '</a></span>'
-						);
-						
-						?>
-						<?php if ( count( $actions ) != 0 ) : ?>
-						<div class="row-actions">
-							<?php echo implode( ' | ', $actions ); ?>
-						</div>
-						<?php endif; ?>
-					</td>
-					<?php
-					break;
-				case 'path':
-					?>
-					<td valign='top'><label for='<?php echo $blog[ 'id' ] ?>'><?php echo $blog['path'] ?></label></td>
-					<?php
-					break;
-				case 'sites':
-					?>
-					<td valign='top'><a href="http://<?php echo $blog['domain'] . $blog['blog_path'];?>wp-admin/<?php echo (strpos($this->listPage,'site') !== false) ? 'network/' . $this->sitesPage : $this->sitesPage ?>" title="<?php _e('Sites on this network','njsl-networks'); ?>"><?php echo $blog['blogs'] ?></a></td>
-					<?php
-					break;
-				default:
-					?>
-					<td valign='top'><?php do_action('manage_sites_custom_column', $column_name, $blog['id']); ?></td>
-					<?php
-					break;
+				}
+			?>
+				</tr>
+			<?php
 			}
-		}
-		?>
-		        </tr>
-		<?php
-		}
 		} else {
 		?>
-		  <tr style=''>
-		    <td colspan="8"><?php _e('No matching networks were found.','njsl-networks') ?></td>
-		  </tr> 
+			<tr style=''>
+				<td colspan="8"><?php _e('No matching networks were found.','njsl-networks') ?></td>
+			</tr>
 		<?php
 		} // end if ($blogs)
 		?>
 		</table>
 	</form>
-	<h3><a name="form-add-network"></a><?php _e('Add Network','njsl-networks'); ?></h3>
-	<form method="POST" action="<?php echo $_SERVER['REQUEST_URI'] . "&amp;action=addsite"; ?>">
+
+	<h3><a name="form-add-network"></a><?php _e('Create a Network','njsl-networks'); ?></h3>
+	<form method="POST" action="<?php echo $_SERVER['PHP_SELF'] . '?page=networks&amp;action=addsite'; ?>">
 		<table class="form-table">
-			<tr><th scope="row"><label for="newName"><?php _e('Network Name','njsl-networks'); ?>:</label></th><td><input type="text" name="name" id="newName" title="<?php _e('A friendly name for your new Network','njsl-networks'); ?>" /></td></tr>
-			<tr><th scope="row"><label for="newDom"><?php _e('Domain','njsl-networks'); ?>:</label></th><td> http://<input type="text" name="domain" id="newDom" title="<?php _e('The domain for your new Network','njsl-networks'); ?>" /></td></tr>
-			<tr><th scope="row"><label for="newPath"><?php _e('Path','njsl-networks'); ?>:</label></th><td><input type="text" name="path" id="newPath" title="<?php _e('If you are unsure, put in /'); ?>" /></td></tr>
-			<tr><th scope="row"><label for="newBlog"><?php _e('Root Site Name','njsl-networks'); ?>:</label></th><td><input type="text" name="newBlog" id="newBlog" title="<?php _e('The name for the new Network\'s root site','njsl-networks'); ?>" /></td></tr>
+			<tr>
+				<td>
+					<table class="form-table">
+						<tr><th scope="row"><label for="newName"><?php _e('Network Name','njsl-networks'); ?>:</label></th><td><input type="text" name="name" id="newName" title="<?php _e('A friendly name for your new Network','njsl-networks'); ?>" /></td></tr>
+						<tr><th scope="row"><label for="newDom"><?php _e('Domain','njsl-networks'); ?>:</label></th><td> http://<input type="text" name="domain" id="newDom" title="<?php _e('The domain for your new Network','njsl-networks'); ?>" /></td></tr>
+						<tr><th scope="row"><label for="newPath"><?php _e('Path','njsl-networks'); ?>:</label></th><td><input type="text" name="path" id="newPath" title="<?php _e('If you are unsure, put in /'); ?>" /></td></tr>
+						<tr>
+							<th scope="row"><label for="">Create a Root Site:</label></th>
+							<td><input type="checkbox" name="" id="" checked />
+							<p><?php _e('A site will be created at the root of the new network.<br /> If you don\'t know what this means, leave it checked.','njsl-networks'); ?></p>
+							</td>
+						</tr>
+						<tr><th scope="row"><label for="newBlog"><?php _e('Root Site Name','njsl-networks'); ?>:</label></th><td><input type="text" name="newBlog" id="newBlog" title="<?php _e('The name for the new Network\'s root site','njsl-networks'); ?>" /></td></tr>
+					</table>
+				</td>
+				<td style="vertical-align: top">
+					<h4>New Network Preview</h4>
+					<ul>
+						<li>Domain: <span id="domain_preview" /></li>
+						<li>Site URL: <span id="siteurl_preview" /></li>
+					</ul>
+					<input type="button" name="verify_domain" id="verify_domain" value="<?php _e('Check Network Settings','njsl-networks'); ?>" />
+					<div id="verifying" />
+				</td>
+			</tr>
 		</table>
-		<p><?php _e('A site will be created at the root of the new network','njsl-networks'); ?>.</p>
 		<div class="metabox-holder meta-box-sortables" id="advanced_site_options">
 		<div class="postbox if-js-closed">
 			<div title="Click to toggle" class="handlediv"><br/></div>
@@ -876,14 +904,14 @@ class njsl_Networks
 				</tr>
 				<tr>
 					<td></td>
-						<?php
-							$all_site_options = $wpdb->get_results('SELECT DISTINCT meta_key FROM ' . $wpdb->sitemeta);
-							
-							$known_sitemeta_options = $options_to_copy;
-							$known_sitemeta_options = apply_filters( 'manage_sitemeta_descriptions' , $known_sitemeta_options );
-							
-							$options_to_copy = apply_filters( 'manage_site_clone_options' , $options_to_copy);
-						?>
+					<?php
+						$all_site_options = $wpdb->get_results('SELECT DISTINCT meta_key FROM ' . $wpdb->sitemeta);
+						
+						$known_sitemeta_options = $options_to_copy;
+						$known_sitemeta_options = apply_filters( 'manage_sitemeta_descriptions' , $known_sitemeta_options );
+						
+						$options_to_copy = apply_filters( 'manage_site_clone_options' , $options_to_copy);
+					?>
 					<td colspan="2">
 						<table class="widefat">
 							<thead>
@@ -908,7 +936,7 @@ class njsl_Networks
 			</div>
 		</div>
 		</div>
-		<input type="submit" class="button" name="add" value="<?php _e('Add Network','njsl-networks'); ?>" />
+		<?php echo submit_button(__('Add Network','njsl-networks'),'primary','add'); ?>
 	</form>
 </div>
 <script type="text/javascript">
@@ -978,7 +1006,6 @@ jQuery('.postbox').children('h3').click(function() {
 							<select name="to" id="to">
 								<option value="0"><?php _e('Select a Network','njsl-networks'); ?></option>
 								<?php
-								print_r($sites);
 								foreach($sites as $site) {
 									if($site->id != $mySite->id) {
 										echo '<option value="' . $site->id . '">' . $site->site_name . ' (' . $site->domain . ')' . '</option>' . "\n";
@@ -1241,14 +1268,13 @@ jQuery('.postbox').children('h3').click(function() {
 		}
 	}
 
-	function update_site_page() {
+	function edit_site_page() {
 		
 		global $wpdb;
 		
 		if(isset($_POST['update']) && isset($_GET['id'])) {
 			
-			$query = "SELECT * FROM {$wpdb->site} WHERE id=" . (int)$_GET['id'];
-			$site = $wpdb->get_row($query);
+			$site = $wpdb->get_row( $wpdb->prepare("SELECT * FROM {$wpdb->site} WHERE id=%d",$_GET['id']) );
 			if(!$site) {
 				die(__('Invalid network ID selected','njsl-networks'));
 			}
@@ -1257,10 +1283,6 @@ jQuery('.postbox').children('h3').click(function() {
 			$_GET['action'] = 'saved';
 
 		} else {
-			
-			// get site by id
-//			$query = "SELECT * FROM {$wpdb->site} WHERE id=" . (int)$_GET['id'];
-//			$site = $wpdb->get_row($query);
 			
 			$site = $wpdb->get_row( $wpdb->prepare("SELECT * FROM {$wpdb->site} WHERE id=%d",$_GET['id']) );
 
@@ -1301,7 +1323,6 @@ jQuery('.postbox').children('h3').click(function() {
 				</form>
 			</div>
 			<?php
-			
 		}	
 	}
 
@@ -1480,7 +1501,14 @@ jQuery('.postbox').children('h3').click(function() {
 			$contextual_help = 
 			'<p>' . __('This table shows all the Networks running on this installation of WordPress.','njsl-networks') . '</p>' .
 			'<p>' . __('Networks are groups of sites with separate admins, plugins, and policies, but with a common set of files and user database.','njsl-networks') . '</p>' .
-			'<p>' . __('The most common use of Networks is running groups of site on multiple domains from a single install.','njsl-networks') . '</p>' .
+			'<p>' . __('The most common use of Networks is running groups of sites on multiple domains from a single install.','njsl-networks') . '</p>' .
+			'<h4>' . __('Creating a Network','njsl-networks') . '</h4>' . 
+			'<ol>' .
+			'<li>' . __('Enter the network\'s basic information in the form.','njsl-networks') . '</li>' .
+			'<li>' . __('Use the test link on the right to verify the new address before creating the network. You should see the "No site defined on this host" error.','njsl-networks') . '</li>' .
+			'<li>' . __('Click "Add Network" when you\'re ready to proceed.','njsl-networks') . '</li>' . 
+			'</ol>' .
+			'<p>' . __('You can use the "Test Network Settings" button to perform automated testing.','njsl-networks') . '</p>' . 
 			'<p><strong>' . __('For more information','njsl-networks') . ':</strong></p>' .
 
 			'<p><a href="http://codex.wordpress.org/Create_A_Network" target="_blank">' . __('Documentation on WordPress Networks','njsl-networks') . '</a></p>' .
@@ -1710,6 +1738,7 @@ RewriteRule ^ - [L]';
 
 function njsl_networks_init() {
 	$njslNetworks = new njsl_networks();
+	add_action('wp_ajax_check_domain', 'networks_check_domain');
 }
 
 add_action( 'init', 'njsl_networks_init' );
