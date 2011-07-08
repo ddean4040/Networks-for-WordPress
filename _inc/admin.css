@@ -1,0 +1,11 @@
+#network_verify_result {
+	border: 1px solid #aaa;
+	background-color: #eee;
+	padding: 10px;
+	float: left;
+}
+	#network_verify_result h5 {			margin: 0 0 0.5em 0;	}
+	#network_verify_result li {			margin: 1px; padding: 5px; }
+	#network_verify_result .success {	background-color: #cfc; }
+	#network_verify_result .warning {	background-color: yellow; }
+	#network_verify_result .error   {	background-color: red; color: white; }
