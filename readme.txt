@@ -2,8 +2,8 @@
 Contributors: ddean
 Tags: multisite, multi-site, sites, networks, multi-network, multiple, multi-domain, domains
 Requires at least: 3.0
-Tested up to: 3.2
-Stable tag: 1.0.6
+Tested up to: 3.2.1
+Stable tag: 1.0.7
 
 Adds a Networks panel for network admins to create and manage multiple networks from one WordPress installation.
 
@@ -45,6 +45,10 @@ Here's a quick overview:
 
 == Changelog ==
 
+= 1.0.7 =
+* Added: Network diagnostic screen
+* Changed: allow Site assignment page to continue even if a blogname key is missing
+
 = 1.0.6 =
 * Added: hooks with new wpms prefixes
 * Fixed: enabled checkbox to avoid creating a root blog.  This is for advanced users only.
@@ -75,6 +79,9 @@ Here's a quick overview:
 * Initial release
 
 == Upgrade Notice ==
+
+= 1.0.7 =
+* Added diagnostic screen to help identify and resolve Network issues
 
 = 1.0.6 =
 * Enabled checkbox to avoid creating a new root blog - for advanced users only

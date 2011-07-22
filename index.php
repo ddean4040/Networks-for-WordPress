@@ -4,10 +4,10 @@
  * Plugin Name: Networks for WordPress
  * Plugin URI: http://www.jerseyconnect.net/development/networks-for-wordpress/
  * Description: Adds a Networks panel for site admins to create and manipulate multiple networks.
- * Version: 1.0.6
- * Revision Date: 07/08/2011
+ * Version: 1.0.7
+ * Revision Date: 07/22/2011
  * Requires at least: WP 3.0
- * Tested up to: WP 3.2
+ * Tested up to: WP 3.2.1
  * License: GNU General Public License 2.0 (GPL) http://www.gnu.org/licenses/gpl.html
  * Site Wide Only: TRUE
  * Author: David Dean
@@ -371,7 +371,7 @@ if (!function_exists('delete_site')) {
 		$query = "SELECT * FROM {$wpdb->blogs} WHERE site_id=" . (int)$id;
 		$blogs = $wpdb->get_results($query);
 		if($blogs && !$override) {
-			return new WP_Error('site_not_empty',__('Cannot delete network with blogs.','njsl-networks'));
+			return new WP_Error('site_not_empty',__('Cannot delete network with sites.','njsl-networks'));
 		}
 
 		if($override) {
@@ -508,9 +508,11 @@ class njsl_Networks
 			add_filter( 'manage_sites_action_links' , array(&$this,'add_blogs_link'), 10, 3 );
 			add_action( 'contextual_help', array(&$this,'networks_help'), 10, 3 );
 
-			// for compatibility with older releases
+			/** Compatibility with older releases */
 			add_action( 'admin_menu', array(&$this, 'networks_admin_menu') );
-			add_action( 'wpmublogsaction', array(&$this,'assign_blogs_link') );
+			if(!has_action('manage_sites_action_links')) {
+				add_action( 'wpmublogsaction', array(&$this,'assign_blogs_link') );
+			}
 		}
 		wp_register_script( 'njsl_networks_admin_js', plugins_url('/_inc/admin.js', __FILE__), array('jquery') );
 		wp_register_style( 'njsl_networks_admin_css', plugins_url('/_inc/admin.css', __FILE__) );
@@ -518,11 +520,9 @@ class njsl_Networks
 
 	function assign_blogs_link( $blog_id = null ) {
 		global $blog;
-		
 		if($blog_id == null) {
 			$blog_id = $blog['blog_id'];
 		}
-		
 		echo '<a href="' . $this->listPage . '&amp;action=move&amp;blog_id=' . $blog_id . '" class="edit">' . __('Move Site','njsl-networks') . '</a>';
 	}
 	
@@ -608,7 +608,7 @@ class njsl_Networks
 		} else if(isset($_GET['added'])) {
 			?><div id="message" class="updated fade"><p><?php _e('Network created.','njsl-networks'); ?></p></div><?php
 		} else if(isset($_GET['deleted'])) {
-			?><div id="message" class="updated fade"><p><?php _e('Network(s) deleted.','njl-networks'); ?></p></div><?php
+			?><div id="message" class="updated fade"><p><?php _e('Network(s) deleted.','njsl-networks'); ?></p></div><?php
 		}
 
 		switch( $_GET[ 'action' ] ) {
@@ -626,6 +626,9 @@ class njsl_Networks
 				break;
 			case 'delete_multisites':
 				$this->delete_multiple_site_page();
+				break;
+			case 'verifynetwork':
+				$this->verify_network_page();
 				break;
 		    default:
 				
@@ -819,7 +822,8 @@ class njsl_Networks
 								
 								$actions = array(
 									'assign_sites'	=> '<span class="edit"><a href="'.  $queryStr . '&amp;action=assignblogs&amp;id=' .  $blog['id'] . '" title="' . __('Assign sites to this network','njsl-networks') . '">' . __('Assign Sites','njsl-networks') . '</a></span>',
-									'edit'			=> '<span class="edit"><a class="edit_site_link" href="'.  $queryStr . '&amp;action=editsite&amp;id=' .  $blog['id'] . '" title="' . __('Edit this network','njsl-networks') . '">' . __('Edit','njsl-networks') . '</a></span>',
+									'edit'			=> '<span class="edit"><a class="edit_network_link" href="'.  $queryStr . '&amp;action=editsite&amp;id=' .  $blog['id'] . '" title="' . __('Edit this network','njsl-networks') . '">' . __('Edit','njsl-networks') . '</a></span>',
+									'verify'		=> '<span class="edit"><a class="verify_network_link" href="'.  $queryStr . '&amp;action=verifynetwork&amp;id=' .  $blog['id'] . '" title="' . __('Check this network for configuration errors','njsl-networks') . '">' . __('Verify','njsl-networks') . '</a></span>',
 									'delete'		=> '<span class="delete"><a href="'.  $queryStr . '&amp;action=deletesite&amp;id=' .  $blog['id'] . '" title="' . __('Delete this network','njsl-networks') . '">' . __('Delete','njsl-networks') . '</a></span>'
 								);
 								
@@ -872,7 +876,11 @@ class njsl_Networks
 					<table class="form-table">
 						<tr><th scope="row"><label for="newName"><?php _e('Network Name','njsl-networks'); ?>:</label></th><td><input type="text" name="name" id="newName" title="<?php _e('A friendly name for your new Network','njsl-networks'); ?>" /></td></tr>
 						<tr><th scope="row"><label for="newDom"><?php _e('Domain','njsl-networks'); ?>:</label></th><td> http://<input type="text" name="domain" id="newDom" title="<?php _e('The domain for your new Network','njsl-networks'); ?>" /></td></tr>
+						<?php if(VHOST != 'yes') { ?>
 						<tr><th scope="row"><label for="newPath"><?php _e('Path','njsl-networks'); ?>:</label></th><td><input type="text" name="path" id="newPath" title="<?php _e('If you are unsure, put in /'); ?>" /></td></tr>
+						<?php } else { ?>
+						<tr><th scope="row"><label for="newPath"><?php _e('Path','njsl-networks'); ?>:</label></th><td><code>/</code><input type="hidden" name="path" id="newPath" value="/" /></td></tr>
+						<?php } ?>
 						<tr>
 							<th scope="row"><label for="create_root_site"><?php _e('Create a Root Site','njsl-networks') ?>:</label></th>
 							<td><input type="checkbox" name="createRootSite" id="create_root_site" checked />
@@ -984,14 +992,14 @@ jQuery('.postbox').children('h3').click(function() {
 			$query = "SELECT * FROM {$wpdb->blogs} WHERE blog_id=" . (int)$_GET['blog_id'];
 			$blog = $wpdb->get_row($query);
 			if(!$blog) {
-				die(__('Site not found in blogs table.','njsl-networks'));
+				wp_die(__('Site not found in blogs table.','njsl-networks'));
 			}
 
 			$optionTable = $wpdb->get_blog_prefix( $blog->blog_id ) . 'options';
 
 			$details = $wpdb->get_row("SELECT * FROM {$optionTable} WHERE option_name='blogname'");
 			if(!$details) {
-				die(__('Blog options table not found.','njsl-networks'));
+				wp_die(__('Blog options table not found.','njsl-networks'));
 			}
 
 			$sites = $wpdb->get_results("SELECT *, {$wpdb->sitemeta}.meta_value as site_name FROM {$wpdb->site} LEFT JOIN {$wpdb->sitemeta} ON {$wpdb->sitemeta}.site_id = {$wpdb->site}.id AND {$wpdb->sitemeta}.meta_key = 'site_name' GROUP BY {$wpdb->sitemeta}.site_id");
@@ -1054,13 +1062,13 @@ jQuery('.postbox').children('h3').click(function() {
 			if(isset($_POST['jsEnabled'])) {
 				/** Javascript enabled for client - check the 'to' box */
 				if(!isset($_POST['to'])) {
-					die(__('No sites selected.','njsl-networks'));
+					wp_die(__('No sites selected.','njsl-networks'));
 				}
 				$blogs = $_POST['to'];
 			} else {
 				/** Javascript disabled for client - check the 'from' box */
 				if(!isset($_POST['from'])) {
-					die(__('No sites selected.','njsl-networks'));
+					wp_die(__('No sites selected.','njsl-networks'));
 				}
 				$blogs = $_POST['from'];
 			}
@@ -1089,20 +1097,24 @@ jQuery('.postbox').children('h3').click(function() {
 			$query = "SELECT *, {$wpdb->sitemeta}.meta_value as site_name FROM {$wpdb->site} " . " LEFT JOIN {$wpdb->sitemeta} ON {$wpdb->sitemeta}.meta_key='site_name' AND {$wpdb->sitemeta}.site_id = {$wpdb->site}.id WHERE id=" . (int)$_GET['id'];
 			$site = $wpdb->get_row($query);
 			if(!$site) {
-				die(__('Invalid network ID selected','njsl-networks'));
+				wp_die(__('Invalid network ID selected','njsl-networks'));
 			}
 			$blogs = $wpdb->get_results("SELECT * FROM {$wpdb->blogs}");
 			if(!$blogs) {
-				die(__('Blogs table is inaccessible.','njsl-networks'));
+				wp_die(__('Blogs table is inaccessible.','njsl-networks'));
 			}
 			foreach($blogs as $key => $blog) {
 				$tableName = $wpdb->get_blog_prefix( $blog->blog_id ) . 'options';
 				
 				$blog_name = $wpdb->get_row("SELECT * FROM $tableName WHERE option_name='blogname'");
-				if(!$blog_name) {
-					die(__('Invalid site selected','njsl-networks'));
+				if($wpdb->last_error != '') {
+					wp_die(printf(__('Could not locate options table for a site. (Tried: %s).','njsl-networks'), $tableName ));
 				}
-				$blogs[$key]->name = stripslashes($blog_name->option_value);
+				if(!$blog_name) {
+					$blogs[$key]->name = __('Unknown site name','njsl-networks');
+				} else {
+					$blogs[$key]->name = stripslashes($blog_name->option_value);
+				}
 			}
 			?>
 			<div class="wrap">
@@ -1296,7 +1308,7 @@ jQuery('.postbox').children('h3').click(function() {
 			
 			$site = $wpdb->get_row( $wpdb->prepare("SELECT * FROM {$wpdb->site} WHERE id=%d",$_GET['id']) );
 			if(!$site) {
-				die(__('Invalid network ID selected','njsl-networks'));
+				wp_die(__('Invalid network ID selected','njsl-networks'));
 			}
 			update_site((int)$_GET['id'],$_POST['domain'],$_POST['path']);
 			$_GET['updated'] = 'true';
@@ -1365,7 +1377,7 @@ jQuery('.postbox').children('h3').click(function() {
 			$query = "SELECT * FROM {$wpdb->site} WHERE id=" . (int)$_GET['id'];
 			$site = $wpdb->get_row($query);
 			if(!$site) {
-				die(__('Invalid site id.'));
+				wp_die(__('Invalid network ID selected','njsl-networks'));
 			}
 
 			$query = "SELECT * FROM {$wpdb->blogs} WHERE site_id=" . (int)$_GET['id'];
@@ -1515,6 +1527,178 @@ jQuery('.postbox').children('h3').click(function() {
 		}
 	}
 	
+	function verify_network_page() {
+		global $wpdb;
+		global $url_dependent_options;
+		
+		$site_id = (int)$_GET['id'];
+		?>
+		<h2><?php _e('Verifying Selected Network','njsl-networks') ?></h2>
+		<p>
+			<?php _e('This page will perform some basic diagnostics on your Network to uncover common configuration errors. 
+			This testing is by no means exhaustive, and it is still possible to break your Network and pass all these tests.','njsl-networks'); ?>
+		</p>
+		<h3><?php printf(__('Checking <code>%s</code> table for selected Network by ID','njsl-networks'),$wpdb->site) ?>:</h3>
+		<?php
+		$site = $wpdb->get_row($wpdb->prepare('SELECT * FROM ' . $wpdb->site . ' WHERE id=%d LIMIT 1',$site_id));
+		if($site) {
+			$domain = $site->domain;
+			$path = $site->path;
+			echo '<p class="network_success">' . __('Passed.','njsl-networks') . '</p>';
+		} else {
+			wp_die(sprintf(__('The selected network was not found in the <code>%s</code> table. Testing cannot continue.','njsl_networks'),$wpdb->site));
+		}
+		?>
+		
+		<h3><?php printf(__('Checking <code>%s</code> table for a unique combination of domain and path','njsl-networks'),$wpdb->site) ?>:</h3>
+		<?php
+		$site = $wpdb->get_row($wpdb->prepare('SELECT COUNT(*) as rows FROM ' . $wpdb->site . ' WHERE domain=%s AND path=%s',$domain,$path));
+		echo ($site->rows == 1) ? '<p class="network_success">' . __('Passed.','njsl-networks') . '</p>' : '<p class="network_error">' . __('Failed.','njsl-networks') . '</p>';
+		?>
+		
+		<h3><?php _e('Checking for super admin(s)','njsl-networks') ?>:</h3>
+		<?php
+		$site_admins = $wpdb->get_var($wpdb->prepare('SELECT meta_value as site_admin FROM ' . $wpdb->sitemeta . ' WHERE site_id=%d AND meta_key=%s',$site_id,'site_admins'));
+		if($site_admins) {
+			$admins = @unserialize($site_admins);
+			if(count($admins) > 0) {
+				echo '<p class="network_success">' . __('Passed.','njsl-networks') . ' ' . sprintf(_n('Found %d super admin','Found %d super admins',count($admins), 'njsl-networks'),count($admins)) . '</p>';
+				echo '<ul>';
+				foreach($admins as $admin) {
+					echo '<li>' . $admin . '</li>';
+				}
+				echo '</ul>';
+			} else {
+				echo '<p class="network_error">' . sprintf(__('Super admins meta value could not be decoded. Check your <code>%s</code> table for corruption.','njsl-networks'),$wpdb->sitemeta) . '</p>';
+			}
+		} else {
+			echo '<p class="network_warning">' . sprintf(__('Super admins meta key was not found. Check your <code>%s</code> table for the proper keys.','njsl-networks'),$wpdb->sitemeta);
+			echo '<br />' . __('Without a super admins key, only username "admin" will be treated as a super admin.','njsl-networks') . '</p>';
+		}
+		?>
+		
+		<h3><?php _e('Checking DNS for this network','njsl-networks') ?>:</h3>
+		<?php
+		$network_addr = gethostbyname($domain);
+		$current_addr = gethostbyname($_SERVER['HTTP_HOST']);
+		
+		if(!is_numeric(substr($network_addr,0,strpos($network_addr,'.')))) { ?>
+			<p class="network_error"><?php _e('Domain could not be resolved.','njsl-networks') ?></p>
+		<?php } else if($network_addr == $current_addr) { ?>
+			<p class="network_success"><?php _e('Passed.','njsl-networks') ?></p>
+		<?php } else { ?>
+			<div class="network_warning">
+				<p><?php echo __('DNS did not match.','njsl-networks') . __('This is not a fatal error, but you should verify DNS manually from your users\' perspective.','njsl-networks'); ?></p>
+				<ul>
+					<li><?php printf(__('Current network resolved to: <code>%s</code>','njsl-networks'),$current_addr) ?></li>
+					<li><?php printf(__('Selected network resolved to: <code>%s</code>','njsl-networks'),$network_addr) ?></li>
+				</ul>
+			</div>
+		<?php } ?>
+		
+		<h3><?php _e('Checking hosted sites for correct Network-related values','njsl-networks') ?>:</h3>
+		<?php
+		$site_errors = 0;
+		$hosted_blogs = $wpdb->get_results($wpdb->prepare('SELECT * FROM ' . $wpdb->blogs . ' WHERE site_id=%d',$site_id));
+		if($hosted_blogs && count($hosted_blogs) > 0) {
+			foreach($hosted_blogs as $hosted_blog) {
+				if(VHOST == 'yes') {
+					if(strpos($hosted_blog->domain,$domain) === false) {
+						$site_errors++;
+						echo '<p class="network_error">' . sprintf(__('Site %d has an invalid <code>domain</code> setting.'), $hosted_blog->blog_id) . '</p>';
+					}
+					if($hosted_blog->path != '/') {
+						$site_errors++;
+						echo '<p class="network_error">' . sprintf(__('Site %d has an invalid <code>path</code> setting.'), $hosted_blog->blog_id) . '</p>';
+					}
+				} else {
+					if($hosted_blog->domain != $domain) {
+						$site_errors++;
+						echo '<p class="network_error">' . sprintf(__('Site %d has an invalid <code>domain</code> setting.'), $hosted_blog->blog_id) . '</p>';
+					}
+					if(strpos($hosted_blog->path, $path) === false) {
+						$site_errors++;
+						echo '<p class="network_error">' . sprintf(__('Site %d has an invalid <code>path</code> setting.'), $hosted_blog->blog_id) . '</p>';
+					}
+				}
+			}
+		} else {
+			$site_errors++;
+			echo '<p class="network_warning">' . __('No sites were found on this network. Skipping this check.','njsl-networks') . '</p>';
+		}
+		if($site_errors == 0) {
+			echo '<p class="network_success">' . __('Passed.','njsl-networks') . '</p>';
+		}
+		?>
+		<h3><?php _e('Checking hosted sites for correct Network-related meta values','njsl-networks') ?>:</h3>
+		<?php
+		$site_errors = 0;
+		if($hosted_blogs && count($hosted_blogs) > 0) {
+			foreach($hosted_blogs as $hosted_blog) {
+				$blog_meta = $wpdb->get_results('SELECT option_name, option_value FROM ' . $wpdb->get_blog_prefix( $hosted_blog->blog_id ) . 'options' . ' WHERE option_name IN ("' . implode('", "',$url_dependent_options) . '")');
+				foreach($blog_meta as $meta) {
+					if(strpos($meta->option_value,$domain . $path) === false) {
+						$site_errors++;
+						echo '<p class="network_error">' . sprintf(__('Site %d has an invalid meta value in <code>%s</code>. This may prevent access to this site or disable some features.'),$hosted_blog->blog_id,$meta->option_name) . '</p>';
+					}
+				}
+			}
+		} else {
+			$site_errors++;
+			echo '<p class="network_warning">' . __('No sites were found on this network. Skipping this check.','njsl-networks') . '</p>';
+		}
+		if($site_errors == 0) {
+			echo '<p class="network_success">' . __('Passed.','njsl-networks') . '</p>';
+		}
+		?>
+		<?php if(VHOST == 'yes') : ?>
+		<h3><?php _e('Checking DNS for hosted site subdomains','njsl-networks') ?>:</h3>
+		<?php
+		
+		if($hosted_blogs && count($hosted_blogs) > 0) {
+			foreach($hosted_blogs as $hosted_blog) {
+				$site_addr = gethostbyname($hosted_blog->domain);
+				if(!is_numeric(substr($site_addr,0,strpos($site_addr,'.')))) { ?>
+					<p class="network_error"><?php printf(__('Site %d\'s domain could not be resolved.','njsl-networks'),$hosted_blog->blog_id) ?></p>
+				<?php } else {
+					if($site_addr != $network_addr) {
+						?>
+						<div class="network_warning">
+							<p>
+								<?php printf(__('Site %d\'s <code>domain</code> does not match its network\'s.'), $hosted_blog->blog_id) ?>
+								<?php _e('This is not a fatal error, but you should verify DNS manually from your users\' perspective.','njsl-networks'); ?>	
+							</p>
+							<ul>
+								<li><?php printf(__('Site %d resolved to: <code>%s</code>','njsl-networks'),$hosted_blog->blog_id, $site_addr) ?></li>
+								<li><?php printf(__('Selected network resolved to: <code>%s</code>','njsl-networks'),$network_addr) ?></li>
+							</ul>
+						</div>
+						<?php
+					}
+					if($site_addr != $current_addr) {
+						?>
+						<div class="network_warning">
+							<p>
+								<?php printf(__('Site %d\'s <code>domain</code> does not match the current network\'s.'), $hosted_blog->blog_id) ?>
+								<?php _e('This is not a fatal error, but you should verify DNS manually from your users\' perspective.','njsl-networks'); ?>
+							</p>
+							<ul>
+								<li><?php printf(__('Site %d resolved to: <code>%s</code>','njsl-networks'),$hosted_blog->blog_id, $site_addr) ?></li>
+								<li><?php printf(__('Current network resolved to: <code>%s</code>','njsl-networks'),$current_addr) ?></li>
+							</ul>
+						</div>
+						<?php
+					}
+				}
+			}
+		} else {
+			echo '<p class="network_warning">' . __('No sites were found on this network. Skipping this check.','njsl-networks') . '</p>';
+		}
+		?>
+		<?php endif; ?>
+		<?php
+	}
+	
 	function networks_help($contextual_help, $screen_id, $screen) {
 
 		if($screen_id == $this->admin_page || $screen_id == $this->admin_page . '-network') {
@@ -1536,224 +1720,6 @@ jQuery('.postbox').children('h3').click(function() {
 		}
 		return $contextual_help;
 	}
-	
-	function options_page() {
-			
-		global $base, $wpdb;
-		$hostname = $wpdb->get_var( "SELECT domain FROM $wpdb->site ORDER BY id ASC LIMIT 1" );
-		$subdomain_install = is_subdomain_install();
-		$subdomain_install_string = (is_subdomain_install() ? 'true' : 'false' );
-		$config_file = file_get_contents(ABSPATH . DIRECTORY_SEPARATOR . 'wp-config.php');
-		
-		?>
-			<div class="wrap">
-			<div id="icon-tools" class="icon32"></div>
-			<h2>Create Networks of WordPress Sites</h2>
-			<ol>
-				<li><p>
-				<?php
-				printf( __( 'Create a <code>blogs.dir</code> directory at <code>%s/blogs.dir</code>. This directory is used to store uploaded media for your additional sites and must be writeable by the web server.' ), WP_CONTENT_DIR );
-				if(file_exists(WP_CONTENT_DIR . DIRECTORY_SEPARATOR . 'blogs.dir')) {
-					if(is_writable(WP_CONTENT_DIR . DIRECTORY_SEPARATOR . 'blogs.dir')) {
-						echo '<br />' . __('Status:') . ' DONE!';
-					} else {
-						echo '<br />' . __('Status:') . ' Created, but not writable.';
-					}
-				}
-				if ( WP_CONTENT_DIR != ABSPATH . 'wp-content' )
-					echo '<br /><strong>' . __('Warning:') . ' ' . __( 'Networks may not be fully compatible with custom wp-content directories.' ) . '</strong>';
-				?>
-			</p></li>
-			<li><p>
-				<?php printf( __( 'Add the following to your <code>wp-config.php</code> file in <code>%s</code> <strong>above</strong> the line reading <code>/* That&#8217;s all, stop editing! Happy blogging. */</code>:' ), ABSPATH ); ?></p>
-				<?php
-				$needed_config_lines = <<<END
-define( 'MULTISITE', true );
-define( 'SUBDOMAIN_INSTALL', $subdomain_install_string );
-\$base = '$base'
-END;
-				?>
-				<textarea class="code" readonly="readonly" cols="100" rows="3"><?php echo $needed_config_lines ?></textarea>
-				<?php if(strpos($config_file,$needed_config_lines) !== FALSE) { ?>
-					<p><?php echo __('Status:') . ' DONE!' ?></p>
-				<?php }	?>
-			</li>
-			<li><p>
-				<?php printf( __( '<strong>Remove</strong> the following from your <code>wp-config.php</code> file in <code>%s</code>:' ), ABSPATH ); ?></p></p>
-				<?php
-				$unneeded_config_lines = <<<END
-define( 'DOMAIN_CURRENT_SITE', '$hostname' );
-define( 'PATH_CURRENT_SITE', '$base' );
-define( 'SITE_ID_CURRENT_SITE', 1 );
-define( 'BLOG_ID_CURRENT_SITE', 1 );
-END;
-				?>
-				<textarea class="code" readonly="readonly" cols="100" rows="4"><?php echo $unneeded_config_lines ?></textarea>
-				<?php if(strpos($config_file,$unneeded_config_lines) === FALSE) { ?>
-					<p><?php echo __('Status:') . ' DONE!' ?></p>
-				<?php }	?>
-			</li>
-<?php
-	$keys_salts = array( 'AUTH_KEY' => '', 'SECURE_AUTH_KEY' => '', 'LOGGED_IN_KEY' => '', 'NONCE_KEY' => '', 'AUTH_SALT' => '', 'SECURE_AUTH_SALT' => '', 'LOGGED_IN_SALT' => '', 'NONCE_SALT' => '' );
-	foreach ( $keys_salts as $c => $v ) {
-		if ( defined( $c ) )
-			unset( $keys_salts[ $c ] );
-	}
-	if ( ! empty( $keys_salts ) ) {
-		$keys_salts_str = '';
-		$from_api = wp_remote_get( 'https://api.wordpress.org/secret-key/1.1/salt/' );
-		if ( is_wp_error( $from_api ) ) {
-			foreach ( $keys_salts as $c => $v ) {
-				$keys_salts_str .= "\ndefine( '$c', '" . wp_generate_password( 64, true, true ) . "' );";
-			}
-		} else {
-			$from_api = explode( "\n", wp_remote_retrieve_body( $from_api ) );
-			foreach ( $keys_salts as $c => $v ) {
-				$keys_salts_str .= "\ndefine( '$c', '" . substr( array_shift( $from_api ), 28, 64 ) . "' );";
-			}
-		}
-		$num_keys_salts = count( $keys_salts );
-?>
-	<p><?php
-		echo _n( 'This unique authentication key is also missing from your <code>wp-config.php</code> file.', 'These unique authentication keys are also missing from your <code>wp-config.php</code> file.', $num_keys_salts ); ?> <?php _e( 'To make your installation more secure, you should also add:' ) ?></p>
-	<textarea class="code" readonly="readonly" cols="100" rows="<?php echo $num_keys_salts; ?>"><?php echo esc_textarea( $keys_salts_str ); ?></textarea>
-<?php
-	}
-?>
-</li>
-<?php
-	if ( iis7_supports_permalinks() ) :
-
-			if ( $subdomain_install ) {
-				$web_config_file =
-'<?xml version="1.0" encoding="UTF-8"?>
-<configuration>
-    <system.webServer>
-        <rewrite>
-            <rules>
-                <rule name="WordPress Rule 1" stopProcessing="true">
-                    <match url="^index\.php$" ignoreCase="false" />
-                    <action type="None" />
-                </rule>
-                <rule name="WordPress Rule 2" stopProcessing="true">
-                    <match url="^files/(.+)" ignoreCase="false" />
-                    <action type="Rewrite" url="wp-includes/ms-files.php?file={R:1}" appendQueryString="false" />
-                </rule>
-                <rule name="WordPress Rule 3" stopProcessing="true">
-                    <match url="^" ignoreCase="false" />
-                    <conditions logicalGrouping="MatchAny">
-                        <add input="{REQUEST_FILENAME}" matchType="IsFile" ignoreCase="false" />
-                        <add input="{REQUEST_FILENAME}" matchType="IsDirectory" ignoreCase="false" />
-                    </conditions>
-                    <action type="None" />
-                </rule>
-                <rule name="WordPress Rule 4" stopProcessing="true">
-                    <match url="." ignoreCase="false" />
-                    <action type="Rewrite" url="index.php" />
-                </rule>
-            </rules>
-        </rewrite>
-    </system.webServer>
-</configuration>';
-			} else {
-				$web_config_file =
-'<?xml version="1.0" encoding="UTF-8"?>
-<configuration>
-    <system.webServer>
-        <rewrite>
-            <rules>
-                <rule name="WordPress Rule 1" stopProcessing="true">
-                    <match url="^index\.php$" ignoreCase="false" />
-                    <action type="None" />
-                </rule>
-                <rule name="WordPress Rule 2" stopProcessing="true">
-                    <match url="^([_0-9a-zA-Z-]+/)?files/(.+)" ignoreCase="false" />
-                    <action type="Rewrite" url="wp-includes/ms-files.php?file={R:2}" appendQueryString="false" />
-                </rule>
-                <rule name="WordPress Rule 3" stopProcessing="true">
-                    <match url="^([_0-9a-zA-Z-]+/)?wp-admin$" ignoreCase="false" />
-                    <action type="Redirect" url="{R:1}wp-admin/" redirectType="Permanent" />
-                </rule>
-                <rule name="WordPress Rule 4" stopProcessing="true">
-                    <match url="^" ignoreCase="false" />
-                    <conditions logicalGrouping="MatchAny">
-                        <add input="{REQUEST_FILENAME}" matchType="IsFile" ignoreCase="false" />
-                        <add input="{REQUEST_FILENAME}" matchType="IsDirectory" ignoreCase="false" />
-                    </conditions>
-                    <action type="None" />
-                </rule>
-                <rule name="WordPress Rule 5" stopProcessing="true">
-                    <match url="^[_0-9a-zA-Z-]+/(wp-(content|admin|includes).*)" ignoreCase="false" />
-                    <action type="Rewrite" url="{R:2}" />
-                </rule>
-                <rule name="WordPress Rule 6" stopProcessing="true">
-                    <match url="^([_0-9a-zA-Z-]+/)?(.*\.php)$" ignoreCase="false" />
-                    <action type="Rewrite" url="{R:2}" />
-                </rule>
-                <rule name="WordPress Rule 7" stopProcessing="true">
-                    <match url="." ignoreCase="false" />
-                    <action type="Rewrite" url="index.php" />
-                </rule>
-            </rules>
-        </rewrite>
-    </system.webServer>
-</configuration>';
-			}
-	?>
-		<li><p><?php printf( __( 'Add the following to your <code>web.config</code> file in <code>%s</code>, replacing other WordPress rules:' ), ABSPATH ); ?></p>
-		<textarea class="code" readonly="readonly" cols="100" rows="20">
-		<?php echo esc_textarea( $web_config_file ); ?>
-		</textarea></li>
-		</ol>
-
-	<?php else : // end iis7_supports_permalinks(). construct an htaccess file instead:
-
-		$htaccess_file = 'RewriteEngine On
-RewriteBase ' . $base . '
-RewriteRule ^index\.php$ - [L]
-
-# uploaded files
-RewriteRule ^' . ( $subdomain_install ? '' : '([_0-9a-zA-Z-]+/)?' ) . 'files/(.+) wp-includes/ms-files.php?file=$' . ( $subdomain_install ? 1 : 2 ) . ' [L]' . "\n";
-
-		if ( ! $subdomain_install )
-			$htaccess_file .= "\n# add a trailing slash to /wp-admin\n" . 'RewriteRule ^([_0-9a-zA-Z-]+/)?wp-admin$ $1wp-admin/ [R=301,L]' . "\n";
-
-		$htaccess_file .= "\n" . 'RewriteCond %{REQUEST_FILENAME} -f [OR]
-RewriteCond %{REQUEST_FILENAME} -d
-RewriteRule ^ - [L]';
-
-		// @todo custom content dir.
-		if ( ! $subdomain_install )
-			$htaccess_file .= "\nRewriteRule  ^[_0-9a-zA-Z-]+/(wp-(content|admin|includes).*) $1 [L]\nRewriteRule  ^[_0-9a-zA-Z-]+/(.*\.php)$ $1 [L]";
-
-		$htaccess_file .= "\nRewriteRule . index.php [L]";
-
-		?>
-		<li><p><?php printf( __( 'Add the following to your <code>.htaccess</code> file in <code>%s</code>, replacing other WordPress rules:' ), ABSPATH ); ?></p>
-		<textarea class="code" readonly="readonly" cols="100" rows="<?php echo $subdomain_install ? 11 : 16; ?>">
-<?php echo esc_textarea( $htaccess_file ); ?></textarea></li>
-		</ol>
-
-	<?php endif; // end IIS/Apache code branches.
-
-	if ( !is_multisite() ) { ?>
-		<p><?php printf( __( 'Once you complete these steps, your network is enabled and configured. You will have to log in again.') ); ?> <a href="<?php echo esc_url( site_url( 'wp-login.php' ) ); ?>"><?php _e( 'Log In' ); ?></a></p>
-<?php
-	}
-		
-	?>
-	</div>
-	<?php
-	}
-	
-	function build_rewrite_rules() {
-		if(iis7_supports_permalinks()) {
-			$this->build_iis7_rewrite_rules();
-		} else {
-			$this->build_apache_rewrite_rules();
-		}
-	} 
-	
 }
 
 function njsl_networks_init() {
