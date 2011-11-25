@@ -2,8 +2,8 @@
 Contributors: ddean
 Tags: multisite, multi-site, sites, networks, multi-network, multiple, multi-domain, domains
 Requires at least: 3.0
-Tested up to: 3.2.1
-Stable tag: 1.0.7
+Tested up to: 3.3-beta4
+Stable tag: 1.0.8
 
 Adds a Networks panel for network admins to create and manage multiple networks from one WordPress installation.
 
@@ -26,7 +26,7 @@ See **Frequently Asked Questions** for detailed instructions.
 1. Extract the plugin archive 
 1. Upload plugin files to your `/wp-content/plugins/` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
-1. RECOMMENDED: Comment out `DOMAIN_CURRENT_SITE` in your `wp-config.php` file.
+1. Comment out `DOMAIN_CURRENT_SITE` in your `wp-config.php` file.
 
 == Frequently Asked Questions ==
 
@@ -39,11 +39,18 @@ Here's a quick overview:
 1. DNS should resolve each desired domain to your web server.
 1. Configure your web server to direct requests for each desired domain to the same site (e.g. via `ServerAlias` directives or `Host Headers`)
 
+Tip: You can use the New Network Preview feature to verify DNS and server configuration BEFORE creating your networks.
+
 == Known Issues ==
 
 * Plugins that create global (i.e. not blog-specific) tables will behave as though they are on a single network install.  This is a limitation of WordPress's table naming scheme.
 
 == Changelog ==
+
+= 1.0.8 =
+* Added: support for the `siteurl` sitemeta entry
+* Changed: Updated Help screen to display in WP 3.3
+* Fixed: Adding a network now displays the correct update message
 
 = 1.0.7 =
 * Added: Network diagnostic screen
