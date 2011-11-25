@@ -4,33 +4,16 @@
  * Plugin Name: Networks for WordPress
  * Plugin URI: http://www.jerseyconnect.net/development/networks-for-wordpress/
  * Description: Adds a Networks panel for site admins to create and manipulate multiple networks.
- * Version: 1.0.7
- * Revision Date: 07/22/2011
+ * Version: 1.0.8-testing
+ * Revision Date: 10/14/2011
  * Requires at least: WP 3.0
- * Tested up to: WP 3.2.1
- * License: GNU General Public License 2.0 (GPL) http://www.gnu.org/licenses/gpl.html
- * Site Wide Only: TRUE
+ * Tested up to: WP 3.3-beta4
+ * License: GNU General Public License 2.0 (GPL) or later
  * Author: David Dean
- * Author URI: http://www.jerseyconnect.net/development/
+ * Author URI: http://www.generalthreat.com/
+ * Site Wide Only: True
+ * Network: True
 */
-
-/* ========================================================================== */
-
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
-
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
 
 require_once (dirname(__FILE__) . '/ajax.php');
 
@@ -50,7 +33,10 @@ if (!defined('RESCUE_ORPHANED_BLOGS')) {
 }
 
 /** blog options affected by URL */
-$url_dependent_options = array('siteurl','home','fileupload_url');
+$url_dependent_blog_options = array('siteurl','home','fileupload_url');
+
+/** site / network options affected by URL */
+$url_dependent_site_options = array('siteurl');
 
 /** sitemeta options to be copied on clone */
 $options_to_copy = array(
@@ -59,8 +45,8 @@ $options_to_copy = array(
 	'allowed_themes'			=> __('Deprecated - Old list of allowed themes','njsl-networks'),
 	'allowedthemes'				=> __('List of allowed themes','njsl-networks'),
 	'banned_email_domains'		=> __('Banned email domains','njsl-networks'),
-	'limited_email_domains'		=> __('Permitted email domains','njsl-networks'),
 	'first_post'				=> __('Content of first post on a new site','njsl-networks'),
+	'limited_email_domains'		=> __('Permitted email domains','njsl-networks'),
 	'site_admins'				=> __('List of site administrator usernames','njsl-networks'),
 	'welcome_email'				=> __('Content of welcome email','njsl-networks')
 );
@@ -135,7 +121,6 @@ if(!function_exists('switch_to_site')) {
 			}
 		}
 
-
 		$wpdb->siteid			 = $new_site;
 		$current_site->site_name = get_site_option('site_name');
 		$site_id = $new_site;
@@ -183,10 +168,22 @@ if(!function_exists('restore_current_site')) {
 	}
 }
 
+if(!function_exists('wpmu_create_site')) {
+	function wpmu_create_site($domain, $path, $blog_name = NULL, $cloneSite = NULL, $options_to_clone = NULL) {
+		return add_site( $domain, $path, $blog_name = NULL, $cloneSite = NULL, $options_to_clone = NULL );
+	}
+}
+
 if (!function_exists('add_site')) {
 
 	/**
 	 * Create a new network
+	 * 
+	 * @uses site_exists()
+	 * @uses wpmu_create_blog()
+	 * @uses switch_to_site()
+	 * @uses restore_current_site()
+	 * 
 	 * @param string $domain domain name for new network - for VHOST=no, this should be a FQDN, otherwise domain only
 	 * @param string $path path to root of network hierarchy - should be '/' unless WordPress is sharing a domain with normal web pages
 	 * @param string $blog_name Name of the root blog to be created on the new network or FALSE to skip creating a root blog
@@ -196,14 +193,12 @@ if (!function_exists('add_site')) {
 	 */
 	function add_site($domain, $path, $blog_name = NULL, $cloneSite = NULL, $options_to_clone = NULL) {
 
-		global $wpdb, $sites, $options_to_copy;
+		global $wpdb, $sites, $options_to_copy, $url_dependent_site_options, $current_site;
 
 		$skip_blog_setup = ($blog_name === false);
 		if($blog_name == NULL) $blog_name = __('New Network Created','njsl-networks');
 
-		if(is_null($options_to_clone)) {
-			$options_to_clone = array_keys($options_to_copy);
-		}
+		$options_to_clone = wp_parse_args( $options_to_clone, array_keys($options_to_copy) );
 
 		if($path != '/') {
 			$path = trim($path,'/');
@@ -226,7 +221,9 @@ if (!function_exists('add_site')) {
 		$sites = $wpdb->get_results('SELECT * FROM ' . $wpdb->site);
 
 		if($new_site_id) {
-
+			
+			add_site_option( 'siteurl', $domain . $path);
+			
 			/* prevent ugly database errors - #184 */
 			if(!defined('WP_INSTALLING')) {
 				define('WP_INSTALLING',TRUE);
@@ -252,12 +249,18 @@ if (!function_exists('add_site')) {
 				$optionsCache[$option] = get_site_option($option);
 			}
 			
+			$oldsite_domain = $current_site->domain;
+			$oldsite_path   = $current_site->path;
+			
 			restore_current_site();
 
 			switch_to_site($new_site_id);
 			
 			foreach($options_to_clone as $option) {
 				if($optionsCache[$option] !== false) {
+					if(in_array($option, $url_dependent_site_options)) {
+						$optionsCache[$option] = str_replace($oldsite_domain . $oldsite_path, $domain . $path, $optionsCache[$option]);
+					}
 					add_site_option($option, $optionsCache[$option]);
 				}
 			}
@@ -285,7 +288,7 @@ if (!function_exists('update_site')) {
 	function update_site($id, $domain, $path='') {
 
 		global $wpdb;
-		global $url_dependent_options;
+		global $url_dependent_blog_options;
 
 		if(!site_exists((int)$id)) {
 			return new WP_Error('site_not_exist',__('Network does not exist.','njsl-networks'));
@@ -331,7 +334,7 @@ if (!function_exists('update_site')) {
 				/** fix options table values */
 				$optionTable = $wpdb->get_blog_prefix( $blog->blog_id ) . 'options';
 
-				foreach($url_dependent_options as $option_name) {
+				foreach($url_dependent_blog_options as $option_name) {
 					$option_value = $wpdb->get_row("SELECT * FROM $optionTable WHERE option_name='$option_name'");
 					if($option_value) {
 						$newValue = str_replace($oldPath,$fullPath,$option_value->option_value);
@@ -352,6 +355,10 @@ if (!function_exists('delete_site')) {
 
 	/**
 	 * Delete a site and all its blogs
+	 * 
+	 * @uses move_blog()
+	 * @uses wpmu_delete_blog()
+	 * 
 	 * @param integer id ID of site to delete
 	 * @param boolean $delete_blogs flag to permit blog deletion - default setting of FALSE will prevent deletion of occupied sites
 	 */
@@ -407,7 +414,7 @@ if(!function_exists('move_blog')) {
 	function move_blog($blog_id, $new_site_id) {
 
 		global $wpdb;
-		global $url_dependent_options;
+		global $url_dependent_blog_options;
 
 		/* sanity checks */
 		$query = "SELECT * FROM {$wpdb->blogs} WHERE blog_id=" . (int)$blog_id;
@@ -475,7 +482,7 @@ if(!function_exists('move_blog')) {
 		$oldDomain = $oldSite->domain . $oldSite->path;
 		$newDomain = $newSite->domain . $newSite->path;
 
-		foreach($url_dependent_options as $option_name) {
+		foreach($url_dependent_blog_options as $option_name) {
 			$option = $wpdb->get_row("SELECT * FROM $optionTable WHERE option_name='" . $option_name . "'");
 			$newValue = str_replace($oldDomain,$newDomain,$option->option_value);
 			update_blog_option($blog->blog_id,$option_name,$newValue);
@@ -496,8 +503,7 @@ class njsl_Networks
 	var $listPage;
 	var $sitesPage;
 	
-	function njsl_Networks()
-	{
+	function njsl_Networks() {
 
 		if ( file_exists( dirname( __FILE__ ) . '/' . get_locale() . '.mo' ) ) {
 			load_textdomain( 'njsl-networks', dirname( __FILE__ ) . '/' . get_locale() . '.mo' );
@@ -506,13 +512,15 @@ class njsl_Networks
 		if(function_exists('add_action')) {
 			add_action( 'network_admin_menu', array(&$this, 'networks_admin_menu') );
 			add_filter( 'manage_sites_action_links' , array(&$this,'add_blogs_link'), 10, 3 );
-			add_action( 'contextual_help', array(&$this,'networks_help'), 10, 3 );
 
 			/** Compatibility with older releases */
 			add_action( 'admin_menu', array(&$this, 'networks_admin_menu') );
 			if(!has_action('manage_sites_action_links')) {
 				add_action( 'wpmublogsaction', array(&$this,'assign_blogs_link') );
 			}
+			
+			add_filter( 'contextual_help', array(&$this,'filter_networks_help'), 10, 3 );
+
 		}
 		wp_register_script( 'njsl_networks_admin_js', plugins_url('/_inc/admin.js', __FILE__), array('jquery') );
 		wp_register_style( 'njsl_networks_admin_css', plugins_url('/_inc/admin.css', __FILE__) );
@@ -536,10 +544,6 @@ class njsl_Networks
 		if(function_exists('is_network_admin')) {
 			$this->admin_page = add_submenu_page( 'sites.php', __('Networks','njsl-networks'), __('Networks','njsl-networks'), 'manage_network_options', $this->slug, array(&$this, 'sites_page') );
 
-			if(is_multisite()) {
-//				remove_submenu_page('settings.php','setup.php');
-//				$this->admin_settings_page = add_submenu_page( 'settings.php', __('Create Networks of WordPress Sites','njsl-networks'), __('Networks Setup','njsl-networks'), 'manage_network_options', $this->slug . '-options', array(&$this, 'options_page') );
-			}
 			$this->listPage = 'sites.php?page=' . $this->slug;
 			$this->sitesPage = 'sites.php';
 
@@ -548,7 +552,9 @@ class njsl_Networks
 			$this->listPage = 'ms-admin.php?page=' . $this->slug;
 			$this->sitesPage = 'ms-sites.php';
 		}
-		
+				
+		add_contextual_help($this->admin_page, $this->networks_help());
+
 		add_action( 'admin_print_scripts-' . $this->admin_page, array(&$this,'add_admin_scripts') );
 		add_action( 'admin_print_styles-' . $this->admin_page, array(&$this,'add_admin_styles') );
 	}
@@ -569,8 +575,8 @@ class njsl_Networks
 	}
 
 	/** ====== config_page ====== */
-	function sites_page()
-	{
+	function sites_page() {
+		
 		global $wpdb;
 		global $options_to_copy;
 		global $current_screen;
@@ -782,7 +788,6 @@ class njsl_Networks
 		<?php
 		
 		if ($network_list) {
-			$bgcolor = '';
 			foreach ($network_list as $blog) { 
 				$network = $blog;
 				$class = ('alternate' == $class) ? '' : 'alternate';
@@ -954,7 +959,7 @@ class njsl_Networks
 			</div>
 		</div>
 		</div>
-		<?php echo submit_button(__('Add Network','njsl-networks'),'primary','add'); ?>
+		<?php submit_button(__('Add Network','njsl-networks'),'primary','add'); ?>
 	</form>
 </div>
 <script type="text/javascript">
@@ -1289,7 +1294,7 @@ jQuery('.postbox').children('h3').click(function() {
 					restore_current_site();
 				}
 
-				$_GET['updated'] = 'yes';
+				$_GET['added'] = 'yes';
 				$_GET['action'] = 'saved';
 			}
 
@@ -1529,7 +1534,7 @@ jQuery('.postbox').children('h3').click(function() {
 	
 	function verify_network_page() {
 		global $wpdb;
-		global $url_dependent_options;
+		global $url_dependent_blog_options;
 		
 		$site_id = (int)$_GET['id'];
 		?>
@@ -1635,7 +1640,7 @@ jQuery('.postbox').children('h3').click(function() {
 		$site_errors = 0;
 		if($hosted_blogs && count($hosted_blogs) > 0) {
 			foreach($hosted_blogs as $hosted_blog) {
-				$blog_meta = $wpdb->get_results('SELECT option_name, option_value FROM ' . $wpdb->get_blog_prefix( $hosted_blog->blog_id ) . 'options' . ' WHERE option_name IN ("' . implode('", "',$url_dependent_options) . '")');
+				$blog_meta = $wpdb->get_results('SELECT option_name, option_value FROM ' . $wpdb->get_blog_prefix( $hosted_blog->blog_id ) . 'options' . ' WHERE option_name IN ("' . implode('", "',$url_dependent_blog_options) . '")');
 				foreach($blog_meta as $meta) {
 					if(strpos($meta->option_value,$domain . $path) === false) {
 						$site_errors++;
@@ -1699,25 +1704,30 @@ jQuery('.postbox').children('h3').click(function() {
 		<?php
 	}
 	
-	function networks_help($contextual_help, $screen_id, $screen) {
-
+	function filter_networks_help($contextual_help, $screen_id, $screen) {
 		if($screen_id == $this->admin_page || $screen_id == $this->admin_page . '-network') {
-			$contextual_help = 
-			'<p>' . __('This table shows all the Networks running on this installation of WordPress.','njsl-networks') . '</p>' .
-			'<p>' . __('Networks are groups of sites with separate admins, plugins, and policies, but with a common set of files and user database.','njsl-networks') . '</p>' .
-			'<p>' . __('The most common use of Networks is running groups of sites on multiple domains from a single install.','njsl-networks') . '</p>' .
-			'<h4>' . __('Creating a Network','njsl-networks') . '</h4>' . 
-			'<ol>' .
-			'<li>' . __('Enter the network\'s basic information in the form.','njsl-networks') . '</li>' .
-			'<li>' . __('Use the test link on the right to verify the new address before creating the network. You should see the "No site defined on this host" error.','njsl-networks') . '</li>' .
-			'<li>' . __('Click "Add Network" when you\'re ready to proceed.','njsl-networks') . '</li>' . 
-			'</ol>' .
-			'<p>' . __('You can use the "Test Network Settings" button to perform automated testing.','njsl-networks') . '</p>' . 
-			'<p><strong>' . __('For more information','njsl-networks') . ':</strong></p>' .
-
-			'<p><a href="http://codex.wordpress.org/Create_A_Network" target="_blank">' . __('Documentation on WordPress Networks','njsl-networks') . '</a></p>' .
-			'<p><a href="http://www.jerseyconnect.net/development/networks-for-wordpress/" target="_blank">' . __('Networks for WordPress Home Page and FAQ','njsl-networks') . '</a></p>';
+			return $this->networks_help();
 		}
+	}
+
+	function networks_help() {
+		
+		$contextual_help = 
+		'<p>' . __('This table shows all the Networks running on this installation of WordPress.','njsl-networks') . '</p>' .
+		'<p>' . __('Networks are groups of sites with separate admins, plugins, and policies, but with a common set of files and user database.','njsl-networks') . '</p>' .
+		'<p>' . __('The most common use of Networks is running groups of sites on multiple domains from a single install.','njsl-networks') . '</p>' .
+		'<h4>' . __('Creating a Network','njsl-networks') . '</h4>' . 
+		'<ol>' .
+		'<li>' . __('Enter the network\'s basic information in the form.','njsl-networks') . '</li>' .
+		'<li>' . __('Use the test link on the right to verify the new address before creating the network. You should see the "No site defined on this host" error.','njsl-networks') . '</li>' .
+		'<li>' . __('Click "Add Network" when you\'re ready to proceed.','njsl-networks') . '</li>' . 
+		'</ol>' .
+		'<p>' . __('You can use the "Test Network Settings" button to perform automated testing.','njsl-networks') . '</p>' . 
+		'<p><strong>' . __('For more information','njsl-networks') . ':</strong></p>' .
+
+		'<p><a href="http://codex.wordpress.org/Create_A_Network" target="_blank">' . __('Documentation on WordPress Networks','njsl-networks') . '</a></p>' .
+		'<p><a href="http://www.jerseyconnect.net/development/networks-for-wordpress/" target="_blank">' . __('Networks for WordPress Home Page and FAQ','njsl-networks') . '</a></p>';
+
 		return $contextual_help;
 	}
 }
