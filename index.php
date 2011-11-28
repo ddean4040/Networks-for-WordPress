@@ -497,6 +497,7 @@ class njsl_Networks
 {
 	
 	var $admin_page;
+	var $admin_screen;
 	var $admin_settings_page;
 	
 	var $slug = 'networks';
@@ -505,7 +506,11 @@ class njsl_Networks
 	
 	function njsl_Networks() {
 
-		if ( file_exists( dirname( __FILE__ ) . '/' . get_locale() . '.mo' ) ) {
+		/** load localization files if present */
+		if( file_exists( dirname( __FILE__ ) . '/' . dirname(plugin_basename(__FILE__)) . '-' . get_locale() . '.mo' ) ) {
+			load_plugin_textdomain( 'njsl-networks', false, dirname(plugin_basename(__FILE__)) );
+		} else if ( file_exists( dirname( __FILE__ ) . '/' . get_locale() . '.mo' ) ) {
+			_doing_it_wrong( 'load_textdomain', 'Please rename your translation files to use the ' . dirname(plugin_basename(__FILE__)) . '-' . get_locale() . '.mo' . ' format', '1.0.9' );
 			load_textdomain( 'njsl-networks', dirname( __FILE__ ) . '/' . get_locale() . '.mo' );
 		}
 
@@ -519,8 +524,6 @@ class njsl_Networks
 				add_action( 'wpmublogsaction', array(&$this,'assign_blogs_link') );
 			}
 			
-			add_filter( 'contextual_help', array(&$this,'filter_networks_help'), 10, 3 );
-
 		}
 		wp_register_script( 'njsl_networks_admin_js', plugins_url('/_inc/admin.js', __FILE__), array('jquery') );
 		wp_register_style( 'njsl_networks_admin_css', plugins_url('/_inc/admin.css', __FILE__) );
@@ -542,35 +545,41 @@ class njsl_Networks
 	function networks_admin_menu()
 	{
 		if(function_exists('is_network_admin')) {
+			/** WP >= 3.1 */
 			$this->admin_page = add_submenu_page( 'sites.php', __('Networks','njsl-networks'), __('Networks','njsl-networks'), 'manage_network_options', $this->slug, array(&$this, 'sites_page') );
 
 			$this->listPage = 'sites.php?page=' . $this->slug;
 			$this->sitesPage = 'sites.php';
 
 		} else {
+			/** WP < 3.1	*/
 			$this->admin_page = add_submenu_page( 'ms-admin.php', __('Networks','njsl-networks'), __('Networks','njsl-networks'), 'manage_options', $this->slug, array(&$this, 'sites_page') );
 			$this->listPage = 'ms-admin.php?page=' . $this->slug;
 			$this->sitesPage = 'ms-sites.php';
 		}
-				
+		
+		/** Help for WP < 3.3 */
 		add_contextual_help($this->admin_page, $this->networks_help());
-
+		
+		add_action( 'load-' . $this->admin_page, array(&$this,'networks_help_screen') );
 		add_action( 'admin_print_scripts-' . $this->admin_page, array(&$this,'add_admin_scripts') );
 		add_action( 'admin_print_styles-' . $this->admin_page, array(&$this,'add_admin_styles') );
 	}
 	
 	function add_admin_styles() {
+		wp_enqueue_style( 'wp-pointer' );
 		wp_enqueue_style( 'njsl_networks_admin_css' );
 	}
 	
 	function add_admin_scripts() {
+		wp_enqueue_script( 'wp-pointer' );
 		wp_enqueue_script( 'njsl_networks_admin_js' );
 		wp_localize_script( 'njsl_networks_admin_js', 'strings', $this->localize_admin_js() );
 	}
 	
 	function localize_admin_js() {
 		return array(
-			'domainAlert'	=> 'This domain name requires changes to WordPress core files.'
+			'checkingString'	=> __('Checking...','njsl-networks')
 		);
 	}
 
@@ -657,7 +666,7 @@ class njsl_Networks
 					}
 				}
 	
-				$count = $wpdb->get_col('SELECT COUNT(id) FROM ' . $wpdb->site . $searchConditions);
+				$count = $wpdb->get_col('SELECT COUNT(*) FROM ' . $wpdb->site . $searchConditions);
 				$total = $count[0];
 	
 				if( isset( $_GET[ 'start' ] ) == false ) {
@@ -729,7 +738,7 @@ class njsl_Networks
 ?>
 <div class="wrap">
 	<div class="icon32" id="icon-ms-admin"><br /></div>
-	<h2><?php _e ('Networks') ?> <a href="<?php echo $_SERVER['PHP_SELF'] . '?page=networks'; ?>#form-add-network" class="button add-new-h2">Add New</a></h2>
+	<h2><?php _e ('Networks','njsl-networks') ?> <a href="<?php echo $_SERVER['PHP_SELF'] . '?page=networks'; ?>#form-add-network" class="button add-new-h2"><?php _e('Add New') ?></a></h2>
 	<form name="searchform" action="<?php echo $_SERVER['PHP_SELF'] . '?page=networks'; ?>" method="get">
 		<p class="search-box"> 
 			<label class="screen-reader-text" for="network-search-input"><?php _e('Search Networks','njsl-networks'); ?>:</label>
@@ -1538,7 +1547,7 @@ jQuery('.postbox').children('h3').click(function() {
 		
 		$site_id = (int)$_GET['id'];
 		?>
-		<h2><?php _e('Verifying Selected Network','njsl-networks') ?></h2>
+		<h2><?php printf(__('Verifying Network: %s','njsl-networks'),'') ?></h2>
 		<p>
 			<?php _e('This page will perform some basic diagnostics on your Network to uncover common configuration errors. 
 			This testing is by no means exhaustive, and it is still possible to break your Network and pass all these tests.','njsl-networks'); ?>
@@ -1610,20 +1619,20 @@ jQuery('.postbox').children('h3').click(function() {
 				if(VHOST == 'yes') {
 					if(strpos($hosted_blog->domain,$domain) === false) {
 						$site_errors++;
-						echo '<p class="network_error">' . sprintf(__('Site %d has an invalid <code>domain</code> setting.'), $hosted_blog->blog_id) . '</p>';
+						echo '<p class="network_error">' . sprintf(__('Site %d (%s) has an invalid <code>domain</code> setting.','njsl-networks'), $hosted_blog->blog_id, $hosted_blog->domain . $hosted_blog->path) . '</p>';
 					}
 					if($hosted_blog->path != '/') {
 						$site_errors++;
-						echo '<p class="network_error">' . sprintf(__('Site %d has an invalid <code>path</code> setting.'), $hosted_blog->blog_id) . '</p>';
+						echo '<p class="network_error">' . sprintf(__('Site %d (%s)  has an invalid <code>path</code> setting.','njsl-networks'), $hosted_blog->blog_id, $hosted_blog->domain . $hosted_blog->path) . '</p>';
 					}
 				} else {
 					if($hosted_blog->domain != $domain) {
 						$site_errors++;
-						echo '<p class="network_error">' . sprintf(__('Site %d has an invalid <code>domain</code> setting.'), $hosted_blog->blog_id) . '</p>';
+						echo '<p class="network_error">' . sprintf(__('Site %d (%s)  has an invalid <code>domain</code> setting.','njsl-networks'), $hosted_blog->blog_id, $hosted_blog->domain . $hosted_blog->path) . '</p>';
 					}
 					if(strpos($hosted_blog->path, $path) === false) {
 						$site_errors++;
-						echo '<p class="network_error">' . sprintf(__('Site %d has an invalid <code>path</code> setting.'), $hosted_blog->blog_id) . '</p>';
+						echo '<p class="network_error">' . sprintf(__('Site %d (%s)  has an invalid <code>path</code> setting.','njsl-networks'), $hosted_blog->blog_id, $hosted_blog->domain . $hosted_blog->path) . '</p>';
 					}
 				}
 			}
@@ -1644,7 +1653,7 @@ jQuery('.postbox').children('h3').click(function() {
 				foreach($blog_meta as $meta) {
 					if(strpos($meta->option_value,$domain . $path) === false) {
 						$site_errors++;
-						echo '<p class="network_error">' . sprintf(__('Site %d has an invalid meta value in <code>%s</code>. This may prevent access to this site or disable some features.'),$hosted_blog->blog_id,$meta->option_name) . '</p>';
+						echo '<p class="network_error">' . sprintf(__('Site %d (%s) has an invalid meta value in <code>%s</code>. This may prevent access to this site or disable some features.','njsl-networks'),$hosted_blog->blog_id, $hosted_blog->domain . $hosted_blog->path, $meta->option_name) . '</p>';
 					}
 				}
 			}
@@ -1664,7 +1673,7 @@ jQuery('.postbox').children('h3').click(function() {
 			foreach($hosted_blogs as $hosted_blog) {
 				$site_addr = gethostbyname($hosted_blog->domain);
 				if(!is_numeric(substr($site_addr,0,strpos($site_addr,'.')))) { ?>
-					<p class="network_error"><?php printf(__('Site %d\'s domain could not be resolved.','njsl-networks'),$hosted_blog->blog_id) ?></p>
+					<p class="network_error"><?php printf(__('Site %d\'s domain (%s) could not be resolved.','njsl-networks'),$hosted_blog->blog_id, $hosted_blog->domain) ?></p>
 				<?php } else {
 					if($site_addr != $network_addr) {
 						?>
@@ -1684,7 +1693,7 @@ jQuery('.postbox').children('h3').click(function() {
 						?>
 						<div class="network_warning">
 							<p>
-								<?php printf(__('Site %d\'s <code>domain</code> does not match the current network\'s.'), $hosted_blog->blog_id) ?>
+								<?php printf(__('Site %d\'s <code>domain</code> does not match the current network\'s.','njsl-networks'), $hosted_blog->blog_id) ?>
 								<?php _e('This is not a fatal error, but you should verify DNS manually from your users\' perspective.','njsl-networks'); ?>
 							</p>
 							<ul>
@@ -1712,29 +1721,86 @@ jQuery('.postbox').children('h3').click(function() {
 	}
 
 	function networks_help() {
-		
+		return $this->networks_help_intro() . $this->networks_help_create() . $this->networks_help_verify();
+	}
+	
+	function networks_help_intro() {
 		$contextual_help = 
 		'<p>' . __('This table shows all the Networks running on this installation of WordPress.','njsl-networks') . '</p>' .
 		'<p>' . __('Networks are groups of sites with separate admins, plugins, and policies, but with a common set of files and user database.','njsl-networks') . '</p>' .
-		'<p>' . __('The most common use of Networks is running groups of sites on multiple domains from a single install.','njsl-networks') . '</p>' .
-		'<h4>' . __('Creating a Network','njsl-networks') . '</h4>' . 
+		'<p>' . __('The most common use of Networks is running groups of sites on multiple domains from a single install.','njsl-networks') . '</p>'
+		;
+		return $contextual_help;
+	}
+	
+	function networks_help_create() {
+		$contextual_help = 
+		'<h4>' . __('Adding a Network','njsl-networks') . '</h4>' . 
 		'<ol>' .
 		'<li>' . __('Enter the network\'s basic information in the form.','njsl-networks') . '</li>' .
 		'<li>' . __('Use the test link on the right to verify the new address before creating the network. You should see the "No site defined on this host" error.','njsl-networks') . '</li>' .
+		'<li>' . __('If you don\'t see the right message, use the "Check Network Settings" button on the right to see possible issues with your configuration.','njsl-networks') . '</li>' .
 		'<li>' . __('Click "Add Network" when you\'re ready to proceed.','njsl-networks') . '</li>' . 
-		'</ol>' .
-		'<p>' . __('You can use the "Test Network Settings" button to perform automated testing.','njsl-networks') . '</p>' . 
-		'<p><strong>' . __('For more information','njsl-networks') . ':</strong></p>' .
-
-		'<p><a href="http://codex.wordpress.org/Create_A_Network" target="_blank">' . __('Documentation on WordPress Networks','njsl-networks') . '</a></p>' .
-		'<p><a href="http://www.jerseyconnect.net/development/networks-for-wordpress/" target="_blank">' . __('Networks for WordPress Home Page and FAQ','njsl-networks') . '</a></p>';
-
+		'</ol>'
+		;
 		return $contextual_help;
 	}
+
+	function networks_help_verify() {
+		$contextual_help = 
+		'<h4>' . __('Troubleshooting your Networks','njsl-networks') . '</h4>' . 
+		'<p>' . __('If you encounter problems with one of your networks, use the "Verify" link below each network name to perform automated testing.','njsl-networks') . '</p>'
+		;
+		return $contextual_help;
+	}
+	
+	function networks_help_more_info() {
+		$contextual_help = 
+		'<p><strong>' . __('More Information','njsl-networks') . ':</strong></p>' .
+
+		'<p><a href="http://codex.wordpress.org/Create_A_Network" target="_blank">' . __('WordPress Codex - Create a Network','njsl-networks') . '</a></p>' .
+		'<p><a href="http://www.jerseyconnect.net/development/networks-for-wordpress/" target="_blank">' . __('Networks for WordPress Home Page and FAQ','njsl-networks') . '</a></p>'
+		;
+		return $contextual_help;
+	}
+	
+	function networks_help_screen() {
+		if(class_exists('WP_Screen')) {
+			$this->admin_screen = WP_Screen::get($this->admin_page . '-network');
+			$this->admin_screen->add_help_tab(
+				array(
+					'title'    => __('Networks Overview','njsl-networks'),
+					'id'       => 'help',
+					'content'  => $this->networks_help_intro()
+				)
+			);
+			
+			$this->admin_screen->add_help_tab(
+				array(
+					'title'    => __('Adding a Network','njsl-networks'),
+					'id'       => 'add_network',
+					'content'  => $this->networks_help_create()
+				)
+			);
+			
+			$this->admin_screen->add_help_tab(
+				array(
+					'title'    => __('Troubleshooting','njsl-networks'),
+					'id'       => 'verify',
+					'content'  => $this->networks_help_verify()
+				)
+			);
+			
+			$this->admin_screen->set_help_sidebar(
+				$this->networks_help_more_info()
+			);
+		}		
+	}
+	
 }
 
 function njsl_networks_init() {
-	$njslNetworks = new njsl_networks();
+	$njslNetworks = new njsl_Networks();
 	add_action('wp_ajax_check_domain', 'networks_check_domain');
 }
 

@@ -1,7 +1,9 @@
 <?php
 
 /**
- * Attempt to verify this domain for network creation
+ * AJAX function - Attempt to verify this domain for network creation
+ * @param string $_POST['domain'] Domain name to check
+ * @param string $_POST['path'] Path to check
  */
 function networks_check_domain() {
 	
@@ -10,54 +12,55 @@ function networks_check_domain() {
 	$domain = $_POST['domain'];
 	$path = $_POST['path'];
 	
-	/** DNS */
+	/** Check DNS settings */
 	$domain_addr = gethostbyname($domain);
 	$current_addr = gethostbyname($_SERVER['HTTP_HOST']);
 	if($domain_addr == $current_addr) {
-		$dns_result = 'IP address for the new domain is a match!';
+		$dns_result = __('IP address for the new domain is a match!','njsl-networks');
 		$dns_result_class = 'success';
 	} else {
-		$dns_result = 'New domain IP (' . $domain_addr . ') does not match current IP (' . $current_addr . ').<br />Check your DNS settings.';
+		$dns_result = sprintf(__('New domain IP ( %s ) does not match current IP ( %s ).<br />Check your DNS settings.','njsl-networks'),$domain_addr,$current_addr);
 		$dns_result_class = 'error';
 	}
 	
-	/** Domain availability */
-		$site = $wpdb->get_var($wpdb->prepare(
-			"SELECT COUNT(*) FROM {$wpdb->site} WHERE domain='%s'", 
-			$wpdb->escape($domain)
+	/** Check domain availability in WP */
+	$site = $wpdb->get_var($wpdb->prepare(
+		"SELECT COUNT(*) FROM {$wpdb->site} WHERE domain=%s", 
+		$domain
+	));
+	
+	if($site == 0) {
+		$site_result = __('This domain is available!','njsl-networks');
+		$site_result_class = 'success';
+		
+		$path_result = __('This path is available!','njsl-networks');
+		$path_result_class = 'success';
+		
+	} else {
+
+		$site_result = __('One or more networks exist on this domain.','njsl-networks');
+		$site_result_class = 'error';
+
+		/** Path availability */
+		$path = $wpdb->get_var($wpdb->prepare(
+			"SELECT COUNT(*) FROM {$wpdb->site} WHERE domain='%s' AND path='%s'", 
+			$wpdb->escape($domain),
+			$wpdb->escape($path)
 		));
-		if($site == 0) {
-			$site_result = 'This domain is available!';
-			$site_result_class = 'success';
-			
-			$path_result = 'This path is available!';
-			$path_result_class = 'success';
-			
+		
+		if($path == 0) {
+			$path_result = __('This path is available, but there are other networks on this domain.','njsl-networks');
+			$path_result_class = 'warning';
 		} else {
-
-			$site_result = 'One or more networks exist on this domain.';
-			$site_result_class = 'error';
-
-			/** Path availability */
-			$path = $wpdb->get_var($wpdb->prepare(
-				"SELECT COUNT(*) FROM {$wpdb->site} WHERE domain='%s' AND path='%s'", 
-				$wpdb->escape($domain),
-				$wpdb->escape($path)
-			));
-			
-			if($path == 0) {
-				$path_result = 'This path is available, but there are other networks on this domain.';
-				$path_result_class = 'warning';
-			} else {
-				$path_result = 'This path is NOT available.';
-				$path_result_class = 'error';
-			}
-			
+			$path_result = __('This path is NOT available.','njsl-networks');
+			$path_result_class = 'error';
 		}
+		
+	}
 	
 	?>
 	<div id="network_verify_result">
-	<h5>Results:</h5>
+	<h5><?php _e('Results:','njsl-networks'); ?></h5>
 	<ul>
 		<li class="<?php echo $dns_result_class ?>">DNS: <?php echo $dns_result; ?></li>
 		<li class="<?php echo $site_result_class ?>">Domain: <?php echo $site_result; ?></li>

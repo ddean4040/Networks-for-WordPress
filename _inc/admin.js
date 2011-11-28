@@ -16,7 +16,7 @@ jQuery(document).ready( function() {
 	});
 	
 	jQuery('#verify_domain').click(function() {
-		jQuery('#verifying').html('Checking...');
+		jQuery('#verifying').html(strings.checkingString);
 		var data = {
 			action: 'check_domain',
 			domain:	jQuery('#newDom').val(),
