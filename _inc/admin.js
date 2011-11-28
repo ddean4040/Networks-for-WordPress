@@ -28,6 +28,19 @@ jQuery(document).ready( function() {
 		});
 	});
 	
+	jQuery(document).ready(function(){
+		jQuery('#contextual-help-link').pointer({
+			content    : strings.pointerText,
+			position   : { 
+				edge: 'top',
+				align: 'right'
+			},
+			close  : function() {}
+		}).pointer('open');
+
+	});
+
+	
 });
 
 function update_domain_preview( domain_name ) {

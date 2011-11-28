@@ -4,8 +4,8 @@
  * Plugin Name: Networks for WordPress
  * Plugin URI: http://www.jerseyconnect.net/development/networks-for-wordpress/
  * Description: Adds a Networks panel for site admins to create and manipulate multiple networks.
- * Version: 1.0.8
- * Revision Date: 11/25/2011
+ * Version: 1.0.9-testing
+ * Revision Date: 11/28/2011
  * Requires at least: WP 3.0
  * Tested up to: WP 3.3-beta4
  * License: GNU General Public License 2.0 (GPL) or later
@@ -578,8 +578,13 @@ class njsl_Networks
 	}
 	
 	function localize_admin_js() {
+
+		$widget_text = '<h3>' . esc_js( __( 'Questions about Networks?') ) . '</h3>';
+		$widget_text .= '<p>' . esc_js( __( 'Check the Help pages before you get started!' ) ). '</p>';
+
 		return array(
-			'checkingString'	=> __('Checking...','njsl-networks')
+			'checkingString'	=> __('Checking...','njsl-networks'),
+			'pointerText'		=> $widget_text
 		);
 	}
 
@@ -904,7 +909,7 @@ class njsl_Networks
 						<tr><th scope="row"><label for="newBlog"><?php _e('Root Site Name','njsl-networks'); ?>:</label></th><td><input type="text" name="newBlog" id="newBlog" title="<?php _e('The name for the new Network\'s root site','njsl-networks'); ?>" /></td></tr>
 					</table>
 				</td>
-				<td style="vertical-align: top">
+				<td style="vertical-align: top" id="new-network-preview">
 					<h4>New Network Preview</h4>
 					<ul>
 						<li>Domain: <span id="domain_preview" /></li>
@@ -1726,8 +1731,10 @@ jQuery('.postbox').children('h3').click(function() {
 	
 	function networks_help_intro() {
 		$contextual_help = 
-		'<p>' . __('This table shows all the Networks running on this installation of WordPress.','njsl-networks') . '</p>' .
-		'<p>' . __('Networks are groups of sites with separate admins, plugins, and policies, but with a common set of files and user database.','njsl-networks') . '</p>' .
+		'<p>' . __('The table below shows all the Networks running on this installation of WordPress.','njsl-networks') . '</p>' .
+		'<h4>' . __('What is a Network?','njsl-networks') . '</h4>' .
+		'<p>' . __('A Network is a group of sites with common admins, plugins, and policies.','njsl-networks') . '</p>' .
+		'<p>' . __('With Networks for WordPress, you can create as many distinct Networks as you need. All your Networks will share a common codebase and set of users.') . '</p>' . 
 		'<p>' . __('The most common use of Networks is running groups of sites on multiple domains from a single install.','njsl-networks') . '</p>'
 		;
 		return $contextual_help;
@@ -1737,8 +1744,8 @@ jQuery('.postbox').children('h3').click(function() {
 		$contextual_help = 
 		'<h4>' . __('Adding a Network','njsl-networks') . '</h4>' . 
 		'<ol>' .
-		'<li>' . __('Enter the network\'s basic information in the form.','njsl-networks') . '</li>' .
-		'<li>' . __('Use the test link on the right to verify the new address before creating the network. You should see the "No site defined on this host" error.','njsl-networks') . '</li>' .
+		'<li>' . __('Enter the network\'s basic information in the <a href="#form-add-network">form below</a>.','njsl-networks') . '</li>' .
+		'<li>' . sprintf(__('Use the test link on the right to verify the new address before creating the network. You should see the "%s" error.','njsl-networks'),__('No site defined on this host','njsl-networks')) . '</li>' .
 		'<li>' . __('If you don\'t see the right message, use the "Check Network Settings" button on the right to see possible issues with your configuration.','njsl-networks') . '</li>' .
 		'<li>' . __('Click "Add Network" when you\'re ready to proceed.','njsl-networks') . '</li>' . 
 		'</ol>'
