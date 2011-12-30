@@ -87,6 +87,9 @@ Tip: You can use the New Network Preview feature to verify DNS and server config
 
 == Upgrade Notice ==
 
+= 1.0.8 =
+* Updated for WP 3.3
+
 = 1.0.7 =
 * Added diagnostic screen to help identify and resolve Network issues
 

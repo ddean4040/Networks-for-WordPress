@@ -5,9 +5,9 @@
  * Plugin URI: http://www.jerseyconnect.net/development/networks-for-wordpress/
  * Description: Adds a Networks panel for site admins to create and manipulate multiple networks.
  * Version: 1.0.9-testing
- * Revision Date: 11/28/2011
+ * Revision Date: 12/30/2011
  * Requires at least: WP 3.0
- * Tested up to: WP 3.3-beta4
+ * Tested up to: WP 3.3
  * License: GNU General Public License 2.0 (GPL) or later
  * Author: David Dean
  * Author URI: http://www.generalthreat.com/
@@ -16,6 +16,14 @@
 */
 
 require_once (dirname(__FILE__) . '/ajax.php');
+
+if( ! defined( 'RESTRICT_MANAGEMENT_TO' ) ) {
+	
+	/** Enter an ID here to restrict the Networks panel to only the specified network (site ID)
+	 * FALSE (or 0) will disable the feature
+	 */
+	define( 'RESTRICT_MANAGEMENT_TO', FALSE );
+}
 
 if(!defined('ENABLE_HOLDING_SITE')) {
 
@@ -184,7 +192,7 @@ if (!function_exists('add_site')) {
 	 * @uses switch_to_site()
 	 * @uses restore_current_site()
 	 * 
-	 * @param string $domain domain name for new network - for VHOST=no, this should be a FQDN, otherwise domain only
+	 * @param string $domain domain name for new network - for subdirectory installs, this should be a FQDN, otherwise domain only
 	 * @param string $path path to root of network hierarchy - should be '/' unless WordPress is sharing a domain with normal web pages
 	 * @param string $blog_name Name of the root blog to be created on the new network or FALSE to skip creating a root blog
 	 * @param integer $cloneSite ID of network whose sitemeta values are to be copied - default NULL
@@ -451,7 +459,7 @@ if(!function_exists('move_blog')) {
 			}
 		}
 
-		if(defined('VHOST') && VHOST == 'yes') {
+		if( is_subdomain_install() ) {
 
 			$exDom = substr($blog->domain,0,(strpos($blog->domain,'.')+1));
 			$domain = $exDom . $newSite->domain;
@@ -806,7 +814,7 @@ class njsl_Networks
 				$network = $blog;
 				$class = ('alternate' == $class) ? '' : 'alternate';
 				echo '<tr class="' . $class . '">';
-				if( constant( "VHOST" ) == 'yes' ) { 
+				if( is_subdomain_install() ) { 
 					$blogname = str_replace( '.' . $current_site->domain, '', $blog[ 'domain' ] ); 
 				} else { 
 					$blogname = $blog[ 'path' ]; 
@@ -895,10 +903,10 @@ class njsl_Networks
 					<table class="form-table">
 						<tr><th scope="row"><label for="newName"><?php _e('Network Name','njsl-networks'); ?>:</label></th><td><input type="text" name="name" id="newName" title="<?php _e('A friendly name for your new Network','njsl-networks'); ?>" /></td></tr>
 						<tr><th scope="row"><label for="newDom"><?php _e('Domain','njsl-networks'); ?>:</label></th><td> http://<input type="text" name="domain" id="newDom" title="<?php _e('The domain for your new Network','njsl-networks'); ?>" /></td></tr>
-						<?php if(VHOST != 'yes') { ?>
-						<tr><th scope="row"><label for="newPath"><?php _e('Path','njsl-networks'); ?>:</label></th><td><input type="text" name="path" id="newPath" title="<?php _e('If you are unsure, put in /'); ?>" /></td></tr>
-						<?php } else { ?>
+						<?php if( is_subdomain_install() ) { ?>
 						<tr><th scope="row"><label for="newPath"><?php _e('Path','njsl-networks'); ?>:</label></th><td><code>/</code><input type="hidden" name="path" id="newPath" value="/" /></td></tr>
+						<?php } else { ?>
+						<tr><th scope="row"><label for="newPath"><?php _e('Path','njsl-networks'); ?>:</label></th><td><input type="text" name="path" id="newPath" placeholder="/" title="<?php _e('If you are unsure, put in /'); ?>" /></td></tr>
 						<?php } ?>
 						<tr>
 							<th scope="row"><label for="create_root_site"><?php _e('Create a Root Site','njsl-networks') ?>:</label></th>
@@ -1140,7 +1148,7 @@ jQuery('.postbox').children('h3').click(function() {
 				<div class="icon32" id="icon-ms-admin"><br></div>
 				<h2><?php _e('Assign Sites to','njsl-networks'); ?>: <?php echo $site->site_name . ' (' . $site->domain . $site->path . ')' ?></h2>
 				<noscript>
-					<div id="message" class="updated" class="hide-if-js"><p><?php printf( __('Select the sites you want to assign to this network from the column at left, and click "%s."','njsl-networks'),__('Update Assignments','njsl-networks')); ?></p></div>
+					<div id="message" class="updated hide-if-js"><p><?php printf( __('Select the sites you want to assign to this network from the column at left, and click "%s."','njsl-networks'),__('Update Assignments','njsl-networks')); ?></p></div>
 				</noscript>
 				<form method="post" action="<?php echo $_SERVER['REQUEST_URI']; ?>" id="site-assign-form">
 				<table class="widefat">
@@ -1579,7 +1587,7 @@ jQuery('.postbox').children('h3').click(function() {
 		$hosted_blogs = $wpdb->get_results($wpdb->prepare('SELECT * FROM ' . $wpdb->blogs . ' WHERE site_id=%d',$site_id));
 		if($hosted_blogs && count($hosted_blogs) > 0) {
 			foreach($hosted_blogs as $hosted_blog) {
-				if(VHOST == 'yes') {
+				if( is_subdomain_install() ) {
 					if(strpos($hosted_blog->domain,$domain) === false) {
 						$site_errors++;
 						echo '<p class="network_error">' . sprintf(__('Site %d (%s) has an invalid <code>domain</code> setting.','njsl-networks'), $hosted_blog->blog_id, $hosted_blog->domain . $hosted_blog->path) . '</p>';
@@ -1628,7 +1636,7 @@ jQuery('.postbox').children('h3').click(function() {
 			echo '<p class="network_success">' . __('Passed.','njsl-networks') . '</p>';
 		}
 		?>
-		<?php if(VHOST == 'yes') : ?>
+		<?php if( is_subdomain_install() ) : ?>
 		<h3><?php _e('Checking DNS for hosted site subdomains','njsl-networks') ?>:</h3>
 		<?php
 		
@@ -1765,6 +1773,10 @@ jQuery('.postbox').children('h3').click(function() {
 }
 
 function njsl_networks_init() {
+	global $current_site;
+	if( RESTRICT_MANAGEMENT_TO && RESTRICT_MANAGEMENT_TO != $current_site->id ) {
+		return;
+	}
 	$njslNetworks = new njsl_Networks();
 	add_action('wp_ajax_check_domain', 'networks_check_domain');
 }
