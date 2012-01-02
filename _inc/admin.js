@@ -28,18 +28,22 @@ jQuery(document).ready( function() {
 		});
 	});
 	
-	jQuery(document).ready(function(){
+	if(typeof(jQuery().pointer) != 'undefined') {
 		jQuery('#contextual-help-link').pointer({
 			content    : strings.pointerText,
 			position   : { 
 				edge: 'top',
 				align: 'right'
 			},
-			close  : function() {}
+			close  : function() {
+				jQuery.post( ajaxurl, {
+					pointer: 'networks-help',
+					action: 'dismiss-wp-pointer'
+				});
+			}
 		}).pointer('open');
-
-	});
-
+		 
+	}
 	
 });
 

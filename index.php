@@ -4,8 +4,8 @@
  * Plugin Name: Networks for WordPress
  * Plugin URI: http://www.jerseyconnect.net/development/networks-for-wordpress/
  * Description: Adds a Networks panel for site admins to create and manipulate multiple networks.
- * Version: 1.0.9-testing
- * Revision Date: 12/30/2011
+ * Version: 1.0.9
+ * Revision Date: 01/01/2012
  * Requires at least: WP 3.0
  * Tested up to: WP 3.3
  * License: GNU General Public License 2.0 (GPL) or later
@@ -580,8 +580,8 @@ class njsl_Networks
 	}
 	
 	function add_admin_scripts() {
-		wp_enqueue_script( 'wp-pointer' );
-		wp_enqueue_script( 'njsl_networks_admin_js' );
+		wp_enqueue_script( 'wp-pointer', false, array('jquery') );
+		wp_enqueue_script( 'njsl_networks_admin_js', false, array('jquery') );
 		wp_localize_script( 'njsl_networks_admin_js', 'strings', $this->localize_admin_js() );
 	}
 	
@@ -589,6 +589,14 @@ class njsl_Networks
 
 		$widget_text = '<h3>' . esc_js( __( 'Questions about Networks?') ) . '</h3>';
 		$widget_text .= '<p>' . esc_js( __( 'Check the Help pages before you get started!' ) ). '</p>';
+
+		// Get dismissed pointers
+		$dismissed = explode( ',', (string) get_user_meta( get_current_user_id(), 'dismissed_wp_pointers', true ) );
+
+		// Pointer has been dismissed
+		if ( in_array( 'networks-help', $dismissed ) ) {
+			$widget_text = '';
+		}
 
 		return array(
 			'checkingString'	=> __('Checking...','njsl-networks'),
@@ -598,6 +606,8 @@ class njsl_Networks
 
 	/** ====== config_page ====== */
 	function sites_page() {
+
+		require_once (dirname(__FILE__) . '/compatibility.php');
 		
 		global $wpdb;
 		global $options_to_copy;
@@ -1710,7 +1720,7 @@ jQuery('.postbox').children('h3').click(function() {
 		'<h4>' . __('What is a Network?','njsl-networks') . '</h4>' .
 		'<p>' . __('A Network is a group of sites with common admins, plugins, and policies.','njsl-networks') . '</p>' .
 		'<p>' . __('With Networks for WordPress, you can create as many distinct Networks as you need. All your Networks will share a common codebase and set of users.') . '</p>' . 
-		'<p>' . __('The most common use of Networks is running groups of sites on multiple domains from a single install.','njsl-networks') . '</p>'
+		'<p>' . __('The most common use of Networks is running distinct groups of sites on multiple domains from a single install.','njsl-networks') . '</p>'
 		;
 		return $contextual_help;
 	}

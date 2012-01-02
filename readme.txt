@@ -2,8 +2,8 @@
 Contributors: ddean
 Tags: multisite, multi-site, sites, networks, multi-network, multiple, multi-domain, domains
 Requires at least: 3.0
-Tested up to: 3.3-beta4
-Stable tag: 1.0.8
+Tested up to: 3.3
+Stable tag: 1.0.9
 
 Adds a Networks panel for network admins to create and manage multiple networks from one WordPress installation.
 
@@ -46,6 +46,13 @@ Tip: You can use the New Network Preview feature to verify DNS and server config
 * Plugins that create global (i.e. not blog-specific) tables will behave as though they are on a single network install.  This is a limitation of WordPress's table naming scheme.
 
 == Changelog ==
+
+= 1.0.9 =
+* Added: enhanced help menu for WP 3.3
+* Added: ability to restrict Networks Menu to a certain Network with the `RESTRICT_MANAGEMENT_TO` constant
+* Added: WP 3.3 help pointer
+* Changed: removed ability to delete the primary network
+* Fixed: enhanced compatibility with WP < 3.1 - thanks, suresh.sambandam
 
 = 1.0.8 =
 * Added: support for the `siteurl` sitemeta entry
