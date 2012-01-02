@@ -854,6 +854,11 @@ class njsl_Networks
 									'delete'		=> '<span class="delete"><a href="'.  $queryStr . '&amp;action=deletesite&amp;id=' .  $blog['id'] . '" title="' . __('Delete this network','njsl-networks') . '">' . __('Delete','njsl-networks') . '</a></span>'
 								);
 								
+								/** Disable deleting site ID 1 */
+								if( $blog[ 'id' ] == 1 ) {
+									array_pop($actions);
+								}
+								
 								?>
 								<?php if ( count( $actions ) != 0 ) : ?>
 								<div class="row-actions">
@@ -1348,6 +1353,10 @@ jQuery('.postbox').children('h3').click(function() {
 		global $wpdb;
 		
 		if(isset($_POST['delete']) && isset($_GET['id'])) {
+			
+			if($_GET['id'] == 1) {
+				wp_die( __( 'Deleting the main network is disabled.', 'njsl-networks' ) );
+			}
 			
 			$result = delete_site((int)$_GET['id'],(isset($_POST['override'])));
 			if(is_a($result,'WP_Error')) {
