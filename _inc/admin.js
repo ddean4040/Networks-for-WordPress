@@ -28,7 +28,7 @@ jQuery(document).ready( function() {
 		});
 	});
 	
-	if(typeof(jQuery().pointer) != 'undefined') {
+	if(typeof(jQuery().pointer) != 'undefined' && strings.pointerText != '') {
 		jQuery('#contextual-help-link').pointer({
 			content    : strings.pointerText,
 			position   : { 

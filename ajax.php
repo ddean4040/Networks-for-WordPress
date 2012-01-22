@@ -30,11 +30,28 @@ function networks_check_domain() {
 	));
 	
 	if($site == 0) {
-		$site_result = __('This domain is available!','njsl-networks');
-		$site_result_class = 'success';
-		
-		$path_result = __('This path is available!','njsl-networks');
-		$path_result_class = 'success';
+
+		/** Check domain mapping tables, if installed */
+		if( isset( $wpdb->dmtable ) ) {
+			$mapped_domain = $wpdb->get_var( $wpdb->prepare(
+				"SELECT COUNT(*) FROM {$wpdb->dmtable} WHERE domain=%s",
+				$domain
+			) );
+		}
+
+		if( ! isset( $wpdb->dmtable )  | $mapped_domain == 0 ) {
+			$site_result = __('This domain is available!','njsl-networks');
+			$site_result_class = 'success';
+			
+			$path_result = __('This path is available!','njsl-networks');
+			$path_result_class = 'success';
+		} else {
+			$site_result = __('This domain is in use by domain mapping.','njsl-networks');
+			$site_result_class = 'warning';
+			
+			$path_result = __('This path is available!','njsl-networks');
+			$path_result_class = 'success';
+		}
 		
 	} else {
 

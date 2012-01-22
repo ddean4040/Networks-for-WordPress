@@ -94,6 +94,9 @@ Tip: You can use the New Network Preview feature to verify DNS and server config
 
 == Upgrade Notice ==
 
+= 1.0.9 =
+* Fixed compatibility with WP < 3.1, enhanced help for WP 3.3, added ability to restrict Networks panel to a single Network
+
 = 1.0.8 =
 * Updated for WP 3.3
 
