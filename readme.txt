@@ -2,10 +2,10 @@
 Contributors: ddean
 Tags: multisite, multi-site, sites, networks, multi-network, multiple, multi-domain, domains
 Requires at least: 3.0
-Tested up to: 3.3
-Stable tag: 1.0.9
+Tested up to: 3.3.1
+Stable tag: 1.1.0
 
-Adds a Networks panel for network admins to create and manage multiple networks from one WordPress installation.
+Adds a Networks panel for network admins to create and manage multiple Networks from one WordPress installation.
 
 == Description ==
 
@@ -46,6 +46,10 @@ Tip: You can use the New Network Preview feature to verify DNS and server config
 * Plugins that create global (i.e. not blog-specific) tables will behave as though they are on a single network install.  This is a limitation of WordPress's table naming scheme.
 
 == Changelog ==
+
+= 1.1.0 =
+* Added: New Network Preview will try to check mapped domains for possible collisions
+* Changed: `upload_filetypes` is now cloned by default, so you don't have to save settings before uploading files on new networks
 
 = 1.0.9 =
 * Added: enhanced help menu for WP 3.3
@@ -93,6 +97,9 @@ Tip: You can use the New Network Preview feature to verify DNS and server config
 * Initial release
 
 == Upgrade Notice ==
+
+= 1.1.0 =
+* upload_filetypes key cloned by default, some domain mapping checks added
 
 = 1.0.9 =
 * Fixed compatibility with WP < 3.1, enhanced help for WP 3.3, added ability to restrict Networks panel to a single Network

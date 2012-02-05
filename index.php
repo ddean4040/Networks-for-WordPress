@@ -4,10 +4,10 @@
  * Plugin Name: Networks for WordPress
  * Plugin URI: http://www.jerseyconnect.net/development/networks-for-wordpress/
  * Description: Adds a Networks panel for site admins to create and manipulate multiple networks.
- * Version: 1.0.9
- * Revision Date: 01/01/2012
+ * Version: 1.1.0
+ * Revision Date: 02/04/2012
  * Requires at least: WP 3.0
- * Tested up to: WP 3.3
+ * Tested up to: WP 3.3.1
  * License: GNU General Public License 2.0 (GPL) or later
  * Author: David Dean
  * Author URI: http://www.generalthreat.com/
@@ -48,15 +48,16 @@ $url_dependent_site_options = array('siteurl');
 
 /** sitemeta options to be copied on clone */
 $options_to_copy = array(
-	'admin_email'				=> __('Network administrator email','njsl-networks'),
-	'admin_user_id'				=> __('Deprecated - Admin user ID','njsl-networks'),
-	'allowed_themes'			=> __('Deprecated - Old list of allowed themes','njsl-networks'),
-	'allowedthemes'				=> __('List of allowed themes','njsl-networks'),
-	'banned_email_domains'		=> __('Banned email domains','njsl-networks'),
-	'first_post'				=> __('Content of first post on a new site','njsl-networks'),
-	'limited_email_domains'		=> __('Permitted email domains','njsl-networks'),
-	'site_admins'				=> __('List of site administrator usernames','njsl-networks'),
-	'welcome_email'				=> __('Content of welcome email','njsl-networks')
+	'admin_email'				=> __( 'Network administrator email', 'njsl-networks' ),
+	'admin_user_id'				=> __( 'Deprecated - Admin user ID', 'njsl-networks' ),
+	'allowed_themes'			=> __( 'Deprecated - Old list of allowed themes', 'njsl-networks' ),
+	'allowedthemes'				=> __( 'List of allowed themes', 'njsl-networks' ),
+	'banned_email_domains'		=> __( 'Banned email domains', 'njsl-networks' ),
+	'first_post'				=> __( 'Content of first post on a new site', 'njsl-networks' ),
+	'limited_email_domains'		=> __( 'Permitted email domains', 'njsl-networks' ),
+	'site_admins'				=> __( 'List of site administrator usernames', 'njsl-networks' ),
+	'upload_filetypes'			=> __( 'Allowed upload file types', 'njsl-networks' ),
+	'welcome_email'				=> __( 'Content of welcome email', 'njsl-networks' )
 );
 
 define('SITES_PER_PAGE',10);
@@ -1641,7 +1642,7 @@ jQuery('.postbox').children('h3').click(function() {
 			foreach($hosted_blogs as $hosted_blog) {
 				$blog_meta = $wpdb->get_results('SELECT option_name, option_value FROM ' . $wpdb->get_blog_prefix( $hosted_blog->blog_id ) . 'options' . ' WHERE option_name IN ("' . implode('", "',$url_dependent_blog_options) . '")');
 				foreach($blog_meta as $meta) {
-					if(strpos($meta->option_value,$domain . $path) === false) {
+					if( strpos( trailingslashit( $meta->option_value ), $domain . $path ) === false) {
 						$site_errors++;
 						echo '<p class="network_error">' . sprintf(__('Site %d (%s) has an invalid meta value in <code>%s</code>. This may prevent access to this site or disable some features.','njsl-networks'),$hosted_blog->blog_id, $hosted_blog->domain . $hosted_blog->path, $meta->option_name) . '</p>';
 					}
@@ -1720,7 +1721,8 @@ jQuery('.postbox').children('h3').click(function() {
 		'<h4>' . __('What is a Network?','njsl-networks') . '</h4>' .
 		'<p>' . __('A Network is a group of sites with common admins, plugins, and policies.','njsl-networks') . '</p>' .
 		'<p>' . __('With Networks for WordPress, you can create as many distinct Networks as you need. All your Networks will share a common codebase and set of users.') . '</p>' . 
-		'<p>' . __('The most common use of Networks is running distinct groups of sites on multiple domains from a single install.','njsl-networks') . '</p>'
+		'<p>' . __('The most common use of Networks is running distinct groups of sites on multiple domains from a single install.','njsl-networks') . '</p>' . 
+		'<p>' . __('If what you want to do is run a single site on a different domain, or to have a site accessible at more than one domain, you should look into domain mapping instead.','njsl-networks') . '</p>'
 		;
 		return $contextual_help;
 	}
@@ -1741,7 +1743,8 @@ jQuery('.postbox').children('h3').click(function() {
 	function networks_help_verify() {
 		$contextual_help = 
 		'<h4>' . __('Troubleshooting your Networks','njsl-networks') . '</h4>' . 
-		'<p>' . __('If you encounter problems with one of your networks, use the "Verify" link below each network name to perform automated testing.','njsl-networks') . '</p>'
+		'<p>' . __('If you encounter problems with one of your networks, use the "Verify" link below each network name to perform automated testing.','njsl-networks') . '</p>' .
+		'<p>' . __('Running multiple networks requires care in your server configuration. For best results, ensure all the domains you are planning to use for networks share the same settings.','njsl-networks') . '</p>'
 		;
 		return $contextual_help;
 	}
