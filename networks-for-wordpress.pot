@@ -1,0 +1,708 @@
+# Copyright (C) 2012 
+# This file is distributed under the same license as the  package.
+msgid ""
+msgstr ""
+"Project-Id-Version:  \n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/networks-for-wordpress\n"
+"POT-Creation-Date: 2012-02-05 01:08:26+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2012-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+
+#: index.php:51
+msgid "Network administrator email"
+msgstr ""
+
+#: index.php:52
+msgid "Deprecated - Admin user ID"
+msgstr ""
+
+#: index.php:53
+msgid "Deprecated - Old list of allowed themes"
+msgstr ""
+
+#: index.php:54
+msgid "List of allowed themes"
+msgstr ""
+
+#: index.php:55
+msgid "Banned email domains"
+msgstr ""
+
+#: index.php:56
+msgid "Content of first post on a new site"
+msgstr ""
+
+#: index.php:57
+msgid "Permitted email domains"
+msgstr ""
+
+#: index.php:58
+msgid "List of site administrator usernames"
+msgstr ""
+
+#: index.php:59
+msgid "Allowed upload file types"
+msgstr ""
+
+#: index.php:60
+msgid "Content of welcome email"
+msgstr ""
+
+#: index.php:208 index.php:1273
+msgid "New Network Created"
+msgstr ""
+
+#: index.php:220
+msgid "Network already exists!"
+msgstr ""
+
+#: index.php:303 index.php:309 index.php:383 index.php:447 index.php:459
+msgid "Network does not exist."
+msgstr ""
+
+#: index.php:321
+msgid "Network could not be updated."
+msgstr ""
+
+#: index.php:390
+msgid "Cannot delete network with sites."
+msgstr ""
+
+#: index.php:432
+msgid "Site does not exist."
+msgstr ""
+
+#: index.php:485
+msgid "Site could not be moved."
+msgstr ""
+
+#: index.php:546 index.php:1092
+msgid "Move Site"
+msgstr ""
+
+#: index.php:550
+msgid "Move"
+msgstr ""
+
+#: index.php:558 index.php:565 index.php:765
+msgid "Networks"
+msgstr ""
+
+#: index.php:591
+msgid "Questions about Networks?"
+msgstr ""
+
+#: index.php:592
+msgid "Check the Help pages before you get started!"
+msgstr ""
+
+#: index.php:603
+msgid "Checking..."
+msgstr ""
+
+#: index.php:618
+msgid "You do not have permission to access this page."
+msgstr ""
+
+#: index.php:646
+msgid "Options saved."
+msgstr ""
+
+#: index.php:648
+msgid "Network created."
+msgstr ""
+
+#: index.php:650
+msgid "Network(s) deleted."
+msgstr ""
+
+#: index.php:687 index.php:768 index.php:771
+msgid "Search Networks"
+msgstr ""
+
+#: index.php:765
+msgid "Add New"
+msgstr ""
+
+#: index.php:778
+msgid "ID"
+msgstr ""
+
+#: index.php:779 index.php:920
+msgid "Network Name"
+msgstr ""
+
+#: index.php:780 index.php:921 index.php:1342
+msgid "Domain"
+msgstr ""
+
+#: index.php:781 index.php:923 index.php:925 index.php:1343
+msgid "Path"
+msgstr ""
+
+#: index.php:782
+msgid "Sites"
+msgstr ""
+
+#: index.php:800 index.php:865
+msgid "Delete"
+msgstr ""
+
+#: index.php:802
+msgid "Filter"
+msgstr ""
+
+#: index.php:802
+msgid "Remove this filter"
+msgstr ""
+
+#: index.php:862
+msgid "Assign sites to this network"
+msgstr ""
+
+#: index.php:862
+msgid "Assign Sites"
+msgstr ""
+
+#: index.php:863
+msgid "Edit this network"
+msgstr ""
+
+#: index.php:863
+msgid "Edit"
+msgstr ""
+
+#: index.php:864
+msgid "Check this network for configuration errors"
+msgstr ""
+
+#: index.php:864
+msgid "Verify"
+msgstr ""
+
+#: index.php:865
+msgid "Delete this network"
+msgstr ""
+
+#: index.php:889
+msgid "Sites on this network"
+msgstr ""
+
+#: index.php:906
+msgid "No matching networks were found."
+msgstr ""
+
+#: index.php:914
+msgid "Create a Network"
+msgstr ""
+
+#: index.php:920
+msgid "A friendly name for your new Network"
+msgstr ""
+
+#: index.php:921
+msgid "The domain for your new Network"
+msgstr ""
+
+#: index.php:925
+msgid "If you are unsure, put in /"
+msgstr ""
+
+#: index.php:928
+msgid "Create a Root Site"
+msgstr ""
+
+#: index.php:930
+msgid ""
+"A site will be created at the root of the new network.<br /> If you don't "
+"know what this means, leave it checked."
+msgstr ""
+
+#: index.php:933
+msgid "Root Site Name"
+msgstr ""
+
+#: index.php:933
+msgid "The name for the new Network's root site"
+msgstr ""
+
+#: index.php:942
+msgid "Check Network Settings"
+msgstr ""
+
+#: index.php:950
+msgid "Advanced Network Options"
+msgstr ""
+
+#: index.php:954
+msgid "Copy Network Options From"
+msgstr ""
+
+#: index.php:956
+msgid "Do Not Copy"
+msgstr ""
+
+#: index.php:959
+msgid "Options to Copy"
+msgstr ""
+
+#: index.php:963
+msgid "Options added by plugins may not exist on all networks."
+msgstr ""
+
+#: index.php:981
+msgid "Meta Value"
+msgstr ""
+
+#: index.php:982
+msgid "Description"
+msgstr ""
+
+#: index.php:1000
+msgid "Add Network"
+msgstr ""
+
+#: index.php:1033
+msgid "You must select a site to move."
+msgstr ""
+
+#: index.php:1038
+msgid "Site not found in blogs table."
+msgstr ""
+
+#: index.php:1045
+msgid "Blog options table not found."
+msgstr ""
+
+#: index.php:1055
+msgid "Moving"
+msgstr ""
+
+#: index.php:1060
+msgid "From"
+msgstr ""
+
+#: index.php:1061
+msgid "To"
+msgstr ""
+
+#: index.php:1068
+msgid "Select a Network"
+msgstr ""
+
+#: index.php:1084 index.php:1215
+msgid "Options"
+msgstr ""
+
+#: index.php:1093 index.php:1222 index.php:1354 index.php:1421 index.php:1529
+msgid "Cancel"
+msgstr ""
+
+#: index.php:1108 index.php:1114
+msgid "No sites selected."
+msgstr ""
+
+#: index.php:1143 index.php:1312 index.php:1323 index.php:1385
+msgid "Invalid network ID selected"
+msgstr ""
+
+#: index.php:1147
+msgid "Blogs table is inaccessible."
+msgstr ""
+
+#: index.php:1154
+msgid "Could not locate options table for a site. (Tried: %s)."
+msgstr ""
+
+#: index.php:1157
+msgid "Unknown site name"
+msgstr ""
+
+#: index.php:1165
+msgid "Assign Sites to"
+msgstr ""
+
+#: index.php:1167
+msgid ""
+"Select the sites you want to assign to this network from the column at left, "
+"and click \"%s.\""
+msgstr ""
+
+#: index.php:1167 index.php:1221
+msgid "Update Assignments"
+msgstr ""
+
+#: index.php:1173
+msgid "Available"
+msgstr ""
+
+#: index.php:1175
+msgid "Assigned"
+msgstr ""
+
+#: index.php:1339
+msgid "Edit Network"
+msgstr ""
+
+#: index.php:1353
+msgid "Update Network"
+msgstr ""
+
+#: index.php:1369
+msgid "Deleting the main network is disabled."
+msgstr ""
+
+#: index.php:1404 index.php:1420
+msgid "Delete Network"
+msgstr ""
+
+#: index.php:1409 index.php:1414
+msgid "There are sites associated with this network. "
+msgstr ""
+
+#: index.php:1409
+msgid "Deleting it will move those sites to the holding network."
+msgstr ""
+
+#: index.php:1410 index.php:1415
+msgid "If you still want to delete this network, check the following box"
+msgstr ""
+
+#: index.php:1414
+msgid "Deleting it will delete those sites as well."
+msgstr ""
+
+#: index.php:1419
+msgid "Are you sure you want to delete this network?"
+msgstr ""
+
+#: index.php:1446
+msgid "You have not selected any networks to delete."
+msgstr ""
+
+#: index.php:1453
+msgid "You have selected an invalid network."
+msgstr ""
+
+#: index.php:1468
+msgid "You have selected an invalid network or networks."
+msgstr ""
+
+#: index.php:1476
+msgid "Delete Multiple Networks"
+msgstr ""
+
+#: index.php:1484 index.php:1499 index.php:1516
+msgid "You have selected the following networks for deletion"
+msgstr ""
+
+#: index.php:1490
+msgid "There are sites assigned to one or more of these networks."
+msgstr ""
+
+#: index.php:1490
+msgid "Deleting them will move these sites to the holding network."
+msgstr ""
+
+#: index.php:1491 index.php:1506
+msgid "If you still want to delete these networks, check the following box"
+msgstr ""
+
+#: index.php:1505
+msgid "There are sites associated with one or more of these networks."
+msgstr ""
+
+#: index.php:1505
+msgid "Deleting them will delete those sites as well."
+msgstr ""
+
+#: index.php:1528
+msgid "Are you sure you want to delete these networks?"
+msgstr ""
+
+#: index.php:1529
+msgid "Delete Networks"
+msgstr ""
+
+#: index.php:1541
+msgid "Verifying Network: %s"
+msgstr ""
+
+#: index.php:1543
+msgid ""
+"This page will perform some basic diagnostics on your Network to uncover "
+"common configuration errors. \r\n"
+"\t\t\tThis testing is by no means exhaustive, and it is still possible to "
+"break your Network and pass all these tests."
+msgstr ""
+
+#: index.php:1546
+msgid "Checking <code>%s</code> table for selected Network by ID"
+msgstr ""
+
+#: index.php:1552 index.php:1561 index.php:1570 index.php:1593 index.php:1635
+#: index.php:1656
+msgid "Passed."
+msgstr ""
+
+#: index.php:1554
+msgid ""
+"The selected network was not found in the <code>%s</code> table. Testing "
+"cannot continue."
+msgstr ""
+
+#: index.php:1558
+msgid ""
+"Checking <code>%s</code> table for a unique combination of domain and path"
+msgstr ""
+
+#: index.php:1561
+msgid "Failed."
+msgstr ""
+
+#: index.php:1564
+msgid "Checking for super admin(s)"
+msgstr ""
+
+#: index.php:1570
+msgid "Found %d super admin"
+msgid_plural "Found %d super admins"
+msgstr[0] ""
+msgstr[1] ""
+
+#: index.php:1577
+msgid ""
+"Super admins meta value could not be decoded. Check your <code>%s</code> "
+"table for corruption."
+msgstr ""
+
+#: index.php:1580
+msgid ""
+"Super admins meta key was not found. Check your <code>%s</code> table for "
+"the proper keys."
+msgstr ""
+
+#: index.php:1581
+msgid ""
+"Without a super admins key, only username \"admin\" will be treated as a "
+"super admin."
+msgstr ""
+
+#: index.php:1585
+msgid "Checking DNS for this network"
+msgstr ""
+
+#: index.php:1591
+msgid "Domain could not be resolved."
+msgstr ""
+
+#: index.php:1596
+msgid "DNS did not match."
+msgstr ""
+
+#: index.php:1596 index.php:1674 index.php:1688
+msgid ""
+"This is not a fatal error, but you should verify DNS manually from your "
+"users' perspective."
+msgstr ""
+
+#: index.php:1598 index.php:1692
+msgid "Current network resolved to: <code>%s</code>"
+msgstr ""
+
+#: index.php:1599 index.php:1678
+msgid "Selected network resolved to: <code>%s</code>"
+msgstr ""
+
+#: index.php:1604
+msgid "Checking hosted sites for correct Network-related values"
+msgstr ""
+
+#: index.php:1613
+msgid "Site %d (%s) has an invalid <code>domain</code> setting."
+msgstr ""
+
+#: index.php:1617 index.php:1626
+msgid "Site %d (%s)  has an invalid <code>path</code> setting."
+msgstr ""
+
+#: index.php:1622
+msgid "Site %d (%s)  has an invalid <code>domain</code> setting."
+msgstr ""
+
+#: index.php:1632 index.php:1653 index.php:1700
+msgid "No sites were found on this network. Skipping this check."
+msgstr ""
+
+#: index.php:1638
+msgid "Checking hosted sites for correct Network-related meta values"
+msgstr ""
+
+#: index.php:1647
+msgid ""
+"Site %d (%s) has an invalid meta value in <code>%s</code>. This may prevent "
+"access to this site or disable some features."
+msgstr ""
+
+#: index.php:1660
+msgid "Checking DNS for hosted site subdomains"
+msgstr ""
+
+#: index.php:1667
+msgid "Site %d's domain (%s) could not be resolved."
+msgstr ""
+
+#: index.php:1673
+msgid "Site %d's <code>domain</code> does not match its network's."
+msgstr ""
+
+#: index.php:1677 index.php:1691
+msgid "Site %d resolved to: <code>%s</code>"
+msgstr ""
+
+#: index.php:1687
+msgid "Site %d's <code>domain</code> does not match the current network's."
+msgstr ""
+
+#: index.php:1720
+msgid ""
+"The table below shows all the Networks running on this installation of "
+"WordPress."
+msgstr ""
+
+#: index.php:1721
+msgid "What is a Network?"
+msgstr ""
+
+#: index.php:1722
+msgid ""
+"A Network is a group of sites with common admins, plugins, and policies."
+msgstr ""
+
+#: index.php:1723
+msgid ""
+"With Networks for WordPress, you can create as many distinct Networks as you "
+"need. All your Networks will share a common codebase and set of users."
+msgstr ""
+
+#: index.php:1724
+msgid ""
+"The most common use of Networks is running distinct groups of sites on "
+"multiple domains from a single install."
+msgstr ""
+
+#: index.php:1725
+msgid ""
+"If what you want to do is run a single site on a different domain, or to "
+"have a site accessible at more than one domain, you should look into domain "
+"mapping instead."
+msgstr ""
+
+#: index.php:1732 index.php:1775
+msgid "Adding a Network"
+msgstr ""
+
+#: index.php:1734
+msgid ""
+"Enter the network's basic information in the <a href=\"#form-add-network"
+"\">form below</a>."
+msgstr ""
+
+#: index.php:1735
+msgid ""
+"Use the test link on the right to verify the new address before creating the "
+"network. You should see the \"%s\" error."
+msgstr ""
+
+#: index.php:1735
+msgid "No site defined on this host"
+msgstr ""
+
+#: index.php:1736
+msgid ""
+"If you don't see the right message, use the \"Check Network Settings\" "
+"button on the right to see possible issues with your configuration."
+msgstr ""
+
+#: index.php:1737
+msgid "Click \"Add Network\" when you're ready to proceed."
+msgstr ""
+
+#: index.php:1745
+msgid "Troubleshooting your Networks"
+msgstr ""
+
+#: index.php:1746
+msgid ""
+"If you encounter problems with one of your networks, use the \"Verify\" link "
+"below each network name to perform automated testing."
+msgstr ""
+
+#: index.php:1747
+msgid ""
+"Running multiple networks requires care in your server configuration. For "
+"best results, ensure all the domains you are planning to use for networks "
+"share the same settings."
+msgstr ""
+
+#: index.php:1754
+msgid "More Information"
+msgstr ""
+
+#: index.php:1756
+msgid "WordPress Codex - Create a Network"
+msgstr ""
+
+#: index.php:1757
+msgid "Networks for WordPress Home Page and FAQ"
+msgstr ""
+
+#: index.php:1767
+msgid "Networks Overview"
+msgstr ""
+
+#: index.php:1783
+msgid "Troubleshooting"
+msgstr ""
+
+#: ajax.php:19
+msgid "IP address for the new domain is a match!"
+msgstr ""
+
+#: ajax.php:22
+msgid ""
+"New domain IP ( %s ) does not match current IP ( %s ).<br />Check your DNS "
+"settings."
+msgstr ""
+
+#: ajax.php:43
+msgid "This domain is available!"
+msgstr ""
+
+#: ajax.php:46 ajax.php:52
+msgid "This path is available!"
+msgstr ""
+
+#: ajax.php:49
+msgid "This domain is in use by domain mapping."
+msgstr ""
+
+#: ajax.php:58
+msgid "One or more networks exist on this domain."
+msgstr ""
+
+#: ajax.php:69
+msgid "This path is available, but there are other networks on this domain."
+msgstr ""
+
+#: ajax.php:72
+msgid "This path is NOT available."
+msgstr ""
+
+#: ajax.php:80
+msgid "Results:"
+msgstr ""
