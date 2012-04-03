@@ -4,8 +4,8 @@
  * Plugin Name: Networks for WordPress
  * Plugin URI: http://www.jerseyconnect.net/development/networks-for-wordpress/
  * Description: Adds a Networks panel for site admins to create and manipulate multiple networks.
- * Version: 1.1.0
- * Revision Date: 02/04/2012
+ * Version: 1.1.1
+ * Revision Date: 04/03/2012
  * Requires at least: WP 3.0
  * Tested up to: WP 3.3.1
  * License: GNU General Public License 2.0 (GPL) or later
