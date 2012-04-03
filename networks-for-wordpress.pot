@@ -1,0 +1,794 @@
+# Copyright (C) 2012 
+# This file is distributed under the same license as the  package.
+msgid ""
+msgstr ""
+"Project-Id-Version:  \n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/networks-for-wordpress\n"
+"POT-Creation-Date: 2012-04-03 03:20:36+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2012-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+
+#: networks-admin-ajax.php:19
+msgid "IP address for the new domain is a match!"
+msgstr ""
+
+#: networks-admin-ajax.php:22
+msgid ""
+"New domain IP ( %s ) does not match current IP ( %s ).<br />Check your DNS "
+"settings."
+msgstr ""
+
+#: networks-admin-ajax.php:43
+msgid "This domain is available!"
+msgstr ""
+
+#: networks-admin-ajax.php:46 networks-admin-ajax.php:52
+msgid "This path is available!"
+msgstr ""
+
+#: networks-admin-ajax.php:49
+msgid "This domain is in use by domain mapping."
+msgstr ""
+
+#: networks-admin-ajax.php:58
+msgid "One or more networks exist on this domain."
+msgstr ""
+
+#: networks-admin-ajax.php:69
+msgid "This path is available, but there are other networks on this domain."
+msgstr ""
+
+#: networks-admin-ajax.php:72
+msgid "This path is NOT available."
+msgstr ""
+
+#: networks-admin-ajax.php:80
+msgid "Results:"
+msgstr ""
+
+#: networks-admin.php:47 networks-admin.php:656
+msgid "Move Site"
+msgstr ""
+
+#: networks-admin.php:51
+msgid "Move"
+msgstr ""
+
+#: networks-admin.php:59 networks-admin.php:66 networks-admin.php:269
+msgid "Networks"
+msgstr ""
+
+#: networks-admin.php:92
+msgid "Questions about Networks?"
+msgstr ""
+
+#: networks-admin.php:93
+msgid "Check the Help pages before you get started!"
+msgstr ""
+
+#: networks-admin.php:104
+msgid "Checking..."
+msgstr ""
+
+#: networks-admin.php:119
+msgid "You do not have permission to access this page."
+msgstr ""
+
+#: networks-admin.php:147
+msgid "Options saved."
+msgstr ""
+
+#: networks-admin.php:149
+msgid "Network created."
+msgstr ""
+
+#: networks-admin.php:151
+msgid "Network(s) deleted."
+msgstr ""
+
+#: networks-admin.php:185 networks-admin.php:272 networks-admin.php:275
+msgid "Search Networks"
+msgstr ""
+
+#: networks-admin.php:269
+msgid "Add New"
+msgstr ""
+
+#: networks-admin.php:284
+msgid "ID"
+msgstr ""
+
+#: networks-admin.php:285 networks-admin.php:456
+msgid "Network Name"
+msgstr ""
+
+#: networks-admin.php:286 networks-admin.php:463 networks-admin.php:479
+#: networks-admin.php:899
+msgid "Domain"
+msgstr ""
+
+#: networks-admin.php:287 networks-admin.php:464 networks-admin.php:480
+#: networks-admin.php:900
+msgid "Path"
+msgstr ""
+
+#: networks-admin.php:288
+msgid "Sites"
+msgstr ""
+
+#: networks-admin.php:289
+msgid "Super Admins"
+msgstr ""
+
+#: networks-admin.php:322 networks-admin.php:391
+msgid "Delete"
+msgstr ""
+
+#: networks-admin.php:324
+msgid "Filter"
+msgstr ""
+
+#: networks-admin.php:324
+msgid "Remove this filter"
+msgstr ""
+
+#: networks-admin.php:388
+msgid "Assign sites to this network"
+msgstr ""
+
+#: networks-admin.php:388
+msgid "Assign Sites"
+msgstr ""
+
+#: networks-admin.php:389
+msgid "Edit this network"
+msgstr ""
+
+#: networks-admin.php:389
+msgid "Edit"
+msgstr ""
+
+#: networks-admin.php:390
+msgid "Check this network for configuration errors"
+msgstr ""
+
+#: networks-admin.php:390
+msgid "Verify"
+msgstr ""
+
+#: networks-admin.php:391
+msgid "Delete this network"
+msgstr ""
+
+#: networks-admin.php:415
+msgid "Sites on this network"
+msgstr ""
+
+#: networks-admin.php:442
+msgid "No matching networks were found."
+msgstr ""
+
+#: networks-admin.php:450
+msgid "Create a Network"
+msgstr ""
+
+#: networks-admin.php:456
+msgid "My new network"
+msgstr ""
+
+#: networks-admin.php:456
+msgid "A friendly name for your new Network"
+msgstr ""
+
+#: networks-admin.php:459 networks-admin.php:475
+msgid "Network URL"
+msgstr ""
+
+#: networks-admin.php:467 networks-admin.php:483
+msgid "The domain for your new Network"
+msgstr ""
+
+#: networks-admin.php:484
+msgid "If you are unsure, put in /"
+msgstr ""
+
+#: networks-admin.php:491
+msgid "Create a Root Site"
+msgstr ""
+
+#: networks-admin.php:493
+msgid ""
+"By default, a site will be created at the root of the new network.<br /> If "
+"you don't know what this means, leave it checked."
+msgstr ""
+
+#: networks-admin.php:496
+msgid "Root Site Name"
+msgstr ""
+
+#: networks-admin.php:496
+msgid "My new site name"
+msgstr ""
+
+#: networks-admin.php:496
+msgid "The name for the new Network's root site"
+msgstr ""
+
+#: networks-admin.php:505
+msgid "Check Network Settings"
+msgstr ""
+
+#: networks-admin.php:513
+msgid "Advanced Network Options"
+msgstr ""
+
+#: networks-admin.php:517
+msgid "Copy Network Options From"
+msgstr ""
+
+#: networks-admin.php:519
+msgid "Do Not Copy"
+msgstr ""
+
+#: networks-admin.php:522
+msgid "Options to Copy"
+msgstr ""
+
+#: networks-admin.php:526
+msgid "Options added by plugins may not exist on all networks."
+msgstr ""
+
+#: networks-admin.php:545
+msgid "Meta Key"
+msgstr ""
+
+#: networks-admin.php:546
+msgid "Description"
+msgstr ""
+
+#: networks-admin.php:564
+msgid "Add Network"
+msgstr ""
+
+#: networks-admin.php:597
+msgid "You must select a site to move."
+msgstr ""
+
+#: networks-admin.php:602
+msgid "Site not found in blogs table."
+msgstr ""
+
+#: networks-admin.php:609
+msgid "Blog options table not found."
+msgstr ""
+
+#: networks-admin.php:619
+msgid "Moving"
+msgstr ""
+
+#: networks-admin.php:624
+msgid "From"
+msgstr ""
+
+#: networks-admin.php:625
+msgid "To"
+msgstr ""
+
+#: networks-admin.php:632
+msgid "Select a Network"
+msgstr ""
+
+#: networks-admin.php:648 networks-admin.php:779
+msgid "Options"
+msgstr ""
+
+#: networks-admin.php:657 networks-admin.php:786 networks-admin.php:911
+#: networks-admin.php:971 networks-admin.php:1081
+msgid "Cancel"
+msgstr ""
+
+#: networks-admin.php:672 networks-admin.php:678
+msgid "No sites selected."
+msgstr ""
+
+#: networks-admin.php:707 networks-admin.php:876 networks-admin.php:887
+#: networks-admin.php:942
+msgid "Invalid network ID selected"
+msgstr ""
+
+#: networks-admin.php:711
+msgid "Blogs table is inaccessible."
+msgstr ""
+
+#: networks-admin.php:718
+msgid "Could not locate options table for a site. (Tried: %s)."
+msgstr ""
+
+#: networks-admin.php:721
+msgid "Unknown site name"
+msgstr ""
+
+#: networks-admin.php:729
+msgid "Assign Sites to"
+msgstr ""
+
+#: networks-admin.php:731
+msgid ""
+"Select the sites you want to assign to this network from the column at left, "
+"and click \"%s.\""
+msgstr ""
+
+#: networks-admin.php:731 networks-admin.php:785
+msgid "Update Assignments"
+msgstr ""
+
+#: networks-admin.php:737
+msgid "Available"
+msgstr ""
+
+#: networks-admin.php:739
+msgid "Assigned"
+msgstr ""
+
+#: networks-admin.php:837 networks-functions.php:146
+msgid "New Network Created"
+msgstr ""
+
+#: networks-admin.php:896
+msgid "Edit Network"
+msgstr ""
+
+#: networks-admin.php:910
+msgid "Update Network"
+msgstr ""
+
+#: networks-admin.php:926
+msgid "Deleting the main network is disabled."
+msgstr ""
+
+#: networks-admin.php:954 networks-admin.php:970
+msgid "Delete Network"
+msgstr ""
+
+#: networks-admin.php:959 networks-admin.php:964
+msgid "There are sites associated with this network. "
+msgstr ""
+
+#: networks-admin.php:959
+msgid "Deleting it will move those sites to the holding network."
+msgstr ""
+
+#: networks-admin.php:960 networks-admin.php:965
+msgid "If you still want to delete this network, check the following box"
+msgstr ""
+
+#: networks-admin.php:964
+msgid "Deleting it will delete those sites as well."
+msgstr ""
+
+#: networks-admin.php:969
+msgid "Are you sure you want to delete this network?"
+msgstr ""
+
+#: networks-admin.php:996
+msgid "You have not selected any networks to delete."
+msgstr ""
+
+#: networks-admin.php:1005
+msgid "You have selected an invalid network."
+msgstr ""
+
+#: networks-admin.php:1020
+msgid "You have selected an invalid network or networks."
+msgstr ""
+
+#: networks-admin.php:1028
+msgid "Delete Multiple Networks"
+msgstr ""
+
+#: networks-admin.php:1036 networks-admin.php:1051 networks-admin.php:1068
+msgid "You have selected the following networks for deletion"
+msgstr ""
+
+#: networks-admin.php:1042
+msgid "There are sites assigned to one or more of these networks."
+msgstr ""
+
+#: networks-admin.php:1042
+msgid "Deleting them will move these sites to the holding network."
+msgstr ""
+
+#: networks-admin.php:1043 networks-admin.php:1058
+msgid "If you still want to delete these networks, check the following box"
+msgstr ""
+
+#: networks-admin.php:1057
+msgid "There are sites associated with one or more of these networks."
+msgstr ""
+
+#: networks-admin.php:1057
+msgid "Deleting them will delete those sites as well."
+msgstr ""
+
+#: networks-admin.php:1080
+msgid "Are you sure you want to delete these networks?"
+msgstr ""
+
+#: networks-admin.php:1081
+msgid "Delete Networks"
+msgstr ""
+
+#: networks-admin.php:1093
+msgid "Verifying Network: %s"
+msgstr ""
+
+#: networks-admin.php:1095
+msgid ""
+"This page will perform some basic diagnostics on your Network to uncover "
+"common configuration errors. \r\n"
+"\t\t\tThis testing is by no means exhaustive, and it is still possible to "
+"break your Network and pass all these tests."
+msgstr ""
+
+#: networks-admin.php:1098
+msgid "Checking <code>%s</code> table for selected Network by ID"
+msgstr ""
+
+#: networks-admin.php:1104 networks-admin.php:1113 networks-admin.php:1122
+#: networks-admin.php:1145 networks-admin.php:1187 networks-admin.php:1208
+msgid "Passed."
+msgstr ""
+
+#: networks-admin.php:1106
+msgid ""
+"The selected network was not found in the <code>%s</code> table. Testing "
+"cannot continue."
+msgstr ""
+
+#: networks-admin.php:1110
+msgid ""
+"Checking <code>%s</code> table for a unique combination of domain and path"
+msgstr ""
+
+#: networks-admin.php:1113
+msgid "Failed."
+msgstr ""
+
+#: networks-admin.php:1116
+msgid "Checking for super admin(s)"
+msgstr ""
+
+#: networks-admin.php:1122
+msgid "Found %d super admin"
+msgid_plural "Found %d super admins"
+msgstr[0] ""
+msgstr[1] ""
+
+#: networks-admin.php:1129
+msgid ""
+"Super admins meta value could not be decoded. Check your <code>%s</code> "
+"table for corruption."
+msgstr ""
+
+#: networks-admin.php:1132
+msgid ""
+"Super admins meta key was not found. Check your <code>%s</code> table for "
+"the proper keys."
+msgstr ""
+
+#: networks-admin.php:1133
+msgid ""
+"Without a super admins key, only username \"admin\" will be treated as a "
+"super admin."
+msgstr ""
+
+#: networks-admin.php:1137
+msgid "Checking DNS for this network"
+msgstr ""
+
+#: networks-admin.php:1143
+msgid "Domain could not be resolved."
+msgstr ""
+
+#: networks-admin.php:1148
+msgid "DNS did not match."
+msgstr ""
+
+#: networks-admin.php:1148 networks-admin.php:1226 networks-admin.php:1240
+msgid ""
+"This is not a fatal error, but you should verify DNS manually from your "
+"users' perspective."
+msgstr ""
+
+#: networks-admin.php:1150 networks-admin.php:1244
+msgid "Current network resolved to: <code>%s</code>"
+msgstr ""
+
+#: networks-admin.php:1151 networks-admin.php:1230
+msgid "Selected network resolved to: <code>%s</code>"
+msgstr ""
+
+#: networks-admin.php:1156
+msgid "Checking hosted sites for correct Network-related values"
+msgstr ""
+
+#: networks-admin.php:1165
+msgid "Site %d (%s) has an invalid <code>domain</code> setting."
+msgstr ""
+
+#: networks-admin.php:1169 networks-admin.php:1178
+msgid "Site %d (%s)  has an invalid <code>path</code> setting."
+msgstr ""
+
+#: networks-admin.php:1174
+msgid "Site %d (%s)  has an invalid <code>domain</code> setting."
+msgstr ""
+
+#: networks-admin.php:1184 networks-admin.php:1205 networks-admin.php:1252
+msgid "No sites were found on this network. Skipping this check."
+msgstr ""
+
+#: networks-admin.php:1190
+msgid "Checking hosted sites for correct Network-related meta values"
+msgstr ""
+
+#: networks-admin.php:1199
+msgid ""
+"Site %d (%s) has an invalid meta value in <code>%s</code>. This may prevent "
+"access to this site or disable some features."
+msgstr ""
+
+#: networks-admin.php:1212
+msgid "Checking DNS for hosted site subdomains"
+msgstr ""
+
+#: networks-admin.php:1219
+msgid "Site %d's domain (%s) could not be resolved."
+msgstr ""
+
+#: networks-admin.php:1225
+msgid "Site %d's <code>domain</code> does not match its network's."
+msgstr ""
+
+#: networks-admin.php:1229 networks-admin.php:1243
+msgid "Site %d resolved to: <code>%s</code>"
+msgstr ""
+
+#: networks-admin.php:1239
+msgid "Site %d's <code>domain</code> does not match the current network's."
+msgstr ""
+
+#: networks-admin.php:1272
+msgid ""
+"The table below shows all the Networks running on this installation of "
+"WordPress."
+msgstr ""
+
+#: networks-admin.php:1273
+msgid "What is a Network?"
+msgstr ""
+
+#: networks-admin.php:1274
+msgid ""
+"A Network is a group of sites with common admins, plugins, and policies."
+msgstr ""
+
+#: networks-admin.php:1275
+msgid ""
+"With Networks for WordPress, you can create as many distinct Networks as you "
+"need. All your Networks will share a common codebase and set of users."
+msgstr ""
+
+#: networks-admin.php:1276
+msgid ""
+"The most common use of Networks is running distinct groups of sites on "
+"multiple domains from a single install."
+msgstr ""
+
+#: networks-admin.php:1277
+msgid ""
+"If what you want to do is run a single site on a different domain, or to "
+"have a site accessible at more than one domain, you should look into domain "
+"mapping instead."
+msgstr ""
+
+#: networks-admin.php:1284 networks-admin.php:1327
+msgid "Adding a Network"
+msgstr ""
+
+#: networks-admin.php:1286
+msgid ""
+"Enter the network's basic information in the <a href=\"#form-add-network"
+"\">form below</a>."
+msgstr ""
+
+#: networks-admin.php:1287
+msgid ""
+"Use the test link on the right to verify the new address before creating the "
+"network. You should see the \"%s\" error."
+msgstr ""
+
+#: networks-admin.php:1287
+msgid "No site defined on this host"
+msgstr ""
+
+#: networks-admin.php:1288
+msgid ""
+"If you don't see the right message, use the \"Check Network Settings\" "
+"button on the right to see possible issues with your configuration."
+msgstr ""
+
+#: networks-admin.php:1289
+msgid "Click \"Add Network\" when you're ready to proceed."
+msgstr ""
+
+#: networks-admin.php:1297
+msgid "Troubleshooting your Networks"
+msgstr ""
+
+#: networks-admin.php:1298
+msgid ""
+"If you encounter problems with one of your networks, use the \"Verify\" link "
+"below each network name to perform automated testing."
+msgstr ""
+
+#: networks-admin.php:1299
+msgid ""
+"Running multiple networks requires care in your server configuration. For "
+"best results, ensure all the domains you are planning to use for networks "
+"share the same settings."
+msgstr ""
+
+#: networks-admin.php:1306
+msgid "More Information"
+msgstr ""
+
+#: networks-admin.php:1308
+msgid "WordPress Codex - Create a Network"
+msgstr ""
+
+#: networks-admin.php:1309
+msgid "Networks for WordPress Home Page and FAQ"
+msgstr ""
+
+#: networks-admin.php:1319
+msgid "Networks Overview"
+msgstr ""
+
+#: networks-admin.php:1335
+msgid "Troubleshooting"
+msgstr ""
+
+#: networks-admin.php:1353
+msgid "List of active Network-enabled plugins"
+msgstr ""
+
+#: networks-admin.php:1354
+msgid ""
+"Allow site administrators to add new users to their site via the \"Users "
+"&rarr; Add New\" page."
+msgstr ""
+
+#: networks-admin.php:1355
+msgid "Network administrator email"
+msgstr ""
+
+#: networks-admin.php:1356
+msgid "Deprecated - Admin user ID"
+msgstr ""
+
+#: networks-admin.php:1357
+msgid "Deprecated - Old list of allowed themes"
+msgstr ""
+
+#: networks-admin.php:1358
+msgid "List of allowed themes"
+msgstr ""
+
+#: networks-admin.php:1359
+msgid ""
+"If you want to ban domains from site registrations. One domain per line."
+msgstr ""
+
+#: networks-admin.php:1360
+msgid "Maximum size (in MB) for file uploads"
+msgstr ""
+
+#: networks-admin.php:1361
+msgid "Max upload file size"
+msgstr ""
+
+#: networks-admin.php:1362
+msgid "The first comment on a new site."
+msgstr ""
+
+#: networks-admin.php:1363
+msgid "The author of the first comment on a new site."
+msgstr ""
+
+#: networks-admin.php:1364
+msgid "The URL for the first comment on a new site."
+msgstr ""
+
+#: networks-admin.php:1365
+msgid "The first page on a new site."
+msgstr ""
+
+#: networks-admin.php:1366
+msgid "The first post on a new site."
+msgstr ""
+
+#: networks-admin.php:1367
+msgid ""
+"Users are not allowed to register these sites. Separate names by spaces."
+msgstr ""
+
+#: networks-admin.php:1368
+msgid ""
+"If you want to limit site registrations to certain domains. One domain per "
+"line."
+msgstr ""
+
+#: networks-admin.php:1369
+msgid "Allow new registrations"
+msgstr ""
+
+#: networks-admin.php:1370
+msgid ""
+"Send the network admin an email notification every time someone registers a "
+"site or user account."
+msgstr ""
+
+#: networks-admin.php:1371
+msgid "List of site administrator usernames"
+msgstr ""
+
+#: networks-admin.php:1372
+msgid "A friendly name for the network"
+msgstr ""
+
+#: networks-admin.php:1373
+msgid "URI for the root of this network &mdash; do not clone this"
+msgstr ""
+
+#: networks-admin.php:1374
+msgid "Upload file types"
+msgstr ""
+
+#: networks-admin.php:1375
+msgid "The welcome email sent to new site owners."
+msgstr ""
+
+#: networks-admin.php:1376
+msgid "The welcome email sent to new users."
+msgstr ""
+
+#: networks-functions.php:158
+msgid "Network already exists!"
+msgstr ""
+
+#: networks-functions.php:241 networks-functions.php:247
+#: networks-functions.php:321 networks-functions.php:385
+#: networks-functions.php:397
+msgid "Network does not exist."
+msgstr ""
+
+#: networks-functions.php:259
+msgid "Network could not be updated."
+msgstr ""
+
+#: networks-functions.php:328
+msgid "Cannot delete network with sites."
+msgstr ""
+
+#: networks-functions.php:370
+msgid "Site does not exist."
+msgstr ""
+
+#: networks-functions.php:423
+msgid "Site could not be moved."
+msgstr ""
