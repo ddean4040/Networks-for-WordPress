@@ -88,5 +88,4 @@ function networks_check_domain() {
 	die();
 }
 
-
 ?>

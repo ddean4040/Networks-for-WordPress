@@ -3,7 +3,7 @@ Contributors: ddean
 Tags: multisite, multi-site, sites, networks, multi-network, multiple, multi-domain, domains
 Requires at least: 3.0
 Tested up to: 3.3.1
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 
 Adds a Networks panel for network admins to create and manage multiple Networks from one WordPress installation.
 
@@ -30,9 +30,9 @@ See **Frequently Asked Questions** for detailed instructions.
 
 == Frequently Asked Questions ==
 
-= How do I set up new domains to work with a single WordPress install? =
+= How do I set up new domains as networks with a single WordPress install? =
 
-Your webserver must direct requests for each domain you want to use to your WordPress files.
+Your webserver must direct requests for each domain you want to use to your WordPress install's filesystem location.
 
 Here's a quick overview:
 
@@ -46,6 +46,16 @@ Tip: You can use the New Network Preview feature to verify DNS and server config
 * Plugins that create global (i.e. not blog-specific) tables will behave as though they are on a single network install.  This is a limitation of WordPress's table naming scheme.
 
 == Changelog ==
+
+= 1.1.1 =
+* Added: descriptions for MANY more sitemeta keys, using WP native strings where possible
+* Added: placeholders for most text fields
+* Added: is_super_admin_for() function for checking permissions on other networks
+* Changed: reorganized the "Create a Network" panel to be more intuitive
+* Changed: (for developers) $options_to_copy now carries the sitemeta keys to be cloned as values instead of keys
+* Changed: switched to add_query_arg() where possible
+* Changed: split code up into different files for easier maintenance
+* Fixed: hardcoded URL that may have prevented some from deleting networks in bulk
 
 = 1.1.0 =
 * Added: New Network Preview will try to check mapped domains for possible collisions
@@ -98,8 +108,11 @@ Tip: You can use the New Network Preview feature to verify DNS and server config
 
 == Upgrade Notice ==
 
+= 1.1.1 =
+* UI enhancements
+
 = 1.1.0 =
-* upload_filetypes key cloned by default, some domain mapping checks added
+* `upload_filetypes` key cloned by default, some domain mapping checks added
 
 = 1.0.9 =
 * Fixed compatibility with WP < 3.1, enhanced help for WP 3.3, added ability to restrict Networks panel to a single Network

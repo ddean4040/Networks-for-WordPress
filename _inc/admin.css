@@ -42,3 +42,7 @@
 	-webkit-box-shadow: 5px 5px 2px #aaa;
 	box-shadow: 5px 5px 2px #aaa;
 }
+
+.form-table .network-uri-th {
+	padding-bottom: 0;
+}
