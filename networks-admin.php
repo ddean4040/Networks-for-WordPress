@@ -1,6 +1,6 @@
 <?php
 
-define( 'NETWORKS_PER_PAGE', 10 );
+define( 'WP_NETWORKS_PER_PAGE_DEFAULT', 10 );
 
 class wp_Networks_Admin
 {
@@ -34,6 +34,8 @@ class wp_Networks_Admin
 			
 		wp_register_script( 'njsl_networks_admin_js', plugins_url('/_inc/admin.js', __FILE__), array('jquery') );
 		wp_register_style( 'njsl_networks_admin_css', plugins_url('/_inc/admin.css', __FILE__) );
+		
+		add_filter( 'set-screen-option', array( &$this, 'save_network_options' ), 10, 3 );
 		
 		# Add all known sitemeta descriptions to New Network page
 		add_filter( 'manage_sitemeta_descriptions', array( &$this, 'add_sitemeta_descriptions' ) );
@@ -72,6 +74,7 @@ class wp_Networks_Admin
 		add_contextual_help($this->admin_page, $this->networks_help());
 		
 		add_action( 'load-' . $this->admin_page, array(&$this,'networks_help_screen') );
+		add_action( 'load-' . $this->admin_page, array(&$this,'networks_options_screen') );
 		add_action( 'admin_print_scripts-' . $this->admin_page, array(&$this,'add_admin_scripts') );
 		add_action( 'admin_print_styles-' . $this->admin_page, array(&$this,'add_admin_styles') );
 	}
@@ -177,19 +180,31 @@ class wp_Networks_Admin
 					'action'	=> false,
 					'id'		=> false,
 					'updated'	=> false,
-					'deleted'	=> false
+					'deleted'	=> false,
+					'search'	=> false,
+					'start'		=> false,
+					's'			=> false
 				) );
+				
+				$countSearchConditions = '';
+				if(isset($_GET['s'])) {
+					if(isset($_GET['search']) && $_GET['search'] == __('Search Networks','njsl-networks')) {
+						$countSearchConditions = ', ' . $wpdb->sitemeta . ' WHERE ' . $wpdb->site . '.domain LIKE ' . "'%" . $wpdb->escape($_GET['s']) . "%'";
+						$countSearchConditions .= 'OR ( ' . $wpdb->sitemeta . '.site_id = ' . $wpdb->site . '.id AND ' . $wpdb->sitemeta . '.meta_value LIKE ' . "'%" . $wpdb->escape($_GET['s']) . "%')";
+					}
+				}
+	
+				$total = $wpdb->get_var('SELECT COUNT(*) FROM ' . $wpdb->site . $countSearchConditions);
 				
 				$searchConditions = '';				
 				if(isset($_GET['s'])) {
 					if(isset($_GET['search']) && $_GET['search'] == __('Search Networks','njsl-networks')) {
-						$searchConditions = 'WHERE ' . $wpdb->site . '.domain LIKE ' . "'%" . $wpdb->escape($_GET['s']) . "%'";
-						$searchConditions .= 'OR ' . $wpdb->sitemeta . '.meta_value LIKE ' . "'%" . $wpdb->escape($_GET['s']) . "%'";
+						$searchConditions = ' WHERE ' . 'wp_site.domain LIKE ' . "'%" . $wpdb->escape($_GET['s']) . "%'";
+						$searchConditions .= ' OR ' . 'sm1.meta_value LIKE ' . "'%" . $wpdb->escape($_GET['s']) . "%'";
+						$searchConditions .= ' OR ' . 'sm2.meta_value LIKE ' . "'%" . $wpdb->escape($_GET['s']) . "%'";
 					}
 				}
-	
-				$count = $wpdb->get_col('SELECT COUNT(*) FROM ' . $wpdb->site . $searchConditions);
-				$total = $count[0];
+
 	
 				if( isset( $_GET[ 'start' ] ) == false ) {
 					$start = 1;
@@ -197,7 +212,10 @@ class wp_Networks_Admin
 					$start = intval( $_GET[ 'start' ] );
 				}
 				if( isset( $_GET[ 'num' ] ) == false ) {
-					$num = NETWORKS_PER_PAGE;
+					$num = get_user_option( 'networks_per_page' );
+					if( ! $num ) {
+						$num = WP_NETWORKS_PER_PAGE_DEFAULT;
+					}
 				} else {
 					$num = intval( $_GET[ 'num' ] );
 				}
@@ -205,7 +223,8 @@ class wp_Networks_Admin
 	//			$networks_query = "SELECT {$wpdb->site}.*, COUNT({$wpdb->blogs}.blog_id) as blogs, {$wpdb->blogs}.path as blog_path 
 	//				FROM {$wpdb->site} LEFT JOIN {$wpdb->blogs} ON {$wpdb->blogs}.site_id = {$wpdb->site}.id $searchConditions GROUP BY {$wpdb->site}.id" ; 
 	
-				$networks_query = "SELECT {$wpdb->site}.*,
+				$networks_query = "
+						SELECT {$wpdb->site}.*,
 						sm1.meta_value as site_name,
 						sm2.meta_value as site_admins,
 						COUNT({$wpdb->blogs}.blog_id) as blogs,
@@ -237,14 +256,18 @@ class wp_Networks_Admin
 				case 'Domain':
 					$networks_query .= ' ORDER BY ' . $wpdb->site . '.domain ';
 					break;
-				case 'ID':
-					$networks_query .= ' ORDER BY ' . $wpdb->site . '.id ';
-					break;
 				case 'Path':
 					$networks_query .= ' ORDER BY ' . $wpdb->site . '.path ';
 					break;
+				case 'Network Name':
+					$networks_query .= ' ORDER BY site_name ';
+					break;
 				case 'Blogs':
 					$networks_query .= ' ORDER BY blogs ';
+					break;
+				case 'ID':
+				default:
+					$networks_query .= ' ORDER BY ' . $wpdb->site . '.id ';
 					break;
 			}
 	
@@ -255,7 +278,7 @@ class wp_Networks_Admin
 			}
 	
 			$networks_query .= ' LIMIT ' . (((int)$start - 1 ) * $num ) . ', ' . intval( $num );
-	
+			
 			$network_list = $wpdb->get_results( $networks_query, ARRAY_A );
 			if( count( $network_list ) < $num ) {
 				$next = false;
@@ -1342,6 +1365,26 @@ jQuery('.postbox').children('h3').click(function() {
 				$this->networks_help_more_info()
 			);
 		}		
+	}
+	
+	function networks_options_screen() {
+		if( class_exists( 'WP_Screen' ) ) {
+			$this->admin_screen = WP_Screen::get( $this->admin_page . '-network');
+			$this->admin_screen->add_option( 
+				'per_page', 
+				array(
+					'label' => __( 'Networks per page', 'njsl-networks' ),
+					'default' => 10,
+					'option' => 'networks_per_page'
+				) 
+			);
+		}
+	}
+	
+	function save_network_options( $value, $option_name, $original_value ) {
+		if( $option_name != 'networks_per_page' )	return $value;
+		if( 1 < (int)$original_value && (int)$original_value <= 100 )	return $original_value;
+		return false;
 	}
 	
 	/**

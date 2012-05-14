@@ -2,8 +2,8 @@
 Contributors: ddean
 Tags: multisite, multi-site, sites, networks, multi-network, multiple, multi-domain, domains
 Requires at least: 3.0
-Tested up to: 3.3.1
-Stable tag: 1.1.1
+Tested up to: 3.4-beta4
+Stable tag: 1.1.2
 
 Adds a Networks panel for network admins to create and manage multiple Networks from one WordPress installation.
 
@@ -47,13 +47,18 @@ Tip: You can use the New Network Preview feature to verify DNS and server config
 
 == Changelog ==
 
+= 1.1.2 =
+* Added: Screen Options for selecting number of Networks per page
+* Changed: `add_site` function now defaults to a path of '/' if one is not supplied
+* Fixed: searching and sorting by Network Name - thanks, skvwp
+
 = 1.1.1 =
 * Added: descriptions for MANY more sitemeta keys, using WP native strings where possible
 * Added: placeholders for most text fields
-* Added: is_super_admin_for() function for checking permissions on other networks
+* Added: `is_super_admin_for()` function for checking permissions on other networks
 * Changed: reorganized the "Create a Network" panel to be more intuitive
-* Changed: (for developers) $options_to_copy now carries the sitemeta keys to be cloned as values instead of keys
-* Changed: switched to add_query_arg() where possible
+* Changed: (for developers) `$options_to_copy` now carries the sitemeta keys to be cloned as values instead of keys
+* Changed: switched to `add_query_arg()` where possible
 * Changed: split code up into different files for easier maintenance
 * Fixed: hardcoded URL that may have prevented some from deleting networks in bulk
 
@@ -107,6 +112,9 @@ Tip: You can use the New Network Preview feature to verify DNS and server config
 * Initial release
 
 == Upgrade Notice ==
+
+= 1.1.2 =
+* Fixed searching / sorting bug; added screen options for Networks per page
 
 = 1.1.1 =
 * UI enhancements

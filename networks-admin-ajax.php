@@ -39,7 +39,7 @@ function networks_check_domain() {
 			) );
 		}
 
-		if( ! isset( $wpdb->dmtable )  | $mapped_domain == 0 ) {
+		if( ! isset( $wpdb->dmtable ) || $mapped_domain == 0 ) {
 			$site_result = __('This domain is available!','njsl-networks');
 			$site_result_class = 'success';
 			

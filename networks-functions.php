@@ -138,7 +138,7 @@ if (!function_exists('add_site')) {
 	 * @param array $options_to_clone override default sitemeta options to copy when cloning - default NULL
 	 * @return integer ID of newly created network
 	 */
-	function add_site($domain, $path, $blog_name = NULL, $cloneSite = NULL, $options_to_clone = NULL) {
+	function add_site($domain, $path = '/', $blog_name = NULL, $cloneSite = NULL, $options_to_clone = NULL) {
 
 		global $wpdb, $sites, $options_to_copy, $url_dependent_site_options, $current_site;
 
@@ -146,10 +146,10 @@ if (!function_exists('add_site')) {
 		if($blog_name == NULL) $blog_name = __('New Network Created','njsl-networks');
 
 		$options_to_clone = wp_parse_args( $options_to_clone, array_keys($options_to_copy) );
-
+		
 		if($path != '/') {
-			$path = trim($path,'/');
-			$path = '/' . $path . '/';
+			$path = trim( $path, '/' );
+			$path = trailingslashit( '/' . $path );
 		}
 
 		$query = "SELECT * FROM {$wpdb->site} WHERE domain='" . $wpdb->escape($domain) . "' AND path='" . $wpdb->escape($path) . "' LIMIT 1";
