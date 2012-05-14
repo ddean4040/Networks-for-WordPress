@@ -2,7 +2,7 @@
 Contributors: ddean
 Tags: multisite, multi-site, sites, networks, multi-network, multiple, multi-domain, domains
 Requires at least: 3.0
-Tested up to: 3.3.2
+Tested up to: 3.4-beta4
 Stable tag: 1.1.2
 
 Adds a Networks panel for network admins to create and manage multiple Networks from one WordPress installation.
@@ -50,7 +50,7 @@ Tip: You can use the New Network Preview feature to verify DNS and server config
 = 1.1.2 =
 * Added: Screen Options for selecting number of Networks per page
 * Changed: `add_site` function now defaults to a path of '/' if one is not supplied
-* Fixed: searching and sorting by Network Name - thanks, 
+* Fixed: searching and sorting by Network Name - thanks, skvwp
 
 = 1.1.1 =
 * Added: descriptions for MANY more sitemeta keys, using WP native strings where possible
