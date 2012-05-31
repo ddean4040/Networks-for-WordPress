@@ -332,9 +332,9 @@ if (!function_exists('delete_site')) {
 			if($blogs) {
 				foreach($blogs as $blog) {
 					if(RESCUE_ORPHANED_BLOGS && ENABLE_HOLDING_SITE) {
-						move_blog($blog->blog_id,0);
+						move_blog( $blog->blog_id, 0 );
 					} else {
-						wpmu_delete_blog($blog->blog_id,true);
+						wpmu_delete_blog( $blog->blog_id, true );
 					}
 				}
 			}
@@ -370,6 +370,7 @@ if(!function_exists('move_blog')) {
 			return new WP_Error('blog not exist',__('Site does not exist.','njsl-networks'));
 		}
 
+		/** If user requested moving site to its current network, just return that we did */
 		if((int)$new_site_id == $blog->site_id) { return true;	}
 		
 		$old_site_id = $blog->site_id;
@@ -400,8 +401,17 @@ if(!function_exists('move_blog')) {
 
 		if( is_subdomain_install() ) {
 
-			$exDom = substr($blog->domain,0,(strpos($blog->domain,'.')+1));
-			$domain = $exDom . $newSite->domain;
+			if( $blog->domain == $oldSite->domain ) {
+
+				/** If this site has no hostname component, just replace the domain name outright */
+				$domain = $newSite->domain;
+				
+			} else {
+
+				$exDom = substr( $blog->domain, 0, ( strpos( $blog->domain, '.' ) + 1 ) );
+				$domain = $exDom . $newSite->domain;
+				
+			}
 			
 		} else {
 
@@ -419,7 +429,7 @@ if(!function_exists('move_blog')) {
 			array(	'blog_id'	=> $blog->blog_id)
 		);
 			
-		if(!$update_result) {
+		if( ! $update_result ) {
 			return new WP_Error('blog_not_moved',__('Site could not be moved.'));
 		}
 		
@@ -429,7 +439,7 @@ if(!function_exists('move_blog')) {
 		$oldDomain = $oldSite->domain . $oldSite->path;
 		$newDomain = $newSite->domain . $newSite->path;
 
-		foreach($url_dependent_blog_options as $option_name) {
+		foreach( $url_dependent_blog_options as $option_name ) {
 			$option = $wpdb->get_row("SELECT * FROM $optionTable WHERE option_name='" . $option_name . "'");
 			$newValue = str_replace($oldDomain,$newDomain,$option->option_value);
 			update_blog_option($blog->blog_id,$option_name,$newValue);
