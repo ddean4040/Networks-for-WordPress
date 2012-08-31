@@ -435,7 +435,7 @@ class wp_Networks_Admin
 							break;
 						case 'sites':
 							?>
-							<td valign='top'><a href="http://<?php echo $blog['domain'] . $blog['blog_path'];?>wp-admin/<?php echo (strpos($this->listPage,'site') !== false) ? 'network/' . $this->sitesPage : $this->sitesPage ?>" title="<?php _e('Sites on this network','njsl-networks'); ?>"><?php echo $blog['blogs'] ?></a></td>
+							<td valign='top'><a href="<?php echo ( is_ssl() ? 'https' : 'http' ) ?>://<?php echo $blog['domain'] . $blog['blog_path'];?>wp-admin/<?php echo (strpos($this->listPage,'site') !== false) ? 'network/' . $this->sitesPage : $this->sitesPage ?>" title="<?php _e('Go to this network to manage its sites','njsl-networks'); ?>"><?php echo $blog['blogs'] ?></a></td>
 							<?php
 							break;
 						case 'admins':
@@ -639,7 +639,7 @@ jQuery('.postbox').children('h3').click(function() {
 				}
 			}
 			?>
-			<h2><?php echo __('Moving','njsl-networks') . ' ' . stripslashes($details->option_value); ?></h2>
+			<h2><?php echo __('Moving','njsl-networks') . ' ' . stripslashes($details->option_value) . ' (<a href="' . get_home_url( $blog->blog_id ) . '">' . $blog->domain . $blog->path . '</a>)'; ?></h2>
 			<form method="post" action="<?php echo $_SERVER['REQUEST_URI']; ?>">
 				<table class="widefat">
 					<thead>
@@ -767,7 +767,7 @@ jQuery('.postbox').children('h3').click(function() {
 							<select name="from[]" id="from" multiple style="height: auto; width: 98%">
 							<?php
 								foreach($blogs as $blog) {
-									if($blog->site_id != $site->id) echo '<option value="' . $blog->blog_id . '">' . $blog->name  . ' (' . $blog->domain . ')</option>';
+									if($blog->site_id != $site->id) echo '<option value="' . $blog->blog_id . '">' . $blog->name  . ' ( ' . $blog->domain . $blog->path . ' )</option>';
 								}
 							?>
 							</select>
@@ -787,7 +787,7 @@ jQuery('.postbox').children('h3').click(function() {
 							<?php
 							if(ENABLE_HOLDING_SITE) {
 								foreach($blogs as $blog) {
-									if($blog->site_id == $site->id) echo '<option value="' . $blog->blog_id . '">' . $blog->name . ' (' . $blog->domain . ')</option>';
+									if($blog->site_id == $site->id) echo '<option value="' . $blog->blog_id . '">' . $blog->name . ' ( ' . $blog->domain . $blog->path . ' )</option>';
 								}
 							}
 							?>
