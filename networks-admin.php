@@ -676,7 +676,7 @@ jQuery('.postbox').children('h3').click(function() {
 				<?php } ?>
 				<div>
 					<input type="hidden" name="from" value="<?php echo $blog->site_id; ?>" />
-					<input class="button" type="submit" name="move" value="<?php _e('Move Site','njsl-networks'); ?>" />
+					<?php submit_button( __('Move Site','njsl-networks'), 'primary','move', false ); ?>
 					<a class="button" href="<?php echo $this->sitesPage ?>"><?php _e('Cancel','njsl-networks'); ?></a>
 				</div>
 			</form>
@@ -724,14 +724,15 @@ jQuery('.postbox').children('h3').click(function() {
 		} else {
 			
 			// get site by id
-			$query = "SELECT *, {$wpdb->sitemeta}.meta_value as site_name FROM {$wpdb->site} " . " LEFT JOIN {$wpdb->sitemeta} ON {$wpdb->sitemeta}.meta_key='site_name' AND {$wpdb->sitemeta}.site_id = {$wpdb->site}.id WHERE id=" . (int)$_GET['id'];
+			$query = $wpdb->prepare( "SELECT *, {$wpdb->sitemeta}.meta_value as site_name FROM {$wpdb->site} " . " LEFT JOIN {$wpdb->sitemeta} ON {$wpdb->sitemeta}.meta_key='site_name' AND {$wpdb->sitemeta}.site_id = {$wpdb->site}.id WHERE id=%d", $_GET['id'] );
 			$site = $wpdb->get_row($query);
-			if(!$site) {
-				wp_die(__('Invalid network ID selected','njsl-networks'));
+			if( ! $site ) {
+				wp_die( __( 'Invalid network ID selected', 'njsl-networks' ) );
 			}
+			
 			$blogs = $wpdb->get_results("SELECT * FROM {$wpdb->blogs}");
-			if(!$blogs) {
-				wp_die(__('Blogs table is inaccessible.','njsl-networks'));
+			if( ! $blogs ) {
+				wp_die( __( 'Blogs table is inaccessible.', 'njsl-networks' ) );
 			}
 			foreach($blogs as $key => $blog) {
 				$tableName = $wpdb->get_blog_prefix( $blog->blog_id ) . 'options';
@@ -746,6 +747,11 @@ jQuery('.postbox').children('h3').click(function() {
 					$blogs[$key]->name = stripslashes($blog_name->option_value);
 				}
 			}
+			
+			// Extend the select box based on the number of blogs, but with a minimum
+			$select_height = floor( count($blogs) );
+			if( $select_height < 10 )	$select_height = 10;
+			
 			?>
 			<div class="wrap">
 				<div class="icon32" id="icon-ms-admin"><br></div>
@@ -754,48 +760,48 @@ jQuery('.postbox').children('h3').click(function() {
 					<div id="message" class="updated hide-if-js"><p><?php printf( __('Select the sites you want to assign to this network from the column at left, and click "%s."','njsl-networks'),__('Update Assignments','njsl-networks')); ?></p></div>
 				</noscript>
 				<form method="post" action="<?php echo $_SERVER['REQUEST_URI']; ?>" id="site-assign-form">
-				<table class="widefat">
-					<thead>
+					<table class="widefat">
+						<thead>
+							<tr>
+								<th><?php _e('Available','njsl-networks'); ?></th>
+								<th style="width: 2em;"></th>
+								<th><?php _e('Assigned','njsl-networks'); ?></th>
+							</tr>
+						</thead>
 						<tr>
-							<th><?php _e('Available','njsl-networks'); ?></th>
-							<th style="width: 2em;"></th>
-							<th><?php _e('Assigned','njsl-networks'); ?></th>
+							<td>
+								<select name="from[]" id="from" multiple style="height: <?php echo $select_height ?>em; width: 98%">
+								<?php
+									foreach($blogs as $blog) {
+										if($blog->site_id != $site->id) echo '<option value="' . $blog->blog_id . '">' . $blog->name  . ' ( ' . $blog->domain . $blog->path . ' )</option>';
+									}
+								?>
+								</select>
+							</td>
+							<td>
+								<input type="button" name="unassign" id="unassign" value="<<" /><br />
+								<input type="button" name="assign" id="assign" value=">>" />
+							</td>
+							<td valign="top">
+								<?php if(!ENABLE_HOLDING_SITE) { ?><ul style="margin: 0; padding: 0; list-style-type: none;">
+									<?php foreach($blogs as $blog) { 
+										if ($blog->site_id == $site->id) { ?>
+										<li><?php echo $blog->name . ' (' . $blog->domain . ')'; ?></li>
+									<?php } } ?>
+								</ul><?php } ?>
+								<select name="to[]" id="to" multiple style="height: <?php echo $select_height ?>em; width: 98%">
+								<?php
+								if(ENABLE_HOLDING_SITE) {
+									foreach($blogs as $blog) {
+										if($blog->site_id == $site->id) echo '<option value="' . $blog->blog_id . '">' . $blog->name . ' ( ' . $blog->domain . $blog->path . ' )</option>';
+									}
+								}
+								?>
+								</select>
+							</td>
 						</tr>
-					</thead>
-					<tr>
-						<td>
-							<select name="from[]" id="from" multiple style="height: auto; width: 98%">
-							<?php
-								foreach($blogs as $blog) {
-									if($blog->site_id != $site->id) echo '<option value="' . $blog->blog_id . '">' . $blog->name  . ' ( ' . $blog->domain . $blog->path . ' )</option>';
-								}
-							?>
-							</select>
-						</td>
-						<td>
-							<input type="button" name="unassign" id="unassign" value="<<" /><br />
-							<input type="button" name="assign" id="assign" value=">>" />
-						</td>
-						<td valign="top">
-							<?php if(!ENABLE_HOLDING_SITE) { ?><ul style="margin: 0; padding: 0; list-style-type: none;">
-								<?php foreach($blogs as $blog) { 
-									if ($blog->site_id == $site->id) { ?>
-									<li><?php echo $blog->name . ' (' . $blog->domain . ')'; ?></li>
-								<?php } } ?>
-							</ul><?php } ?>
-							<select name="to[]" id="to" multiple style="height: auto; width: 98%">
-							<?php
-							if(ENABLE_HOLDING_SITE) {
-								foreach($blogs as $blog) {
-									if($blog->site_id == $site->id) echo '<option value="' . $blog->blog_id . '">' . $blog->name . ' ( ' . $blog->domain . $blog->path . ' )</option>';
-								}
-							}
-							?>
-							</select>
-						</td>
-					</tr>
-				</table>
-				<br class="clear" />
+					</table>
+					<br class="clear" />
 					<?php if(has_action('add_move_blog_option')) { ?>
 					<table class="widefat">
 						<thead>
@@ -805,8 +811,8 @@ jQuery('.postbox').children('h3').click(function() {
 					</table>
 					<br />
 					<?php } ?>
-				<input type="submit" name="reassign" value="<?php _e('Update Assignments','njsl-networks'); ?>" class="button" />
-				<a href="<?php echo $this->listPage ?>"><?php _e('Cancel'); ?></a>
+					<?php submit_button( __('Update Assignments','njsl-networks'), 'primary', 'reassign', false ); ?>
+					<a class="button" href="<?php echo $this->listPage ?>"><?php _e('Cancel'); ?></a>
 				</form>
 				<script type="text/javascript">
 					
@@ -930,8 +936,8 @@ jQuery('.postbox').children('h3').click(function() {
 					<?php } ?>
 					<p>
 						<input type="hidden" name="siteId" value="<?php echo $site->id; ?>" />
-						<input class="button" type="submit" name="update" value="<?php _e('Update Network','njsl-networks'); ?>" />
-						<a href="<?php echo $this->listPage ?>"><?php _e('Cancel','njsl-networks'); ?></a>
+						<?php submit_button( __('Update Network','njsl-networks'), 'primary', 'update', false ); ?>
+						<a class="button" href="<?php echo $this->listPage ?>"><?php _e('Cancel','njsl-networks'); ?></a>
 					</p>
 				</form>
 			</div>
@@ -990,8 +996,8 @@ jQuery('.postbox').children('h3').click(function() {
 <?php	} ?>
 <?php } ?>
 					<p><?php _e('Are you sure you want to delete this network?','njsl-networks'); ?></p>
-					<input type="submit" name="delete" value="<?php _e('Delete Network','njsl-networks'); ?>" class="button" /> 
-					<a href="<?php echo $this->listPage ?>"><?php _e('Cancel','njsl-networks'); ?></a>
+					<?php submit_button( __('Delete Network','njsl-networks'), 'primary', 'delete', false ); ?>
+					<a class="button" href="<?php echo $this->listPage ?>"><?php _e('Cancel','njsl-networks'); ?></a>
 				</div>
 			</form>
 			<?php
@@ -1101,7 +1107,8 @@ jQuery('.postbox').children('h3').click(function() {
 			}
 			?>
 				<p><?php _e('Are you sure you want to delete these networks?','njsl-networks'); ?></p>
-				<input type="submit" name="delete_multiple" value="<?php _e('Delete Networks','njsl-networks'); ?>" class="button" /> <input type="submit" name="cancel" value="<?php _e('Cancel','njsl-networks'); ?>" class="button" />
+				<?php submit_button( __('Delete Networks','njsl-networks'), 'primary', 'delete_multiple', false ); ?> 
+				<input type="submit" name="cancel" value="<?php _e('Cancel','njsl-networks'); ?>" class="button" />
 			</div></form>
 			<?php
 		}

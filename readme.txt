@@ -2,8 +2,8 @@
 Contributors: ddean
 Tags: multisite, multi-site, sites, networks, multi-network, multiple, multi-domain, domains
 Requires at least: 3.0
-Tested up to: 3.4-beta4
-Stable tag: 1.1.2
+Tested up to: 3.5-beta2
+Stable tag: 1.1.3
 
 Adds a Networks panel for network admins to create and manage multiple Networks from one WordPress installation.
 
@@ -41,11 +41,29 @@ Here's a quick overview:
 
 Tip: You can use the New Network Preview feature to verify DNS and server configuration BEFORE creating your networks.
 
+= What's with `networks-mufunctions.php`? =
+
+This file has fixes for unusual network topologies, like networks without a root site or those more than one subdirectory deep.
+
+The fix for networks with deep paths was graciously contributed by Spencer Bryant.
+
+For a long time I avoided bundling fixes like these, since I was committed to having this plugin run only when needed by the dashboard.
+This file does not rely on the rest of Networks for Wordpress to function, so you are free to copy it to your mu-plugins folder and use it on its own.
+
+This seemed like a good compromise. If you have thoughts, let me know in the comments!
+
 == Known Issues ==
 
 * Plugins that create global (i.e. not blog-specific) tables will behave as though they are on a single network install.  This is a limitation of WordPress's table naming scheme.
 
 == Changelog ==
+
+= 1.1.3 =
+* Added: `networks-mufunctions.php` file containing fixes for unusual Network topologies. See FAQ for details
+* Changed: made visual changes to fit in with the WP dashboard
+* Changed: assign sites select boxes are now bigger (varies by number of sites)
+* Fixed: bug that prepended the domain name on to sites whose path matched the network's when moving - thanks, sharonmiranda!
+* Fixed: provide SSL network URLs when required - thanks, Spencer Bryant
 
 = 1.1.2 =
 * Added: Screen Options for selecting number of Networks per page
@@ -112,6 +130,9 @@ Tip: You can use the New Network Preview feature to verify DNS and server config
 * Initial release
 
 == Upgrade Notice ==
+
+= 1.1.3 =
+* Fixed site moving bug and SSL issue; bundled fixes for unusual Networks (see FAQ)
 
 = 1.1.2 =
 * Fixed searching / sorting bug; added screen options for Networks per page
