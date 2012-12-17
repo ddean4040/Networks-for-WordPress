@@ -71,7 +71,10 @@ class wp_Networks_Admin
 		}
 		
 		/** Help for WP < 3.3 */
-		add_contextual_help($this->admin_page, $this->networks_help());
+		global $wp_version;
+		if ( version_compare( $wp_version, '3.3', '<' ) ) {
+			add_contextual_help($this->admin_page, $this->networks_help());
+		}
 		
 		add_action( 'load-' . $this->admin_page, array(&$this,'networks_help_screen') );
 		add_action( 'load-' . $this->admin_page, array(&$this,'networks_options_screen') );
@@ -153,8 +156,11 @@ class wp_Networks_Admin
 		} else if(isset($_GET['deleted'])) {
 			?><div id="message" class="updated fade"><p><?php _e('Network(s) deleted.','njsl-networks'); ?></p></div><?php
 		}
-
-		switch( $_GET[ 'action' ] ) {
+		
+		// get action safely
+		$action = isset($_GET['action']) ? $_GET['action'] : '';
+		
+		switch( $action ) {
 			case 'move':
 				$this->move_blog_page();
 				break;
@@ -271,7 +277,10 @@ class wp_Networks_Admin
 					break;
 			}
 	
-			if( $_GET[ 'order' ] == 'DESC' ) {
+			// get order safely
+			$order = isset($_GET['order']) ? $_GET['order'] : '';
+			
+			if( $order == 'DESC' ) {
 				$networks_query .= 'DESC';
 			} else {
 				$networks_query .= 'ASC';
@@ -358,7 +367,7 @@ class wp_Networks_Admin
 		<?php foreach($networks_columns as $col_name => $column_display_name) { ?>
 		        <th scope="col">
 		        	<?php if(in_array( $col_name, $sortable_networks_columns ) ) : ?>
-		        	<a href="<?php echo $this->listPage ?>&sortby=<?php echo urlencode( $column_display_name ) ?>&<?php if( $_GET[ 'sortby' ] == $column_display_name ) { if( $_GET[ 'order' ] == 'DESC' ) { echo "order=ASC&" ; } else { echo "order=DESC&"; } } ?>start=<?php echo $start ?>"><?php echo $column_display_name; ?></a>
+		        	<a href="<?php echo $this->listPage ?>&sortby=<?php echo urlencode( $column_display_name ) ?>&<?php if( $_GET[ 'sortby' ] == $column_display_name ) { if( $order == 'DESC' ) { echo "order=ASC&" ; } else { echo "order=DESC&"; } } ?>start=<?php echo $start ?>"><?php echo $column_display_name; ?></a>
 		        	<?php else: ?>
 		        	<?php echo $column_display_name; ?>
 		        	<?php endif; ?>
@@ -370,6 +379,7 @@ class wp_Networks_Admin
 		<?php
 		
 		if ($network_list) {
+			$class = '';
 			foreach ($network_list as $blog) { 
 				$network = $blog;
 				$class = ('alternate' == $class) ? '' : 'alternate';
@@ -439,13 +449,16 @@ class wp_Networks_Admin
 							<?php
 							break;
 						case 'admins':
-							$admins = maybe_unserialize( $blog['site_admins']);
+							$admins = maybe_unserialize( $blog['site_admins'] );
 							?>
 							<td valign='top'>
 							<?php foreach($admins as $admin) : ?>
-								<?php $this_admin = get_user_by( 'login', $admin ); ?>
+								<?php $this_admin = get_user_by( 'login', $admin );
+								if ( $this_admin ) : ?>
 								<a href="<?php echo esc_url( network_admin_url( add_query_arg( 'wp_http_referer', urlencode( stripslashes( $_SERVER['REQUEST_URI'] ) ), 'user-edit.php?user_id=' . $this_admin->ID ) ) ) ?>"><?php echo $this_admin->user_login ?></a><br />
-							<?php endforeach; ?>
+							<?php 
+								endif;
+							endforeach; ?>
 							</td>
 							<?php
 						default:
