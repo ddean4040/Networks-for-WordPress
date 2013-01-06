@@ -16,11 +16,8 @@ class wp_Networks_Admin
 	function wp_Networks_Admin() {
 
 		/** load localization files if present */
-		if( file_exists( dirname( __FILE__ ) . '/' . dirname(plugin_basename(__FILE__)) . '-' . get_locale() . '.mo' ) ) {
-			load_plugin_textdomain( 'njsl-networks', false, dirname(plugin_basename(__FILE__)) );
-		} else if ( file_exists( dirname( __FILE__ ) . '/' . get_locale() . '.mo' ) ) {
-			_doing_it_wrong( 'load_textdomain', 'Please rename your translation files to use the ' . dirname(plugin_basename(__FILE__)) . '-' . get_locale() . '.mo' . ' format', '1.0.9' );
-			load_textdomain( 'njsl-networks', dirname( __FILE__ ) . '/' . get_locale() . '.mo' );
+		if( file_exists( dirname( __FILE__ ) . '/languages/' . dirname( plugin_basename( __FILE__ ) ) . '-' . get_locale() . '.mo' ) ) {
+			load_plugin_textdomain( 'njsl-networks', false, dirname( plugin_basename(__FILE__) ) . '/languages' );
 		}
 
 		add_action( 'network_admin_menu', array(&$this, 'networks_admin_menu') );

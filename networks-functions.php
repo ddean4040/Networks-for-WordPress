@@ -430,7 +430,7 @@ if(!function_exists('move_blog')) {
 		);
 			
 		if( ! $update_result ) {
-			return new WP_Error('blog_not_moved',__('Site could not be moved.'));
+			return new WP_Error( 'blog_not_moved', __( 'Site could not be moved.', 'njsl-networks' ) );
 		}
 		
 		/** change relevant blog options */
@@ -444,6 +444,9 @@ if(!function_exists('move_blog')) {
 			$newValue = str_replace($oldDomain,$newDomain,$option->option_value);
 			update_blog_option($blog->blog_id,$option_name,$newValue);
 		}
+		
+		// Delete rewrite rules for site at old URL
+		delete_blog_option( 'rewrite_rules' );
 		
 		do_action( 'wpmu_move_blog' , $blog_id, $old_site_id, $new_site_id );
 		do_action( 'wpms_move_site' , $blog_id, $old_site_id, $new_site_id );
