@@ -85,7 +85,7 @@ if(!function_exists('restore_current_site')) {
 	 * Return to the operational site after our operations
 	 */
 	function restore_current_site() {
-		global $tmpoldsitedetails, $wpdb, $site_id, $switched_site, $switched_site_stack;
+		global $tmpoldsitedetails, $wpdb, $site_id, $switched_site, $switched_site_stack, $current_site;
 
 		if ( !$switched_site )
 			return;
@@ -97,7 +97,7 @@ if(!function_exists('restore_current_site')) {
 
 		// backup
 
-		$prev_site_id = $wpdb->site_id;
+		$prev_site_id = $wpdb->siteid;
 
 		$wpdb->siteid = $site_id;
 		$current_site->id = $tmpoldsitedetails[ 'id' ];
@@ -177,6 +177,9 @@ if (!function_exists('add_site')) {
 			}
 			
 			if(!$skip_blog_setup) {
+				// there's an ongoing error with wpmu_create_blog that throws a warning if meta is not defined:
+				// http://core.trac.wordpress.org/ticket/20793
+				// we could avoid this by setting a default thus: array( 'public' => 0 )
 				$new_blog_id = wpmu_create_blog($domain,$path,$blog_name,get_current_user_id(),'',(int)$new_site_id);
 				if(is_a($new_blog_id,'WP_Error')) {
 					return $new_blog_id;
