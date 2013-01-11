@@ -85,7 +85,7 @@ if(!function_exists('restore_current_site')) {
 	 * Return to the operational site after our operations
 	 */
 	function restore_current_site() {
-		global $tmpoldsitedetails, $wpdb, $site_id, $switched_site, $switched_site_stack;
+		global $tmpoldsitedetails, $wpdb, $site_id, $switched_site, $switched_site_stack, $current_site;
 
 		if ( !$switched_site )
 			return;
