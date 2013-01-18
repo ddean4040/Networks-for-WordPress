@@ -446,7 +446,7 @@ if(!function_exists('move_blog')) {
 		}
 		
 		// Delete rewrite rules for site at old URL
-		delete_blog_option( 'rewrite_rules' );
+		delete_blog_option( $blog->blog_id, 'rewrite_rules' );
 		
 		do_action( 'wpmu_move_blog' , $blog_id, $old_site_id, $new_site_id );
 		do_action( 'wpms_move_site' , $blog_id, $old_site_id, $new_site_id );
