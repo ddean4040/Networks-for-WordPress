@@ -3,7 +3,7 @@ Contributors: ddean
 Tags: multisite, multi-site, sites, networks, multi-network, multiple, multi-domain, domains
 Requires at least: 3.0
 Tested up to: 3.5
-Stable tag: 1.1.3
+Stable tag: 1.1.4
 
 Adds a Networks panel for network admins to create and manage multiple Networks from one WordPress installation.
 
@@ -66,7 +66,9 @@ This seemed like a good compromise. If you have thoughts, let me know in the com
 = 1.1.4 =
 * Added: Slovak translation provided by Branco, (<a href="http://webhostinggeeks.com/blog/">WebHostingGeeks.com</a>)
 * Added: Delete rewrite rules when moving a site - thanks, mgburns
-* Fixed: Squashed PHP warnings when WP_DEBUG is true - contributed by Christian Wach
+* Changed: New network's root site inherits the search-engine visibility of the site used to create it - thanks, Christian Wach
+* Fixed: Squashed PHP warnings when `WP_DEBUG` is true - contributed by Christian Wach
+* Fixed: Bug fixes in restore_current_site - contributed by Christian Wach
 
 = 1.1.3 =
 * Added: `networks-mufunctions.php` file containing fixes for unusual Network topologies. See FAQ for details
@@ -140,6 +142,9 @@ This seemed like a good compromise. If you have thoughts, let me know in the com
 * Initial release
 
 == Upgrade Notice ==
+
+= 1.1.4 =
+* Debug fixes, new translation, and trigger rewrite rules rebuild when moving a site
 
 = 1.1.3 =
 * Fixed site moving bug and SSL issue; bundled fixes for unusual Networks (see FAQ)
