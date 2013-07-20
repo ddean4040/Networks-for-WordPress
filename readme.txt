@@ -2,7 +2,7 @@
 Contributors: ddean
 Tags: multisite, multi-site, sites, networks, multi-network, multiple, multi-domain, domains
 Requires at least: 3.0
-Tested up to: 3.5
+Tested up to: 3.6-RC1
 Stable tag: 1.1.4
 
 Adds a Networks panel for network admins to create and manage multiple Networks from one WordPress installation.
@@ -62,6 +62,9 @@ This seemed like a good compromise. If you have thoughts, let me know in the com
 * Plugins that create global (i.e. not blog-specific) tables will behave as though they are on a single network install.  This is a limitation of WordPress's table naming scheme.
 
 == Changelog ==
+
+= 1.1.5 =
+* Fixed: primary sites on all networks used the same upload path (WP 3.5+ only) - thanks, RavanH
 
 = 1.1.4 =
 * Added: Slovak translation provided by Branco, (<a href="http://webhostinggeeks.com/blog/">WebHostingGeeks.com</a>)

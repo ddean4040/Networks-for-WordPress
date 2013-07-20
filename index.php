@@ -2,12 +2,12 @@
 
 /**
  * Plugin Name: Networks for WordPress
- * Plugin URI: http://www.jerseyconnect.net/development/networks-for-wordpress/
+ * Plugin URI: http://wordpress.org/plugins/networks-for-wordpress/
  * Description: Adds a Networks panel for site admins to create and manipulate multiple networks.
- * Version: 1.1.4
- * Revision Date: 1/23/2013
+ * Version: 1.1.5
+ * Revision Date: 7/20/2013
  * Requires at least: WP 3.0
- * Tested up to: WP 3.5
+ * Tested up to: WP 3.6-RC1
  * License: GNU General Public License 2.0 (GPL) or later
  * Author: David Dean
  * Author URI: http://www.generalthreat.com/
@@ -49,7 +49,7 @@ if (!defined('RESCUE_ORPHANED_BLOGS')) {
 /** 
  * blog options affected by URL 
  */
-$url_dependent_blog_options = array('siteurl','home','fileupload_url');
+$url_dependent_blog_options = array('siteurl','home','fileupload_url','upload_url_path');
 
 /** 
  * site / network options affected by URL 
@@ -67,6 +67,7 @@ $options_to_copy = array(
 	'banned_email_domains',
 	'first_post',
 	'limited_email_domains',
+	'ms_files_rewriting',
 	'site_admins',
 	'upload_filetypes',
 	'welcome_email'

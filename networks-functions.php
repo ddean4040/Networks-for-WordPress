@@ -194,6 +194,44 @@ if (!function_exists('add_site')) {
 				if(is_a($new_blog_id,'WP_Error')) {
 					return $new_blog_id;
 				}
+				
+				// Fix upload_path for main sites on secondary networks
+				// This applies only to new installs (WP 3.5+)
+
+				// Switch to main network (if it exists)
+				if( site_exists( 1 ) ) {
+					switch_to_site( 1 );
+					$use_files_rewriting = get_site_option( 'ms_files_rewriting' );
+					restore_current_site();
+				} else {
+					$use_files_rewriting = get_site_option( 'ms_files_rewriting' );
+				}
+				
+				// Create the upload_path and upload_url_path values
+				if( ! $use_files_rewriting ) {
+
+					// WP_CONTENT_URL is locked to the current site and can't be overridden,
+					//  so we have to replace the hostname the hard way
+					$current_siteurl = get_option('siteurl');
+					$new_siteurl = untrailingslashit( get_blogaddress_by_id( $new_blog_id ) );
+					$upload_url = str_replace( $current_siteurl, $new_siteurl, WP_CONTENT_URL );
+					
+					$upload_dir = WP_CONTENT_DIR . '/uploads';
+					$upload_url = $upload_url . '/uploads';
+					
+					if ( defined( 'MULTISITE' ) )
+						$ms_dir = '/sites/' . $new_blog_id;
+					else
+						$ms_dir = '/' . $new_blog_id;
+					
+					$upload_dir .= $ms_dir;
+					$upload_url .= $ms_dir;
+					
+					update_blog_option( $new_blog_id, 'upload_path', $upload_dir );
+					update_blog_option( $new_blog_id, 'upload_url_path', $upload_url );
+					
+				}
+				
 			}
 		}
 		

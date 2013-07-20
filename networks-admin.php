@@ -1426,6 +1426,7 @@ jQuery('.postbox').children('h3').click(function() {
 			'first_post'				=> __( 'The first post on a new site.' ),
 			'illegal_names'				=> __( 'Users are not allowed to register these sites. Separate names by spaces.' ),
 			'limited_email_domains'		=> __( 'If you want to limit site registrations to certain domains. One domain per line.' ),
+			'ms_files_rewriting'		=> __( 'Use legacy handler for uploaded files (pre WP-3.5)' ),
 			'registration'				=> __( 'Allow new registrations' ),
 			'registrationnotification'	=> __( 'Send the network admin an email notification every time someone registers a site or user account.' ),
 			'site_admins'				=> __( 'List of site administrator usernames', 'njsl-networks' ),
