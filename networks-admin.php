@@ -906,7 +906,7 @@ jQuery('.postbox').children('h3').click(function() {
 
 	function edit_site_page() {
 		
-		global $wpdb;
+		global $wpdb, $current_site, $wp_version;
 		
 		if( isset( $_POST['update'] ) && isset( $_GET['id'] ) ) {
 			
@@ -914,7 +914,73 @@ jQuery('.postbox').children('h3').click(function() {
 			if(!$site) {
 				wp_die(__('Invalid network ID selected','njsl-networks'));
 			}
-			update_site((int)$_GET['id'],$_POST['domain'],$_POST['path']);
+
+			switch_to_site( (int)$_GET['id'] );
+			$upload_handling = get_site_option( 'ms_files_rewriting' );
+			
+			$primary_blog_id = $current_site->blog_id;
+			restore_current_site();
+			
+			if( isset( $_POST['upload_handling'] ) && $_POST['upload_handling'] != 'auto' ) {
+				
+				// Update the site / network
+				update_site( 
+					(int)$_GET['id'], 
+					$_POST['domain'], 
+					$_POST['path'], 
+					array(
+						'ms_files_rewriting' => ( $_POST['upload_handling'] == 'php' ? '1' : '0' )
+					) 
+				);
+				
+				// Update the primary blog / site
+				if( $_POST['upload_handling'] == 'direct' && $upload_handling ) {
+					// If switching from PHP to direct serving, need to fix upload_url_path
+					//  on the network's primary site (if one exists)
+					if( ! empty( $primary_blog_id ) ) {
+
+						$upload_dir = WP_CONTENT_DIR . '/uploads';
+
+						$current_siteurl = get_option( 'siteurl' );
+						$new_siteurl = untrailingslashit( get_blogaddress_by_id( $primary_blog_id ) );
+						$upload_url = str_replace( $current_siteurl, $new_siteurl, WP_CONTENT_URL );
+						$upload_url = $upload_url . '/uploads';
+						
+						if ( defined( 'MULTISITE' ) )
+							$ms_dir = '/sites/' . $primary_blog_id;
+						else
+							$ms_dir = '/' . $primary_blog_id;
+						
+						$upload_dir .= $ms_dir;
+						$upload_url .= $ms_dir;
+						
+						update_blog_option( $primary_blog_id, 'upload_path', $upload_dir );
+						update_blog_option( $primary_blog_id, 'upload_url_path', $upload_url );
+					}
+					
+				} else if( $_POST['upload_handling'] == 'php' ) {
+					
+					// If switching to PHP serving, remove upload_url_path to allow
+					//  native processing to work
+					if( ! empty( $primary_blog_id ) ) {
+						
+						delete_blog_option( $primary_blog_id, 'upload_path', '' );
+						delete_blog_option( $primary_blog_id, 'upload_url_path', '' );
+						
+					}
+					
+				}
+				
+			} else {
+				update_site( (int)$_GET['id'], $_POST['domain'], $_POST['path'] );
+
+				if( isset( $_POST['upload_handling'] ) && $_POST['upload_handling'] == 'auto' ) {
+					switch_to_site( (int)$_GET['id'] );
+					delete_site_option( 'ms_files_rewriting' );
+					restore_current_site();
+				}
+			}
+			
 			$_GET['updated'] = 'true';
 			$_GET['action'] = 'saved';
 
@@ -924,6 +990,19 @@ jQuery('.postbox').children('h3').click(function() {
 
 			if( ! $site ) {
 				wp_die(__('Invalid network ID selected','njsl-networks'));
+			}
+			
+			switch_to_site( (int)$_GET['id'] );
+			$upload_handling = get_site_option( 'ms_files_rewriting' );
+			restore_current_site();
+			
+			if( is_bool( $upload_handling ) ) {
+				$upload_default = $upload_handling;
+				$upload_handling = 'auto';
+			} else if( $upload_handling === '0' ) {
+				$upload_handling = 'direct';
+			} else {
+				$upload_handling = 'php';
 			}
 			
 			/* strip off the action tag */
@@ -937,6 +1016,23 @@ jQuery('.postbox').children('h3').click(function() {
 					<table class="form-table">
 						<tr class="form-field"><th scope="row"><label for="domain"><?php _e('Domain','njsl-networks'); ?></label></th><td> http://<input type="text" id="domain" name="domain" value="<?php echo $site->domain; ?>"></td></tr>
 						<tr class="form-field"><th scope="row"><label for="path"><?php _e('Path','njsl-networks'); ?></label></th><td><input type="text" id="path" name="path" value="<?php echo $site->path; ?>" /></td></tr>
+
+						<?php if( version_compare( $wp_version, '3.5', '>=' ) ) : ?>
+						<tr class="form-field">
+							<th scope="row"><label for="upload_handling"><?php _e( 'Upload Handling', 'njsl-networks'); ?></label></th>
+							<td>
+								<select name="upload_handling" id="upload_handling">
+									<option value="auto" <?php selected( $upload_handling, 'auto' ) ?>><?php printf( __( 'Auto (%s)', ( $upload_default === true ? 'PHP' : 'Direct' ) ), 'PHP' ) ?></option>
+									<option value="direct" <?php selected( $upload_handling, 'direct' ) ?>><?php _e( 'Direct (WP 3.5+)', '' ) ?></option>
+									<option value="php" <?php selected( $upload_handling, 'php' ) ?>><?php _e( 'PHP (WP < 3.5)', '' ) ?></option>
+								</select>
+								<p class="alert">
+									<strong>WARNING:</strong>
+									This setting may change your primary site's upload path.
+								</p>
+							</td>
+						</tr>
+						<?php endif; ?>
 					</table>
 					<?php if(has_action('add_edit_site_option')) { ?>
 					<h3>Options:</h3>
