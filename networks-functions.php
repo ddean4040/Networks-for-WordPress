@@ -225,9 +225,13 @@ if (!function_exists('add_site')) {
 					$current_siteurl = get_option('siteurl');
 					$new_siteurl = untrailingslashit( get_blogaddress_by_id( $new_blog_id ) );
 					$upload_url = str_replace( $current_siteurl, $new_siteurl, WP_CONTENT_URL );
-					
-					$upload_dir = WP_CONTENT_DIR . '/uploads';
 					$upload_url = $upload_url . '/uploads';
+					
+					$upload_dir = WP_CONTENT_DIR;
+					if( 0 === strpos( $upload_dir, ABSPATH ) ) {
+						$upload_dir = substr( $upload_dir, strlen( ABSPATH ) );
+					}
+					$upload_dir .= '/uploads';
 					
 					if ( defined( 'MULTISITE' ) )
 						$ms_dir = '/sites/' . $new_blog_id;

@@ -10,6 +10,7 @@ add_action( 'admin_init', 'override_base_var');
 
 add_filter( 'network_site_url', 'fix_network_site_url', 10, 3);
 add_filter( 'redirect_network_admin_request', 'fix_network_admin_redirect' );
+add_filter( 'blog_option_upload_path', 'fix_subsite_upload_path', 10, 2 );
 
 
 /**
@@ -67,6 +68,25 @@ if( ! function_exists( 'fix_network_admin_redirect' ) ) {
 		}
 		return $do_redirect;
 	}
+}
+
+/**
+ * Blank out the value of upload_path when creating a new subsite
+ */
+if( ! function_exists( 'fix_subsite_upload_path' ) ) {
+	
+	function fix_subsite_upload_path( $value, $blog_id ) {
+		global $current_site;
+		
+		if ( $blog_id == $current_site->blog_id ) {
+			
+			if( ! get_option( 'WPLANG' ) ) {
+				return '';
+			}
+		}
+		return $value;
+	}
+	
 }
 
 ?>

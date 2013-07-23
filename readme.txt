@@ -64,6 +64,7 @@ This seemed like a good compromise. If you have thoughts, let me know in the com
 == Changelog ==
 
 = 1.1.5 =
+* Added: ability to set upload handling per network
 * Fixed: primary sites on all networks used the same upload path (WP 3.5+ only) - thanks, RavanH
 
 = 1.1.4 =
