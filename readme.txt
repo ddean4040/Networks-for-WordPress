@@ -3,7 +3,7 @@ Contributors: ddean
 Tags: multisite, multi-site, sites, networks, multi-network, multiple, multi-domain, domains
 Requires at least: 3.0
 Tested up to: 3.6-RC1
-Stable tag: 1.1.4
+Stable tag: 1.1.5
 
 Adds a Networks panel for network admins to create and manage multiple Networks from one WordPress installation.
 
