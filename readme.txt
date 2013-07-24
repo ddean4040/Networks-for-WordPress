@@ -9,7 +9,7 @@ Adds a Networks panel for network admins to create and manage multiple Networks 
 
 == Description ==
 
-Adds a Networks panel allowing network admins to create and manage multiple Networks from one WordPress installation.  Each Network can exist on its own domain, and have its own set of blogs / sites.
+Adds a Networks panel allowing network admins to create and manage multiple Networks from one WordPress installation.  Each Network can exist on its own domain, and have its own set of blogs / Sites.
 
 Each Network can have its own set of plugins, themes, administrators, permissions, and policies, but all will share a database of user accounts.
 
@@ -32,6 +32,7 @@ See **Frequently Asked Questions** for detailed instructions.
 1. Upload plugin files to your `/wp-content/plugins/` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
 1. Comment out `DOMAIN_CURRENT_SITE` in your `wp-config.php` file.
+1. Copy `networks-mufunctions.php` into your `mu-plugins` folder. This is **not** required but **is** highly recommended. See FAQ for more details.
 
 == Frequently Asked Questions ==
 
@@ -57,6 +58,13 @@ This file does not rely on the rest of Networks for Wordpress to function, so yo
 
 This seemed like a good compromise. If you have thoughts, let me know in the comments!
 
+If you are on WP 3.5+ and want to use native file uploads, you **must** either:
+
+1. Activate the Networks plugin on all of your networks, OR
+2. Copy `networks-muplugins.php` into your `mu-plugins` folder
+
+If you do not do this, your uploaded files will end up in unexpected places.
+
 == Known Issues ==
 
 * Plugins that create global (i.e. not blog-specific) tables will behave as though they are on a single network install.  This is a limitation of WordPress's table naming scheme.
@@ -65,6 +73,7 @@ This seemed like a good compromise. If you have thoughts, let me know in the com
 
 = 1.1.5 =
 * Added: ability to set upload handling per network
+* Added: switch blog_id when switching sites / networks
 * Fixed: primary sites on all networks used the same upload path (WP 3.5+ only) - thanks, RavanH
 
 = 1.1.4 =
@@ -140,12 +149,15 @@ This seemed like a good compromise. If you have thoughts, let me know in the com
 * Fixed: a typo that left network-dependent blog options behind when moving blogs - thanks, edmeister
 
 = 1.0.1 =
-* Fixed an issue with the link to Network backends for versions before 3.1 - thanks, RavaH
+* Fixed an issue with the link to Network backends for versions before 3.1 - thanks, RavanH
 
 = 1.0 =
 * Initial release
 
 == Upgrade Notice ==
+
+= 1.1.5 =
+* Updates to support native upload handling in WP 3.5+ -- see Installation and FAQ for important details!
 
 = 1.1.4 =
 * Debug fixes, new translation, and trigger rewrite rules rebuild when moving a site

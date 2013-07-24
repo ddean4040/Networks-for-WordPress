@@ -274,7 +274,7 @@ if (!function_exists('add_site')) {
 						$optionsCache[$option] = str_replace($oldsite_domain . $oldsite_path, $domain . $path, $optionsCache[$option]);
 					}
 					
-					// Fix for strange bug that prevented writing the ms_files_rewriting value for new networks
+					// Fix for strange bug that prevents writing the ms_files_rewriting value for new networks
 					if( $option == 'ms_files_rewriting' ) {
 						$wpdb->insert( $wpdb->sitemeta, array('site_id' => $wpdb->siteid, 'meta_key' => $option, 'meta_value' => $optionsCache[$option] ) );
 					} else {

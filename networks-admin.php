@@ -1005,6 +1005,12 @@ jQuery('.postbox').children('h3').click(function() {
 				$upload_handling = 'php';
 			}
 			
+			if( ! isset( $upload_default ) ) {
+				$upload_default = 'Unknown';
+			} else {
+				$upload_default = $upload_default ? 'PHP' : 'Direct';
+			}
+			
 			/* strip off the action tag */
 			$queryStr = add_query_arg( array( 'action' => false ) );
 			
@@ -1022,13 +1028,13 @@ jQuery('.postbox').children('h3').click(function() {
 							<th scope="row"><label for="upload_handling"><?php _e( 'Upload Handling', 'njsl-networks'); ?></label></th>
 							<td>
 								<select name="upload_handling" id="upload_handling">
-									<option value="auto" <?php selected( $upload_handling, 'auto' ) ?>><?php printf( __( 'Auto (%s)', ( $upload_default === true ? 'PHP' : 'Direct' ) ), 'PHP' ) ?></option>
-									<option value="direct" <?php selected( $upload_handling, 'direct' ) ?>><?php _e( 'Direct (WP 3.5+)', '' ) ?></option>
-									<option value="php" <?php selected( $upload_handling, 'php' ) ?>><?php _e( 'PHP (WP < 3.5)', '' ) ?></option>
+									<option value="auto" <?php selected( $upload_handling, 'auto' ) ?>><?php printf( __( 'Auto (%s)', 'njsl-networks' ), $upload_default ) ?></option>
+									<option value="direct" <?php selected( $upload_handling, 'direct' ) ?>><?php _e( 'Direct (WP 3.5+)', 'njsl-networks' ) ?></option>
+									<option value="php" <?php selected( $upload_handling, 'php' ) ?>><?php _e( 'PHP (WP < 3.5)', 'njsl-networks' ) ?></option>
 								</select>
 								<p class="alert">
-									<strong>WARNING:</strong>
-									This setting may change your primary site's upload path.
+									<strong><?php _e('WARNING', 'njsl-networks') ?>:</strong>
+									<?php _e("Changing this setting may change your root site's upload path, making uploaded files inaccessible.",'njsl-networks'); ?>
 								</p>
 							</td>
 						</tr>
@@ -1442,7 +1448,7 @@ jQuery('.postbox').children('h3').click(function() {
 		'<p><strong>' . __('More Information','njsl-networks') . ':</strong></p>' .
 
 		'<p><a href="http://codex.wordpress.org/Create_A_Network" target="_blank">' . __('WordPress Codex - Create a Network','njsl-networks') . '</a></p>' .
-		'<p><a href="http://www.jerseyconnect.net/development/networks-for-wordpress/" target="_blank">' . __('Networks for WordPress Home Page and FAQ','njsl-networks') . '</a></p>'
+		'<p><a href="http://wordpress.org/plugins/networks-for-wordpress/" target="_blank">' . __('Networks for WordPress Home Page and FAQ','njsl-networks') . '</a></p>'
 		;
 		return $contextual_help;
 	}
