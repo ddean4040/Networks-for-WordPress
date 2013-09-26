@@ -352,8 +352,8 @@ if (!function_exists('update_site')) {
 			return;
 		
 		$path = (($path != '') ? $path : $site->path );
-		$fullPath = $domain . $path;
-		$oldPath = $site->domain . $site->path;
+		$fullPath = untrailingslashit( $domain . $path );
+		$oldPath = untrailingslashit( $site->domain . $site->path );
 
 		/** also updated any associated blogs */
 		$query = "SELECT * FROM {$wpdb->blogs} WHERE site_id=" . (int)$id;
