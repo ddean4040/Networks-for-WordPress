@@ -117,6 +117,7 @@ class wp_Networks_Admin
 		global $wpdb;
 		global $options_to_copy;
 		global $current_screen;
+		global $current_site;
 
 		if ( !is_super_admin() ) {
 		    wp_die( '<p>' . __('You do not have permission to access this page.') . '</p>' );
@@ -521,12 +522,12 @@ class wp_Networks_Admin
 						</tr>
 						<?php endif ; ?>
 						<tr>
-							<th scope="row"><label for="create_root_site"><?php _e('Create a Root Site','njsl-networks') ?>:</label></th>
+							<th scope="row"><label for="create_root_site"><?php _e( 'Create a Main Site', 'njsl-networks' ) ?>:</label></th>
 							<td><input type="checkbox" name="createRootSite" id="create_root_site" checked />
-							<p><?php _e('By default, a site will be created at the root of the new network.<br /> If you don\'t know what this means, leave it checked.','njsl-networks'); ?></p>
+							<p><?php _e( 'By default, a site will be created at the root of the new network.<br /> If you don\'t know what this means, leave it checked.', 'njsl-networks' ); ?></p>
 							</td>
 						</tr>
-						<tr><th scope="row"><label for="newBlog"><?php _e('Root Site Name','njsl-networks'); ?>:</label></th><td><input type="text" name="newBlog" id="newBlog" placeholder="<?php _e('My new site name', 'njsl-networks' ); ?>" title="<?php _e('The name for the new Network\'s root site','njsl-networks'); ?>" /></td></tr>
+						<tr><th scope="row"><label for="newBlog"><?php _e( 'Main Site Name', 'njsl-networks' ); ?>:</label></th><td><input type="text" name="newBlog" id="newBlog" placeholder="<?php _e('My new site name', 'njsl-networks' ); ?>" title="<?php _e( 'The name for the new Network\'s main site', 'njsl-networks' ); ?>" /></td></tr>
 					</table>
 				</td>
 				<td style="vertical-align: top" id="new-network-preview">
