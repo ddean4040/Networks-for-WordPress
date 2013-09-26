@@ -361,12 +361,13 @@ if (!function_exists('update_site')) {
 		if($blogs) {
 			foreach($blogs as $blog) {
 				$domain = str_replace($site->domain,$domain,$blog->domain);
-				
+				$blog_path = preg_replace( '|' . $site->path . '|', $path, $blog->path, 1 );
+
 				$wpdb->update(
 					$wpdb->blogs,
-					array(	'domain'	=> $domain,
-							'path'		=> $path
-						),
+					array(  'domain'	=> $domain,
+					        'path'		=> $blog_path
+					),
 					array(	'blog_id'	=> (int)$blog->blog_id	)
 				);
 
