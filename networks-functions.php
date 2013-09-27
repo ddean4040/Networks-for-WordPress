@@ -378,24 +378,26 @@ if (!function_exists('update_site')) {
 				if(empty($update))
 					continue;
 
+				$blog_id = (int) $blog->blog_id;
+				switch_to_blog($blog_id);
+
 				$wpdb->update(
 					$wpdb->blogs,
 					$update,
-					array(	'blog_id'	=> (int)$blog->blog_id	)
+					array(	'blog_id'	=> $blog_id	)
 				);
-
-				/** fix options table values */
-				$optionTable = $wpdb->get_blog_prefix( $blog->blog_id ) . 'options';
 
 				foreach($url_dependent_blog_options as $option_name) {
 					// TODO: pop upload_url_path off list if ms_files_rewriting is disabled
-					$option_value = $wpdb->get_row("SELECT * FROM $optionTable WHERE option_name='$option_name'");
+					$option_value = $wpdb->get_row("SELECT * FROM {$wpdb->options} WHERE option_name='$option_name'");
 					if($option_value) {
 						$newValue = str_replace($oldPath,$fullPath,$option_value->option_value);
-						update_blog_option($blog->blog_id,$option_name,$newValue);
-//						$wpdb->query("UPDATE $optionTable SET option_value='$newValue' WHERE option_name='$option_name'");
+						update_option($option_name,$newValue);
 					}
 				}
+				restore_current_blog();
+
+				refresh_blog_details($blog_id);
 			}
 		}
 		
