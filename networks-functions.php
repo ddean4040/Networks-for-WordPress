@@ -318,8 +318,12 @@ if (!function_exists('update_site')) {
 			return new WP_Error('site_not_exist',__('Network does not exist.','njsl-networks'));
 		}
 
+		$domain = untrailingslashit($domain);
 		$update = array('domain'	=> $domain);
+
 		if($path != '') {
+			$path = trim( $path, '/' );
+			$path = trailingslashit( '/' . $path );
 			$update['path'] = $path;
 		}
 
