@@ -1,0 +1,855 @@
+# Copyright (C) 2012 
+# This file is distributed under the same license as the  package.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/networks-for-wordpress\n"
+"POT-Creation-Date: 2012-10-17 00:45:36+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2012-12-18 16:17+0200\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: networks-admin-ajax.php:19
+msgid "IP address for the new domain is a match!"
+msgstr "Adresa IP pre novú doménu je zápas!"
+
+#: networks-admin-ajax.php:22
+msgid ""
+"New domain IP ( %s ) does not match current IP ( %s ).<br />Check your DNS "
+"settings."
+msgstr ""
+"Nová doména IP (% s) sa nezhoduje so sú�?asnou IP (% s). <br /> Skontrolujte "
+"nastavenia DNS."
+
+#: networks-admin-ajax.php:43
+msgid "This domain is available!"
+msgstr "Táto doména je k dispozícii!"
+
+#: networks-admin-ajax.php:46 networks-admin-ajax.php:52
+msgid "This path is available!"
+msgstr "Táto cesta je k dispozícii!"
+
+#: networks-admin-ajax.php:49
+msgid "This domain is in use by domain mapping."
+msgstr "Táto doména je používaná mapovanie domény."
+
+#: networks-admin-ajax.php:58
+msgid "One or more networks exist on this domain."
+msgstr "Niektoré siete existujú v tejto doméne."
+
+#: networks-admin-ajax.php:69
+msgid "This path is available, but there are other networks on this domain."
+msgstr "Táto cesta je k dispozícii, ale tam sú iné siete na tejto doméne."
+
+#: networks-admin-ajax.php:72
+msgid "This path is NOT available."
+msgstr "Táto cesta nie je k dispozícii."
+
+#: networks-admin-ajax.php:80
+msgid "Results:"
+msgstr "Výsledky:"
+
+#: networks-admin.php:49 networks-admin.php:679
+msgid "Move Site"
+msgstr "Presunúť stránky"
+
+#: networks-admin.php:53
+msgid "Move"
+msgstr "Presunúť"
+
+#: networks-admin.php:61 networks-admin.php:68 networks-admin.php:292
+msgid "Networks"
+msgstr "Siete"
+
+#: networks-admin.php:95
+msgid "Questions about Networks?"
+msgstr "Otázky týkajúce sa sietí?"
+
+#: networks-admin.php:96
+msgid "Check the Help pages before you get started!"
+msgstr "Skôr než za�?nete, pozrite stránky pomoci!"
+
+#: networks-admin.php:107
+msgid "Checking..."
+msgstr "Kontrola..."
+
+#: networks-admin.php:122
+msgid "You do not have permission to access this page."
+msgstr "Nemáte povolenie na prístup k tejto stránke."
+
+#: networks-admin.php:150
+msgid "Options saved."
+msgstr "Nastavenia uložené."
+
+#: networks-admin.php:152
+msgid "Network created."
+msgstr "Sieť vytvorená."
+
+#: networks-admin.php:154
+msgid "Network(s) deleted."
+msgstr "Siete odstrániť."
+
+#: networks-admin.php:191 networks-admin.php:201 networks-admin.php:295
+#: networks-admin.php:298
+msgid "Search Networks"
+msgstr "Vyhľadávanie sietí"
+
+#: networks-admin.php:292
+msgid "Add New"
+msgstr "Pridať nové"
+
+#: networks-admin.php:307
+msgid "ID"
+msgstr "ID"
+
+#: networks-admin.php:308 networks-admin.php:479
+msgid "Network Name"
+msgstr "Názov siete"
+
+#: networks-admin.php:309 networks-admin.php:486 networks-admin.php:502
+#: networks-admin.php:928
+msgid "Domain"
+msgstr "Domény"
+
+#: networks-admin.php:310 networks-admin.php:487 networks-admin.php:503
+#: networks-admin.php:929
+msgid "Path"
+msgstr "Cesta"
+
+#: networks-admin.php:311
+msgid "Sites"
+msgstr "Stránky"
+
+#: networks-admin.php:312
+msgid "Super Admins"
+msgstr "Super admini"
+
+#: networks-admin.php:345 networks-admin.php:414
+msgid "Delete"
+msgstr "Odstrániť"
+
+#: networks-admin.php:347
+msgid "Filter"
+msgstr "Filter"
+
+#: networks-admin.php:347
+msgid "Remove this filter"
+msgstr "Tento filter odstrániť"
+
+#: networks-admin.php:411
+msgid "Assign sites to this network"
+msgstr "Priradenie lokality do tejto siete"
+
+#: networks-admin.php:411
+msgid "Assign Sites"
+msgstr "Priradenie lokality"
+
+#: networks-admin.php:412
+msgid "Edit this network"
+msgstr "Upraviť túto sieť"
+
+#: networks-admin.php:412
+msgid "Edit"
+msgstr "Upraviť"
+
+#: networks-admin.php:413
+msgid "Check this network for configuration errors"
+msgstr "Skontrolovať túto sieť konfigurácia chyby"
+
+#: networks-admin.php:413
+msgid "Verify"
+msgstr "Overiť"
+
+#: networks-admin.php:414
+msgid "Delete this network"
+msgstr "Odstrániť túto sieť"
+
+#: networks-admin.php:438
+msgid "Go to this network to manage its sites"
+msgstr "�?sť do tejto siete spravovať svoje lokality"
+
+#: networks-admin.php:465
+msgid "No matching networks were found."
+msgstr "Nenašli sa žiadne zhodné sietí."
+
+#: networks-admin.php:473
+msgid "Create a Network"
+msgstr "Vytvorenie siete"
+
+#: networks-admin.php:479
+msgid "My new network"
+msgstr "Moja nová sieť"
+
+#: networks-admin.php:479
+msgid "A friendly name for your new Network"
+msgstr "Priateľské meno pre vaše nové siete"
+
+#: networks-admin.php:482 networks-admin.php:498
+msgid "Network URL"
+msgstr "Sieť URL"
+
+#: networks-admin.php:490 networks-admin.php:506
+msgid "The domain for your new Network"
+msgstr "Domény pre vaše nová sieť"
+
+#: networks-admin.php:507
+msgid "If you are unsure, put in /"
+msgstr "Ak si nie ste istí, dať /"
+
+#: networks-admin.php:514
+msgid "Create a Root Site"
+msgstr "Vytvoriť koreňovú lokalitu"
+
+#: networks-admin.php:516
+msgid ""
+"By default, a site will be created at the root of the new network.<br /> If "
+"you don't know what this means, leave it checked."
+msgstr ""
+"V predvolenom nastavení, bude stránka sa vytvorí v ​​koreňovom adresári v "
+"novej sieti. <br /> Ak neviete, �?o to znamená, nechať skontrolovať."
+
+#: networks-admin.php:519
+msgid "Root Site Name"
+msgstr "Názov lokality koreň"
+
+#: networks-admin.php:519
+msgid "My new site name"
+msgstr "Môj nový názov stránky"
+
+#: networks-admin.php:519
+msgid "The name for the new Network's root site"
+msgstr "Názov pre novú sieť Koreňová lokalita"
+
+#: networks-admin.php:528
+msgid "Check Network Settings"
+msgstr "Skontrolujte nastavenia siete"
+
+#: networks-admin.php:536
+msgid "Advanced Network Options"
+msgstr "Rozšírené možnosti siete"
+
+#: networks-admin.php:540
+msgid "Copy Network Options From"
+msgstr "Sieťové možnosti kopírovania z"
+
+#: networks-admin.php:542
+msgid "Do Not Copy"
+msgstr "Nekopírujte"
+
+#: networks-admin.php:545
+msgid "Options to Copy"
+msgstr "Možnosti na kopírovanie"
+
+#: networks-admin.php:549
+msgid "Options added by plugins may not exist on all networks."
+msgstr "Možnosti pridal pluginy nemusí existovať vo všetkých sieťach."
+
+#: networks-admin.php:568
+msgid "Meta Key"
+msgstr "Meta kľú�?a"
+
+#: networks-admin.php:569
+msgid "Description"
+msgstr "Popis"
+
+#: networks-admin.php:587
+msgid "Add Network"
+msgstr "Pridať sieť"
+
+#: networks-admin.php:620
+msgid "You must select a site to move."
+msgstr "Vyberte lokalitu pohybovať."
+
+#: networks-admin.php:625
+msgid "Site not found in blogs table."
+msgstr "Lokalita sa nenašla v tabuľke blogy."
+
+#: networks-admin.php:632
+msgid "Blog options table not found."
+msgstr "Blog možnosti tabuľka sa nenašla."
+
+#: networks-admin.php:642
+msgid "Moving"
+msgstr "Pohybujúce sa"
+
+#: networks-admin.php:647
+msgid "From"
+msgstr "Od"
+
+#: networks-admin.php:648
+msgid "To"
+msgstr "Na"
+
+#: networks-admin.php:655
+msgid "Select a Network"
+msgstr "Vyberte sieť"
+
+#: networks-admin.php:671 networks-admin.php:808
+msgid "Options"
+msgstr "Možnosti"
+
+#: networks-admin.php:680 networks-admin.php:815 networks-admin.php:940
+#: networks-admin.php:1000 networks-admin.php:1111
+msgid "Cancel"
+msgstr "Zrušiť"
+
+#: networks-admin.php:695 networks-admin.php:701
+msgid "No sites selected."
+msgstr "Žiadne lokality vybrali."
+
+#: networks-admin.php:730 networks-admin.php:905 networks-admin.php:916
+#: networks-admin.php:971
+msgid "Invalid network ID selected"
+msgstr "Neplatné sieťové ID, ktoré vyberá"
+
+#: networks-admin.php:735
+msgid "Blogs table is inaccessible."
+msgstr "Blogy tabuľka je nedostupná."
+
+#: networks-admin.php:742
+msgid "Could not locate options table for a site. (Tried: %s)."
+msgstr "Možnosti tabuľky pre lokalitu sa nepodarilo nájsť. (Snažil: % s)."
+
+#: networks-admin.php:745
+msgid "Unknown site name"
+msgstr "Názov neznámy lokality"
+
+#: networks-admin.php:758
+msgid "Assign Sites to"
+msgstr "Priradenie miest"
+
+#: networks-admin.php:760
+msgid ""
+"Select the sites you want to assign to this network from the column at left, "
+"and click \"%s.\""
+msgstr ""
+"Vyberte stránky, ktoré chcete priradiť k tejto sieti zo stĺpca v ľavej, a "
+"kliknite na \"%s.\""
+
+#: networks-admin.php:760 networks-admin.php:814
+msgid "Update Assignments"
+msgstr "Aktualizácia úlohy"
+
+#: networks-admin.php:766
+msgid "Available"
+msgstr "K dispozícii"
+
+#: networks-admin.php:768
+msgid "Assigned"
+msgstr "Priradené"
+
+#: networks-admin.php:866 networks-functions.php:146
+msgid "New Network Created"
+msgstr "Nová sieť vytvorená"
+
+#: networks-admin.php:925
+msgid "Edit Network"
+msgstr "Upraviť siete"
+
+#: networks-admin.php:939
+msgid "Update Network"
+msgstr "Aktualizovať sieť"
+
+#: networks-admin.php:955
+msgid "Deleting the main network is disabled."
+msgstr "Odstránenie hlavných sietí je zakázaný."
+
+#: networks-admin.php:983 networks-admin.php:999
+msgid "Delete Network"
+msgstr "Odstrániť siete"
+
+#: networks-admin.php:988 networks-admin.php:993
+msgid "There are sites associated with this network. "
+msgstr "Existujú stránky, ktoré sú priradené k tejto sieti. "
+
+#: networks-admin.php:988
+msgid "Deleting it will move those sites to the holding network."
+msgstr "Odstránenie to bude pohybovať týchto stránok podniku siete."
+
+#: networks-admin.php:989 networks-admin.php:994
+msgid "If you still want to delete this network, check the following box"
+msgstr "Ak chcete odstrániť túto sieť, za�?iarknite nasledujúce polí�?ko"
+
+#: networks-admin.php:993
+msgid "Deleting it will delete those sites as well."
+msgstr "Ním sa odstránia týchto stránkach rovnako."
+
+#: networks-admin.php:998
+msgid "Are you sure you want to delete this network?"
+msgstr "Naozaj chcete odstrániť túto sieť?"
+
+#: networks-admin.php:1025
+msgid "You have not selected any networks to delete."
+msgstr "Nevybrali ste žiadne siete odstrániť."
+
+#: networks-admin.php:1034
+msgid "You have selected an invalid network."
+msgstr "Vybrali ste neplatný siete."
+
+#: networks-admin.php:1049
+msgid "You have selected an invalid network or networks."
+msgstr "Vybrali ste neplatný siete alebo siete."
+
+#: networks-admin.php:1057
+msgid "Delete Multiple Networks"
+msgstr "Odstrániť viac sietí"
+
+#: networks-admin.php:1065 networks-admin.php:1080 networks-admin.php:1097
+msgid "You have selected the following networks for deletion"
+msgstr "Vybrali ste nasledujúce sietí na odstránenie"
+
+#: networks-admin.php:1071
+msgid "There are sites assigned to one or more of these networks."
+msgstr "Tam sú stránky priradený do jednej alebo viacerých týchto sietí."
+
+#: networks-admin.php:1071
+msgid "Deleting them will move these sites to the holding network."
+msgstr "Ich odstránením bude pohybovať týchto lokalít siete podniku."
+
+#: networks-admin.php:1072 networks-admin.php:1087
+msgid "If you still want to delete these networks, check the following box"
+msgstr "Ak chcete odstrániť tieto siete, za�?iarknite nasledujúce polí�?ko"
+
+#: networks-admin.php:1086
+msgid "There are sites associated with one or more of these networks."
+msgstr "Tam sú stránky spojené s jedným alebo viacerými z týchto sietí."
+
+#: networks-admin.php:1086
+msgid "Deleting them will delete those sites as well."
+msgstr "Ich odstránením sa odstránia týchto stránkach rovnako."
+
+#: networks-admin.php:1109
+msgid "Are you sure you want to delete these networks?"
+msgstr "Naozaj chcete odstrániť tieto siete?"
+
+#: networks-admin.php:1110
+msgid "Delete Networks"
+msgstr "Odstrániť sietí"
+
+#: networks-admin.php:1123
+msgid "Verifying Network: %s"
+msgstr "Overenie siete: %s"
+
+#: networks-admin.php:1125
+msgid ""
+"This page will perform some basic diagnostics on your Network to uncover "
+"common configuration errors. \r\n"
+"\t\t\tThis testing is by no means exhaustive, and it is still possible to "
+"break your Network and pass all these tests."
+msgstr ""
+"Táto stránka bude vykonávať niektoré základné diagnostiku vo vašej sieti "
+"odhaliť bežné chyby konfigurácie.\r\n"
+"\t\t\t táto skúšky nie je v žiadnom prípade vy�?erpávajúci, a to je ešte "
+"možné prekonať vašu sieť a odovzdať všetky tieto testy."
+
+#: networks-admin.php:1128
+msgid "Checking <code>%s</code> table for selected Network by ID"
+msgstr "Kontrola tabuľka <code>%s</code> vybraté sieťové ID"
+
+#: networks-admin.php:1134 networks-admin.php:1143 networks-admin.php:1152
+#: networks-admin.php:1175 networks-admin.php:1217 networks-admin.php:1238
+msgid "Passed."
+msgstr "Prešiel."
+
+#: networks-admin.php:1136
+msgid ""
+"The selected network was not found in the <code>%s</code> table. Testing "
+"cannot continue."
+msgstr ""
+"Vybraná sieť nebola nájdená v <code>% s </ code> tabuľky. Testovanie nemôže "
+"pokra�?ovať."
+
+#: networks-admin.php:1140
+msgid ""
+"Checking <code>%s</code> table for a unique combination of domain and path"
+msgstr ""
+"Kontrola <code>% s </ code> stôl pre jedine�?nú kombináciu domény a cestu"
+
+#: networks-admin.php:1143
+msgid "Failed."
+msgstr "Zlyhalo."
+
+#: networks-admin.php:1146
+msgid "Checking for super admin(s)"
+msgstr "Zisťujú sa super admin(s)"
+
+#: networks-admin.php:1152
+msgid "Found %d super admin"
+msgstr "Nájdených %d super admin"
+
+#: networks-admin.php:1159
+msgid ""
+"Super admins meta value could not be decoded. Check your <code>%s</code> "
+"table for corruption."
+msgstr ""
+"Super admini meta hodnota môže byť dekódovaný. Skontrolujte, �?i vaše <code>% "
+"s </ code> tabuľky pre korupciu."
+
+#: networks-admin.php:1162
+msgid ""
+"Super admins meta key was not found. Check your <code>%s</code> table for "
+"the proper keys."
+msgstr ""
+"Super admini meta kľú�? nebol nájdený. Skontrolujte, �?i vaše <code>% s </ "
+"code> tabuľky pre správne kľú�?e."
+
+#: networks-admin.php:1163
+msgid ""
+"Without a super admins key, only username \"admin\" will be treated as a "
+"super admin."
+msgstr ""
+"Bez super admins kľú�?, \"admin \" iba používateľské meno, budú považované za "
+"super admin."
+
+#: networks-admin.php:1167
+msgid "Checking DNS for this network"
+msgstr "Kontrolu DNS pre túto sieť"
+
+#: networks-admin.php:1173
+msgid "Domain could not be resolved."
+msgstr "Domény sa nepodarilo vyriešiť."
+
+#: networks-admin.php:1178
+msgid "DNS did not match."
+msgstr "DNS nezodpovedá."
+
+#: networks-admin.php:1178 networks-admin.php:1256 networks-admin.php:1270
+msgid ""
+"This is not a fatal error, but you should verify DNS manually from your "
+"users' perspective."
+msgstr ""
+"To nie je fatálna chyba, ale vy by ste mali overiť, DNS ru�?ne z pohľadu "
+"vašich užívateľov."
+
+#: networks-admin.php:1180 networks-admin.php:1274
+msgid "Current network resolved to: <code>%s</code>"
+msgstr "Sú�?asnú sieť rozhodnuté: <code>%s</code>"
+
+#: networks-admin.php:1181 networks-admin.php:1260
+msgid "Selected network resolved to: <code>%s</code>"
+msgstr "Vybraté sieťové rozhodnuté: <code>%s</code>"
+
+#: networks-admin.php:1186
+msgid "Checking hosted sites for correct Network-related values"
+msgstr "Kontrola hostované stránky pre správne sieťové hodnoty"
+
+#: networks-admin.php:1195
+msgid "Site %d (%s) has an invalid <code>domain</code> setting."
+msgstr "Stránka %d (% s) má neplatný <code>domény</code> nastavenie."
+
+#: networks-admin.php:1199 networks-admin.php:1208
+msgid "Site %d (%s)  has an invalid <code>path</code> setting."
+msgstr "Stránka %d (% s) má neplatný <code>cestu</code> nastavenia."
+
+#: networks-admin.php:1204
+msgid "Site %d (%s)  has an invalid <code>domain</code> setting."
+msgstr "Stránka %d (% s) má neplatný <code>domény</code> nastavenie."
+
+#: networks-admin.php:1214 networks-admin.php:1235 networks-admin.php:1282
+msgid "No sites were found on this network. Skipping this check."
+msgstr "Nenašli sa žiadne lokality v tejto sieti. Vynecháva sa táto kontrola."
+
+#: networks-admin.php:1220
+msgid "Checking hosted sites for correct Network-related meta values"
+msgstr "Kontrola hostované stránky pre správne hodnoty sieťových meta"
+
+#: networks-admin.php:1229
+msgid ""
+"Site %d (%s) has an invalid meta value in <code>%s</code>. This may prevent "
+"access to this site or disable some features."
+msgstr ""
+"Site% d (% s) má neplatnú hodnotu metadát v <code>% s </ code>. To môže "
+"zabrániť v prístupe k tejto stránke, alebo zakázať niektoré funkcie."
+
+#: networks-admin.php:1242
+msgid "Checking DNS for hosted site subdomains"
+msgstr "Kontrola DNS subdomény hostované stránky"
+
+#: networks-admin.php:1249
+msgid "Site %d's domain (%s) could not be resolved."
+msgstr "Stránky %d's domény (% s) sa nepodarilo rozpoznať."
+
+#: networks-admin.php:1255
+msgid "Site %d's <code>domain</code> does not match its network's."
+msgstr "Stránky %d's <code>domény</code> nezodpovedá jeho siete."
+
+#: networks-admin.php:1259 networks-admin.php:1273
+msgid "Site %d resolved to: <code>%s</code>"
+msgstr "Stránky %d rozhodnuté: <code>%s</code>"
+
+#: networks-admin.php:1269
+msgid "Site %d's <code>domain</code> does not match the current network's."
+msgstr "Stránky %d's <code>domény</code> nezodpovedá sú�?asnej siete."
+
+#: networks-admin.php:1302
+msgid ""
+"The table below shows all the Networks running on this installation of "
+"WordPress."
+msgstr ""
+"Nižšie uvedená tabuľka ukazuje všetky Networks beží na tejto inštaláciu "
+"WordPress."
+
+#: networks-admin.php:1303
+msgid "What is a Network?"
+msgstr "Čo je sieť?"
+
+#: networks-admin.php:1304
+msgid ""
+"A Network is a group of sites with common admins, plugins, and policies."
+msgstr "Sieť je skupina lokalít so spolo�?nými správcami, plugins a politík."
+
+#: networks-admin.php:1305
+msgid ""
+"With Networks for WordPress, you can create as many distinct Networks as you "
+"need. All your Networks will share a common codebase and set of users."
+msgstr ""
+"Wifi, Sieť JE SKUPINA lokalitu tak spolo�?nými správcu, pluginy Politik."
+
+#: networks-admin.php:1306
+msgid ""
+"The most common use of Networks is running distinct groups of sites on "
+"multiple domains from a single install."
+msgstr ""
+"Wifi, Wifi, Sieť JE SKUPINA lokalitu Tak spolo�?nými správcov, Pluginy "
+"Politik."
+
+#: networks-admin.php:1307
+msgid ""
+"If what you want to do is run a single site on a different domain, or to "
+"have a site accessible at more than one domain, you should look into domain "
+"mapping instead."
+msgstr ""
+"Ak to, �?o chcete urobiť, je spustiť jednu stránku na inej doméne, alebo mať "
+"stránky prístupné na viac ako jednu doménu, mali by ste sa pozrieť do "
+"mapovania domény miesto."
+
+#: networks-admin.php:1314 networks-admin.php:1357
+msgid "Adding a Network"
+msgstr "Pridanie sieť"
+
+#: networks-admin.php:1316
+msgid ""
+"Enter the network's basic information in the <a href=\"#form-add-network"
+"\">form below</a>."
+msgstr ""
+"Zadajte siete základné informácie v podobe <a href=\"#form-add-network\"> "
+"nižšie </ A>."
+
+#: networks-admin.php:1317
+msgid ""
+"Use the test link on the right to verify the new address before creating the "
+"network. You should see the \"%s\" error."
+msgstr ""
+"Použite testovacie odkaz na právo overiť novú adresu pred vytvorením siete. "
+"Mali by ste vidieť \"%s\"  chybu."
+
+#: networks-admin.php:1317
+msgid "No site defined on this host"
+msgstr "Žiadna stránka definovaná na tento hostiteľ"
+
+#: networks-admin.php:1318
+msgid ""
+"If you don't see the right message, use the \"Check Network Settings\" "
+"button on the right to see possible issues with your configuration."
+msgstr ""
+"Ak nevidíte vpravo správu, použite  \"Skontrolovať nastavenie siete \" "
+"tla�?idlo na pravej vidieť možné problémy s konfiguráciu."
+
+#: networks-admin.php:1319
+msgid "Click \"Add Network\" when you're ready to proceed."
+msgstr "Kliknite na \"Add Networ\" ke�? ste pripravení pokra�?ovať."
+
+#: networks-admin.php:1327
+msgid "Troubleshooting your Networks"
+msgstr "Riešenie problémov vašich sietí"
+
+#: networks-admin.php:1328
+msgid ""
+"If you encounter problems with one of your networks, use the \"Verify\" link "
+"below each network name to perform automated testing."
+msgstr ""
+"Ak sa stretnete s problémami s jedným zo svojich sietí, použite  \"Overiť \" "
+"odkaz nižšie každého názvu siete vykonávať automatizované testovanie."
+
+#: networks-admin.php:1329
+msgid ""
+"Running multiple networks requires care in your server configuration. For "
+"best results, ensure all the domains you are planning to use for networks "
+"share the same settings."
+msgstr ""
+"Spustenie viacerých sietí si vyžaduje starostlivosť vo vašej konfigurácii "
+"servera. Pre dosiahnutie najlepších výsledkov, aby všetky domény plánujete "
+"používať v sieťach zdieľajú rovnaké nastavenie."
+
+#: networks-admin.php:1336
+msgid "More Information"
+msgstr "Ďalšie informácie"
+
+#: networks-admin.php:1338
+msgid "WordPress Codex - Create a Network"
+msgstr "WordPress Codex - vytvoriť sieť"
+
+#: networks-admin.php:1339
+msgid "Networks for WordPress Home Page and FAQ"
+msgstr "Siete pre WordPress domovskej stránky a FAQ"
+
+#: networks-admin.php:1349
+msgid "Networks Overview"
+msgstr "Prehľad siete"
+
+#: networks-admin.php:1365
+msgid "Troubleshooting"
+msgstr "Riešenie problémov"
+
+#: networks-admin.php:1383
+msgid "Networks per page"
+msgstr "Siete na stranu"
+
+#: networks-admin.php:1403
+msgid "List of active Network-enabled plugins"
+msgstr "Zoznam aktívne sieťové pluginy"
+
+#: networks-admin.php:1404
+msgid ""
+"Allow site administrators to add new users to their site via the \"Users "
+"&rarr; Add New\" page."
+msgstr ""
+"Povoliť správcovi webu pridávať nových používateľov na svojich stránkach cez "
+"\"Užívatelia → Pridať nové \" stránku."
+
+#: networks-admin.php:1405
+msgid "Network administrator email"
+msgstr "Email správca siete"
+
+#: networks-admin.php:1406
+msgid "Deprecated - Admin user ID"
+msgstr "Zastaralé - ID užívateľa Admin"
+
+#: networks-admin.php:1407
+msgid "Deprecated - Old list of allowed themes"
+msgstr "Zastarané - starý zoznam povolených témy"
+
+#: networks-admin.php:1408
+msgid "List of allowed themes"
+msgstr "Zoznam povolených témy"
+
+#: networks-admin.php:1409
+msgid ""
+"If you want to ban domains from site registrations. One domain per line."
+msgstr "Ak chcete zakázať domény z webu registrácií. Jedna doména na riadok."
+
+#: networks-admin.php:1410
+msgid "Maximum size (in MB) for file uploads"
+msgstr "Maximálna veľkosť (v MB) Nahrßvanie"
+
+#: networks-admin.php:1411
+msgid "Max upload file size"
+msgstr "Max veľkosť súboru na odovzdanie"
+
+#: networks-admin.php:1412
+msgid "The first comment on a new site."
+msgstr "Prvý komentár na nové stránky."
+
+#: networks-admin.php:1413
+msgid "The author of the first comment on a new site."
+msgstr "Autor prvý komentár na nové stránky."
+
+#: networks-admin.php:1414
+msgid "The URL for the first comment on a new site."
+msgstr "Adresa URL pre prvý komentár na nové stránky."
+
+#: networks-admin.php:1415
+msgid "The first page on a new site."
+msgstr "Na prvej stránke na nové stránky."
+
+#: networks-admin.php:1416
+msgid "The first post on a new site."
+msgstr "Prvý príspevok na nové stránky."
+
+#: networks-admin.php:1417
+msgid ""
+"Users are not allowed to register these sites. Separate names by spaces."
+msgstr ""
+"Užívatelia sa nesmie registrovať tieto stránky. Mená oddeľujte medzerami."
+
+#: networks-admin.php:1418
+msgid ""
+"If you want to limit site registrations to certain domains. One domain per "
+"line."
+msgstr ""
+"Ak chcete obmedziť stránky registrácií ur�?itých domén. Jedna doména na "
+"riadok."
+
+#: networks-admin.php:1419
+msgid "Allow new registrations"
+msgstr "Povoliť nové registrácie"
+
+#: networks-admin.php:1420
+msgid ""
+"Send the network admin an email notification every time someone registers a "
+"site or user account."
+msgstr ""
+"Odoslať siete správcu e-mailom upozornenie zakaždým, ke�? niekto zaregistruje "
+"stránky alebo užívateľský ú�?et."
+
+#: networks-admin.php:1421
+msgid "List of site administrator usernames"
+msgstr "Zoznam používateľských mien správcu stránky"
+
+#: networks-admin.php:1422
+msgid "A friendly name for the network"
+msgstr "Popisný názov pre sieť"
+
+#: networks-admin.php:1423
+msgid "URI for the root of this network &mdash; do not clone this"
+msgstr "URI pre koreň tejto siete &mdash; to clone"
+
+#: networks-admin.php:1424
+msgid "Upload file types"
+msgstr "Nahrať súbor typov"
+
+#: networks-admin.php:1425
+msgid "The welcome email sent to new site owners."
+msgstr "Privítať email zaslať nové majiteľa stránok."
+
+#: networks-admin.php:1426
+msgid "The welcome email sent to new users."
+msgstr "Privítať email zaslať nových používateľov."
+
+#: networks-functions.php:158
+msgid "Network already exists!"
+msgstr "Siete už existuje!"
+
+#: networks-functions.php:241 networks-functions.php:247
+#: networks-functions.php:321 networks-functions.php:386
+#: networks-functions.php:398
+msgid "Network does not exist."
+msgstr "Sieti neexistuje."
+
+#: networks-functions.php:259
+msgid "Network could not be updated."
+msgstr "Siete sa nepodarilo aktualizovať."
+
+#: networks-functions.php:328
+msgid "Cannot delete network with sites."
+msgstr "Siete s weby sa nedá odstrániť."
+
+#: networks-functions.php:370
+msgid "Site does not exist."
+msgstr "Stránka neexistuje."
+
+#: networks-functions.php:433
+msgid "Site could not be moved."
+msgstr "Stránky nie je možné premiestniť."
+
+#: networks-mufunctions.php:43 networks-mufunctions.php:63
+msgid "Unable to locate a valid site on this network."
+msgstr "Nepodarilo sa nájsť platný lokality v tejto sieti."
+
+#: networks-mufunctions.php:43 networks-mufunctions.php:63
+msgid "No Valid Site Found"
+msgstr "Žiadny platný lokality našiel"
