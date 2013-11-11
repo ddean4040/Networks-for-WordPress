@@ -76,7 +76,10 @@ if( ! function_exists( 'fix_network_admin_redirect' ) ) {
 if( ! function_exists( 'fix_subsite_upload_path' ) ) {
 	
 	function fix_subsite_upload_path( $value, $blog_id ) {
-		global $current_site;
+		global $current_site, $wp_version;
+		
+		if( version_compare( $wp_version, '3.7', '<' ) )
+			return $value;
 		
 		if ( $blog_id == $current_site->blog_id ) {
 			
