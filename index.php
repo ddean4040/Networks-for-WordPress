@@ -4,10 +4,10 @@
  * Plugin Name: Networks for WordPress
  * Plugin URI: http://wordpress.org/plugins/networks-for-wordpress/
  * Description: Adds a Networks panel for site admins to create and manipulate multiple networks.
- * Version: 1.1.5
- * Revision Date: 7/23/2013
+ * Version: 1.1.6
+ * Revision Date: 11/11/2013
  * Requires at least: WP 3.0
- * Tested up to: WP 3.6-RC1
+ * Tested up to: WP 3.7.1
  * License: GNU General Public License 2.0 (GPL) or later
  * Author: David Dean
  * Author URI: http://www.generalthreat.com/

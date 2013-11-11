@@ -165,6 +165,9 @@ This is not needed for WP 3.7+.
 
 == Upgrade Notice ==
 
+= 1.1.6 =
+* Contributed fixes and better upload handling -- replace `networks-mufunctions.php` if you have copied it to your `mu-plugins` folder
+
 = 1.1.5 =
 * Updates to support native upload handling in WP 3.5+ -- see Installation and FAQ for important details!
 
