@@ -2,8 +2,8 @@
 Contributors: ddean
 Tags: multisite, multi-site, sites, networks, multi-network, multiple, multi-domain, domains
 Requires at least: 3.0
-Tested up to: 3.6-RC1
-Stable tag: 1.1.5
+Tested up to: 3.7.1
+Stable tag: 1.1.6
 
 Adds a Networks panel for network admins to create and manage multiple Networks from one WordPress installation.
 
@@ -58,18 +58,27 @@ This file does not rely on the rest of Networks for Wordpress to function, so yo
 
 This seemed like a good compromise. If you have thoughts, let me know in the comments!
 
-If you are on WP 3.5+ and want to use native file uploads, you **must** either:
+If you are on WP 3.5 - 3.6.1 and want to use native file uploads, you **must** either:
 
 1. Activate the Networks plugin on all of your networks, OR
 2. Copy `networks-muplugins.php` into your `mu-plugins` folder
 
 If you do not do this, your uploaded files will end up in unexpected places.
 
+This is not needed for WP 3.7+.
+
 == Known Issues ==
 
 * Plugins that create global (i.e. not blog-specific) tables will behave as though they are on a single network install.  This is a limitation of WordPress's table naming scheme.
 
 == Changelog ==
+
+= 1.1.6 =
+* Changed: Native upload handling on WP 3.7 without this plugin active
+* Changed: Made text labels more consistent with WP terminology
+* Changed: Made siteurl replacement trailing slash-insensitive when changing network path - fix contributed by mgburns!
+* Fixed: changing network domain or path could reset site paths - fix contributed by mgburns!
+* Fixed: PHP warning when viewing the Networks admin screen - thanks, zawszaws
 
 = 1.1.5 =
 * Added: ability to set upload handling per network
@@ -155,6 +164,9 @@ If you do not do this, your uploaded files will end up in unexpected places.
 * Initial release
 
 == Upgrade Notice ==
+
+= 1.1.6 =
+* Contributed fixes and better upload handling -- replace `networks-mufunctions.php` if you have copied it to your `mu-plugins` folder
 
 = 1.1.5 =
 * Updates to support native upload handling in WP 3.5+ -- see Installation and FAQ for important details!

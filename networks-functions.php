@@ -157,6 +157,8 @@ if (!function_exists('add_site')) {
 
 		$options_to_clone = wp_parse_args( $options_to_clone, array_keys($options_to_copy) );
 		
+		$domain = untrailingslashit( $domain );
+		
 		if($path != '/') {
 			$path = trim( $path, '/' );
 			$path = trailingslashit( '/' . $path );
@@ -179,7 +181,7 @@ if (!function_exists('add_site')) {
 
 		if($new_site_id) {
 			
-			add_site_option( 'siteurl', $domain . $path);
+			add_site_option( 'siteurl', $domain . $path );
 			
 			/* prevent ugly database errors - #184 */
 			if(!defined('WP_INSTALLING')) {
@@ -217,8 +219,11 @@ if (!function_exists('add_site')) {
 					$use_files_rewriting = get_site_option( 'ms_files_rewriting' );
 				}
 				
-				// Create the upload_path and upload_url_path values
-				if( ! $use_files_rewriting ) {
+				// Create the upload_path and upload_url_path values for WP 3.5 - 3.6.1
+				
+				global $wp_version;
+				
+				if( ! $use_files_rewriting && version_compare( $wp_version, '3.7', '<' ) ) {
 
 					// WP_CONTENT_URL is locked to the current site and can't be overridden,
 					//  so we have to replace the hostname the hard way
@@ -389,7 +394,7 @@ if (!function_exists('update_site')) {
 
 				foreach($url_dependent_blog_options as $option_name) {
 					// TODO: pop upload_url_path off list if ms_files_rewriting is disabled
-					$option_value = $wpdb->get_row("SELECT * FROM {$wpdb->options} WHERE option_name='$option_name'");
+					$option_value = get_option( $option_name );
 					if($option_value) {
 						$newValue = str_replace($oldPath,$fullPath,$option_value->option_value);
 						update_option($option_name,$newValue);
