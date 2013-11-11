@@ -219,8 +219,11 @@ if (!function_exists('add_site')) {
 					$use_files_rewriting = get_site_option( 'ms_files_rewriting' );
 				}
 				
-				// Create the upload_path and upload_url_path values
-				if( ! $use_files_rewriting ) {
+				// Create the upload_path and upload_url_path values for WP 3.5 - 3.6.1
+				
+				global $wp_version;
+				
+				if( ! $use_files_rewriting && version_compare( $wp_version, '3.7', '<' ) ) {
 
 					// WP_CONTENT_URL is locked to the current site and can't be overridden,
 					//  so we have to replace the hostname the hard way
